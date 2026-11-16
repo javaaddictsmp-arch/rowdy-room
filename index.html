@@ -1,0 +1,1264 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rowdy Room</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: an arcade game-show set built from vinyl stickers. Cream stage, ink outlines, hard offset shadows; marigold = press me, coral = alerts and the clock. */
+:root {
+  color-scheme: light;
+  --cream: #fff8e7;
+  --paper: #ffffff;
+  --ink: #141414;
+  --ink-soft: #4b443d;
+  --gold: #ffb800;
+  --coral: #ff3366;
+  --mint: #2fd18b;
+  --sky: #3d9bff;
+  --muted: var(--ink-soft);
+  --paper-muted: var(--ink-soft);
+  --display: "Fredoka", "Arial Rounded MT Bold", "Segoe UI", system-ui, sans-serif;
+  --body: "Nunito", "Segoe UI", system-ui, sans-serif;
+  --b: 3px solid var(--ink);
+  --bb: 4px solid var(--ink);
+  --sh: 6px 6px 0 var(--ink);
+  --sh-sm: 4px 4px 0 var(--ink);
+  --r: 18px;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body {
+  margin: 0;
+  background-color: var(--cream);
+  background-image: radial-gradient(rgba(20, 20, 20, .10) 1.3px, transparent 1.6px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font: 500 16px/1.5 var(--body);
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 4px solid var(--sky); outline-offset: 3px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.02; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding-block: 16px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* header */
+.top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 22px; }
+.mark { display: flex; align-items: center; gap: 4px; font: 700 26px/1 var(--display); letter-spacing: .01em; text-transform: uppercase; }
+.mark span { border: var(--b); box-shadow: var(--sh-sm); padding: 6px 12px 7px; border-radius: 12px; }
+.mark .m1 { background: var(--coral); color: var(--paper); transform: rotate(-4deg); }
+.mark .m2 { background: var(--gold); transform: rotate(3deg) translateY(3px); }
+.top .spacer { flex: 1; }
+.badge { font: 800 12px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; padding: 8px 12px; border-radius: 999px; border: var(--b); background: var(--paper); display: inline-flex; align-items: center; gap: 8px; }
+.badge::before { content: ""; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--ink); background: var(--cream); }
+.badge.on::before { background: var(--mint); }
+.badge.warn::before { background: var(--gold); }
+.badge.bad::before { background: var(--coral); }
+
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 26px; align-items: start; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.stage { min-width: 0; }
+.side { display: grid; gap: 18px; min-width: 0; }
+
+/* building blocks */
+.box { background: var(--paper); border: var(--b); border-radius: var(--r); box-shadow: var(--sh); padding: 20px; }
+.card { background: var(--paper); border: var(--bb); border-radius: var(--r); box-shadow: var(--sh); padding: 24px; color: var(--ink); }
+.panel { background: var(--paper); border: var(--b); border-radius: var(--r); box-shadow: var(--sh); padding: 20px; }
+.stack { display: grid; gap: 16px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.lbl, .eyebrow { font: 800 12px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); margin-bottom: 10px; display: block; }
+.big { font: 700 clamp(24px, 3.6vw, 34px)/1.15 var(--display); text-wrap: balance; }
+.mid { font: 600 20px/1.3 var(--display); }
+.hint { color: var(--ink-soft); margin-top: 10px; font-weight: 600; }
+.muted { color: var(--ink-soft); }
+.blank { display: inline-block; min-width: 4.5em; border-bottom: 5px solid var(--coral); }
+.filled { background: var(--gold); border: 2px solid var(--ink); padding: 0 .3em; border-radius: 8px; display: inline-block; transform: rotate(-1.5deg); }
+
+/* arcade push switches */
+.btn {
+  font: 600 17px/1 var(--display); letter-spacing: .02em;
+  border: var(--b); border-radius: 14px; padding: 13px 20px;
+  background: var(--paper); color: var(--ink); box-shadow: var(--sh-sm);
+  transition: transform .06s ease, box-shadow .06s ease;
+}
+.btn:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--ink); }
+.btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--ink); }
+.btn.go { background: var(--gold); }
+.btn.hot { background: var(--coral); color: var(--paper); }
+.btn.on { background: var(--mint); }
+.btn.small { font-size: 14px; padding: 9px 13px; border-radius: 11px; box-shadow: 3px 3px 0 var(--ink); }
+.btn.tiny { font-size: 15px; padding: 4px 10px; border-radius: 9px; box-shadow: 2px 2px 0 var(--ink); }
+.btn:disabled { background: #e9e2d2; color: #7a7266; cursor: not-allowed; transform: none; box-shadow: 3px 3px 0 #7a7266; border-color: #7a7266; }
+.btn.mega { font-size: clamp(26px, 4vw, 38px); padding: 24px 28px; border-radius: 20px; box-shadow: var(--sh); border-width: 4px; }
+.btn.mega:active, .btn.start:active { transform: translate(6px, 6px); }
+
+.field { width: 100%; border: var(--b); border-radius: 13px; background: var(--paper); color: var(--ink); padding: 13px 15px; font: 700 18px/1.3 var(--body); resize: vertical; box-shadow: inset 0 3px 0 rgba(20, 20, 20, .08); }
+.field::placeholder { color: #9a9083; }
+.field:focus { outline: none; box-shadow: 4px 4px 0 var(--gold); }
+.count { font: 800 12px var(--body); color: var(--ink-soft); }
+.err { background: var(--coral); color: var(--paper); border: var(--b); border-radius: 12px; padding: 8px 12px; font-weight: 800; justify-self: start; transform: rotate(-1deg); }
+
+/* stickers (players) */
+.stickers { display: flex; flex-wrap: wrap; gap: 14px 10px; padding: 6px 4px 8px; }
+.sticker {
+  --pc: var(--gold);
+  position: relative; display: inline-flex; align-items: center; gap: 9px;
+  padding: 7px 14px 7px 7px; border: var(--b); border-radius: 999px;
+  background: var(--paper); box-shadow: var(--sh-sm); transform: rotate(var(--rot, 0deg));
+  max-width: 100%;
+}
+.sticker:nth-child(3n) { margin-top: 8px; }
+.sticker:nth-child(4n+1) { margin-left: 6px; }
+.sticker .av { width: 34px; height: 34px; border-radius: 50%; border: var(--b); background: var(--pc); display: grid; place-items: center; font: 700 17px/1 var(--display); flex: none; }
+.sticker .sn { font: 700 17px/1.1 var(--display); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sticker .sn small { font: 800 10px var(--body); letter-spacing: .1em; text-transform: uppercase; margin-left: 6px; color: var(--ink-soft); }
+.sticker .sc { font: 700 18px/1 var(--display); font-variant-numeric: tabular-nums; margin-left: 4px; background: var(--ink); color: var(--paper); border-radius: 8px; padding: 4px 7px; }
+.sticker .stamp { position: absolute; top: -12px; right: -8px; font: 800 10px/1 var(--body); letter-spacing: .1em; background: var(--coral); color: var(--paper); border: 2px solid var(--ink); border-radius: 6px; padding: 4px 6px; transform: rotate(8deg); }
+.sticker .stamp.ok { background: var(--mint); color: var(--ink); }
+.sticker .stamp.host { background: var(--gold); color: var(--ink); }
+.sticker.gone { opacity: .45; }
+.board .stickers { flex-direction: column; align-items: flex-start; }
+.board .sticker { width: 100%; }
+.board .sticker .sn { flex: 1; }
+
+/* chips inside text */
+.chip { display: inline-flex; align-items: center; gap: 6px; font: 700 14px/1 var(--display); padding: 4px 10px 4px 5px; border-radius: 999px; border: 2px solid var(--ink); background: var(--paper); white-space: nowrap; vertical-align: middle; }
+.chip::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); background: var(--pc); }
+.pts { font: 700 14px/1 var(--display); background: var(--mint); border: 2px solid var(--ink); border-radius: 8px; padding: 3px 6px; display: inline-block; transform: rotate(-3deg); }
+.tag { font: 800 10px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; padding: 4px 6px; border-radius: 6px; border: 2px solid var(--ink); background: var(--gold); vertical-align: middle; }
+
+/* welcome */
+.welcome { display: grid; gap: 22px; }
+.hero h1 { font-size: clamp(40px, 7vw, 78px); letter-spacing: -.01em; }
+.hero .hl { display: inline-block; background: var(--coral); color: var(--paper); border: var(--bb); box-shadow: var(--sh); border-radius: 16px; padding: 0 14px 6px; transform: rotate(-2deg); margin-top: 10px; }
+.hero p { margin-top: 18px; font-size: 18px; max-width: 56ch; font-weight: 600; }
+.welcome .actions { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; align-items: stretch; }
+@media (max-width: 680px) { .welcome .actions { grid-template-columns: minmax(0, 1fr); } }
+.join-box { background: var(--sky); transform: rotate(1deg); }
+.join-box .row { flex-wrap: nowrap; }
+.code-field { font: 700 32px/1 var(--display); letter-spacing: .25em; text-transform: uppercase; text-align: center; min-width: 0; padding: 10px; }
+.name-box { transform: rotate(-.6deg); }
+.big-field { font: 700 24px/1.2 var(--display); }
+.swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+.sw { width: 40px; height: 40px; border-radius: 50%; border: var(--b); background: var(--pc); box-shadow: 3px 3px 0 var(--ink); transition: transform .08s; }
+.sw.sel { transform: scale(1.18) rotate(-8deg); box-shadow: 0 0 0 4px var(--cream), 0 0 0 7px var(--ink); }
+.fine { font-size: 14px; font-weight: 600; max-width: 70ch; background: var(--paper); border: var(--b); border-radius: 14px; padding: 12px 16px; justify-self: start; }
+
+/* lobby */
+.lobby { display: grid; gap: 30px; }
+.stage { container-type: inline-size; container-name: stage; }
+.lobby-top { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 24px; align-items: stretch; }
+@container stage (max-width: 700px) { .lobby-top { grid-template-columns: minmax(0, 1fr); } }
+.codehero { background: var(--gold); border: var(--bb); border-radius: 24px; box-shadow: 8px 8px 0 var(--ink); padding: 22px 22px 20px; transform: rotate(-1.2deg); display: grid; gap: 12px; align-content: center; }
+.codehero p { font-weight: 700; }
+.codehero { container-type: inline-size; }
+.tiles { display: flex; gap: clamp(5px, 2cqi, 12px); flex-wrap: nowrap; }
+.tile { display: grid; place-items: center; flex: 1 1 0; min-width: 0; max-width: 104px; aspect-ratio: 1 / 1.08; background: var(--paper); border: var(--bb); border-radius: 14px; box-shadow: 5px 5px 0 var(--ink); font: 700 clamp(30px, 13cqi, 84px)/1 var(--display); transform: rotate(var(--rot)); }
+.launch { display: grid; gap: 12px; align-content: start; transform: rotate(.8deg); }
+.upnext { font-size: clamp(30px, 4vw, 42px); }
+.upnext::after { content: ""; display: block; height: 8px; width: 90px; margin-top: 8px; background: var(--gc); border: 2px solid var(--ink); border-radius: 6px; }
+.blurb { font-weight: 600; color: var(--ink-soft); }
+.btn.start { font-size: clamp(32px, 5vw, 52px); padding: 22px 20px 24px; border-width: 4px; border-radius: 22px; box-shadow: 8px 8px 0 var(--ink); text-transform: uppercase; width: 100%; margin-top: 6px; }
+.btn.start.go { background: var(--coral); color: var(--paper); }
+.btn.start.on { background: var(--mint); color: var(--ink); }
+.btn.start:disabled { background: #e9e2d2; color: #6d6559; border-color: #6d6559; box-shadow: 6px 6px 0 #6d6559; font-size: clamp(24px, 3.4vw, 36px); }
+.readyline { font: 700 15px var(--body); text-align: center; }
+.mini { display: flex; align-items: center; gap: 8px; justify-content: center; font: 800 12px var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.mini b { font: 700 18px var(--display); color: var(--ink); min-width: 1.2em; text-align: center; }
+.section-h { font-size: 28px; margin-bottom: 18px; display: inline-block; background: var(--ink); color: var(--cream); padding: 6px 14px 8px; border-radius: 12px; transform: rotate(-1.5deg); }
+.tickets { display: flex; flex-wrap: wrap; gap: 18px 14px; }
+.ticket { position: relative; display: grid; gap: 4px; justify-items: start; text-align: left; padding: 14px 18px 16px; min-width: 150px; flex: 1 1 170px; max-width: 260px; background: var(--gc); color: var(--ink); border: var(--b); border-radius: 16px 16px 16px 4px; box-shadow: var(--sh-sm); transform: rotate(var(--rot)); transition: transform .08s ease, box-shadow .08s ease; }
+.ticket:nth-child(even) { margin-top: 10px; border-radius: 4px 16px 16px 16px; }
+.ticket .tk-tag { font: 800 10px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; background: var(--paper); border: 2px solid var(--ink); border-radius: 6px; padding: 3px 6px; }
+.ticket .tk-name { font: 700 22px/1.05 var(--display); text-wrap: balance; }
+.ticket .tk-min { position: absolute; right: -10px; top: -12px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); color: var(--ink); border: var(--b); font: 700 13px/1 var(--display); }
+.ticket:not(:disabled):hover { transform: rotate(0deg) translate(-2px, -3px); box-shadow: var(--sh); }
+.ticket:disabled { cursor: default; }
+.ticket.sel { background: var(--ink); color: var(--cream); box-shadow: 6px 6px 0 var(--gc); transform: rotate(0deg) scale(1.04); }
+.ticket.sel .tk-tag { background: var(--gc); color: var(--ink); }
+
+/* how it works */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: center; font-weight: 700; }
+.steps li::before { content: counter(s); width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--gold); border: var(--b); font: 700 16px/1 var(--display); }
+
+/* HUD */
+.hud { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.hud-game { font: 700 22px/1 var(--display); background: var(--ink); color: var(--cream); padding: 9px 16px 11px; border-radius: 12px; transform: rotate(-1.5deg); }
+.hud-round { font: 800 12px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; background: var(--paper); border: var(--b); border-radius: 999px; padding: 8px 12px; transform: rotate(1deg); }
+.timer { margin-left: auto; min-width: 86px; text-align: center; font: 700 28px/1 var(--display); font-variant-numeric: tabular-nums; background: var(--paper); border: var(--bb); border-radius: 16px; box-shadow: var(--sh-sm); padding: 10px 14px 12px; transform: rotate(2deg); }
+.timer.low { background: var(--coral); color: var(--paper); animation: thump 1s steps(2, jump-none) infinite; }
+@keyframes thump { 50% { transform: rotate(-2deg) scale(1.08); } }
+.waiting { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-weight: 800; margin-top: 16px; }
+.hostbar { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; padding: 14px 16px; align-items: center; background: var(--paper); border: var(--b); border-radius: 16px; border-style: dashed; }
+.hostbar .lbl { margin: 0 6px 0 0; }
+
+/* answering */
+.opts { display: grid; gap: 14px; }
+.opt { text-align: left; padding: 15px 18px; border-radius: 14px; background: var(--paper); color: var(--ink); border: var(--b); box-shadow: var(--sh-sm); font: 700 18px/1.35 var(--body); display: grid; gap: 6px; transition: transform .06s ease, box-shadow .06s ease; }
+.opt:nth-child(odd) { transform: rotate(-.5deg); }
+.opt:nth-child(even) { transform: rotate(.5deg); }
+.opt:not([disabled]):hover { transform: translate(-1px, -2px); box-shadow: var(--sh); }
+.opt:not([disabled]):active { transform: translate(4px, 4px); box-shadow: none; }
+.opt.sel { background: var(--gold); }
+.opt[disabled] { cursor: default; }
+.opt .sub { font-size: 14px; color: var(--ink-soft); }
+.story { display: grid; gap: 6px; font-size: 17px; font-weight: 600; }
+.story .ln { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.story .ln .chip { font-size: 12px; }
+.story .first { font-style: italic; color: var(--ink-soft); }
+.match { display: grid; gap: 12px; }
+.mrow { display: grid; grid-template-columns: minmax(0, 1fr) 190px; gap: 12px; align-items: center; background: var(--paper); border: var(--b); border-radius: 14px; padding: 12px 14px; box-shadow: var(--sh-sm); }
+@media (max-width: 560px) { .mrow { grid-template-columns: 1fr; } }
+.mrow select { border-radius: 10px; border: var(--b); padding: 9px; background: var(--cream); color: var(--ink); font-weight: 800; }
+.rank { display: grid; gap: 10px; }
+.ritem { display: flex; align-items: center; gap: 14px; text-align: left; padding: 12px 16px; border-radius: 14px; border: var(--b); background: var(--paper); color: var(--ink); font: 700 18px/1.2 var(--body); box-shadow: var(--sh-sm); }
+.ritem:active { transform: translate(4px, 4px); box-shadow: none; }
+.ritem .num { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; border: var(--b); background: var(--cream); font: 700 19px/1 var(--display); flex: none; }
+.ritem.placed { background: var(--gold); }
+.ritem.placed .num { background: var(--coral); color: var(--paper); }
+.locked { display: grid; gap: 8px; background: var(--mint); border: var(--b); border-radius: 14px; padding: 14px 16px; transform: rotate(-.8deg); box-shadow: var(--sh-sm); }
+.locked .lbl { margin: 0; }
+
+/* results */
+.results { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.res { background: var(--paper); border: var(--b); border-radius: 14px; padding: 13px 16px; display: grid; gap: 8px; box-shadow: var(--sh-sm); }
+.res:nth-child(odd) { transform: rotate(-.4deg); }
+.res:nth-child(even) { transform: rotate(.4deg); }
+.res.win { background: var(--gold); }
+.res.real { background: var(--mint); }
+.res-text { font: 700 18px/1.35 var(--body); }
+.res-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 14px; font-weight: 700; color: var(--ink-soft); }
+.verdict { font: 700 clamp(38px, 7vw, 68px)/1 var(--display); display: inline-block; justify-self: start; background: var(--coral); color: var(--paper); border: var(--bb); box-shadow: var(--sh); border-radius: 16px; padding: 6px 18px 12px; transform: rotate(-2deg); }
+.answer { font: 700 clamp(40px, 8vw, 72px)/1 var(--display); font-variant-numeric: tabular-nums; }
+.podium { display: grid; gap: 14px; }
+.prow { display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: 16px; background: var(--paper); border: var(--b); box-shadow: var(--sh-sm); }
+.prow:nth-child(odd) { transform: rotate(-.8deg); }
+.prow:nth-child(even) { transform: rotate(.8deg); margin-left: 14px; }
+.prow .place { font: 700 30px/1 var(--display); width: 40px; }
+.prow .dot { width: 22px; height: 22px; border-radius: 50%; border: var(--b); background: var(--pc); flex: none; }
+.prow .pname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 22px/1.1 var(--display); }
+.prow .score { font: 700 24px/1 var(--display); font-variant-numeric: tabular-nums; }
+.prow.first { background: var(--gold); border-width: 4px; padding-block: 18px; }
+.prow.first .pname { font-size: 30px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="mark" aria-label="Rowdy Room"><span class="m1">Rowdy</span><span class="m2">Room</span></div>
+    <div class="spacer"></div>
+    <span id="mode" class="badge" hidden>Connecting</span>
+    <button id="leave" class="btn small" hidden>Leave room</button>
+  </header>
+  <div class="layout">
+    <main id="stage" class="stage"></main>
+    <aside id="side" class="side"></aside>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------------- content ---------------- */
+const BANK = {
+  advice: [
+    "My roommate keeps eating my food.",
+    "I accidentally liked my crush's photo from 2016.",
+    "I have a job interview tomorrow and I said I speak French. I don't.",
+    "My dog actually ate my homework.",
+    "I forgot my best friend's birthday and they're on their way over.",
+    "I'm stuck in a group project where nobody does anything.",
+    "My neighbor practices drums at 2 a.m.",
+    "The waiter said 'enjoy your meal' and I said 'you too'.",
+    "I locked myself out of my house in my pajamas.",
+    "I can't stop hitting snooze.",
+    "I spent my rent money on a giant inflatable dinosaur.",
+    "My boss keeps scheduling meetings that could have been emails.",
+    "I'm scared of geese and I just moved next to a pond.",
+    "My friend is a terrible cook and they're making dinner tonight.",
+    "I waved back at someone who was waving at the person behind me.",
+    "I have 47 browser tabs open and can't close any of them.",
+    "I broke my mom's favorite vase and she gets home in 10 minutes.",
+    "I told everyone I run marathons. The marathon is Saturday.",
+    "My plant is dying and it's a cactus.",
+    "The group chat went silent right after I sent a meme.",
+    "I got a haircut and now I look like a different person. A worse one.",
+    "I've been calling my coworker the wrong name for a year.",
+    "There was a spider in my room and now I can't find it.",
+    "I want to quit my job to become a professional napper.",
+    "My parents want to 'talk about my screen time'."
+  ],
+  facts: [
+    { t: "A group of flamingos is called a ___.", a: "flamboyance" },
+    { t: "A group of crows is called a ___.", a: "murder" },
+    { t: "Wombat poop is shaped like ___.", a: "cubes" },
+    { t: "Octopuses have three ___.", a: "hearts" },
+    { t: "Scotland's national animal is the ___.", a: "unicorn" },
+    { t: "Archaeologists found 3,000-year-old ___ in Egyptian tombs that was still edible.", a: "honey" },
+    { t: "Bananas are slightly ___.", a: "radioactive" },
+    { t: "Sea otters hold ___ while they sleep so they don't drift apart.", a: "hands" },
+    { t: "The dot over a lowercase i is called a ___.", a: "tittle" },
+    { t: "Cleopatra lived closer in time to the Moon landing than to the building of the Great ___.", a: "Pyramid" },
+    { t: "In 1932, Australia's military fought a 'war' against ___, and lost.", a: "emus" },
+    { t: "The man who designed the Pringles can had some of his ashes buried in a ___.", a: "Pringles can" },
+    { t: "The first item ever sold on eBay was a broken ___.", a: "laser pointer" },
+    { t: "In the 1830s, ketchup was sold as a ___.", a: "medicine" },
+    { t: "A shrimp's heart is in its ___.", a: "head" },
+    { t: "The plastic tip at the end of a shoelace is called an ___.", a: "aglet" },
+    { t: "Oxford University is older than the ___ Empire.", a: "Aztec" },
+    { t: "Nintendo started out in 1889 making ___.", a: "playing cards" },
+    { t: "A day on Venus is longer than a ___ on Venus.", a: "year" },
+    { t: "There is a town in Norway called ___.", a: "Hell" },
+    { t: "Butterflies taste things with their ___.", a: "feet" },
+    { t: "A 'jiffy' is an actual unit of ___.", a: "time" },
+    { t: "Peanuts aren't nuts. They're ___.", a: "legumes" },
+    { t: "The Eiffel Tower grows about 15 cm taller in the ___.", a: "summer" },
+    { t: "Gentoo penguins 'propose' to a mate by offering a ___.", a: "pebble" },
+    { t: "Koala ___ are so close to human ones they could confuse a crime scene.", a: "fingerprints" },
+    { t: "Hot water can sometimes freeze faster than cold water. It's called the ___ effect.", a: "Mpemba" },
+    { t: "A bolt of lightning is about five times hotter than the surface of the ___.", a: "sun" },
+    { t: "Sharks have been around longer than ___.", a: "trees" },
+    { t: "After he died, the inventor of the Frisbee was turned into a ___.", a: "frisbee" },
+    { t: "Honeybees can learn to recognize human ___.", a: "faces" }
+  ],
+  openers: [
+    "It was supposed to be a normal trip to the grocery store.",
+    "The text just said: \"Don't open the fridge.\"",
+    "Grandma had a secret, and it was in the basement.",
+    "Nobody expected the school play to end in a police chase.",
+    "At exactly 3:07 a.m., the goose started talking.",
+    "The wedding was going perfectly until the cake moved.",
+    "Day one on the island: we still have the karaoke machine.",
+    "The new substitute teacher was clearly three raccoons in a coat.",
+    "My smart fridge has started making demands.",
+    "The job interview was going great until I sneezed.",
+    "The pizza arrived, but the delivery guy refused to leave.",
+    "The GPS said \"turn left\", directly into the ocean.",
+    "I won the lottery, but the prize was a haunted castle.",
+    "On Monday morning the museum's dinosaur skeleton was gone.",
+    "Every cat in town showed up at my door at once."
+  ],
+  who: [
+    "What's a food you secretly hate?",
+    "What's the worst gift you've ever gotten?",
+    "What would your villain name be?",
+    "What's your most useless talent?",
+    "What's a weird thing you did as a kid?",
+    "What would you name a pet rock?",
+    "What's your go-to excuse for being late?",
+    "What's a hill you would die on?",
+    "What's the dumbest way you've ever hurt yourself?",
+    "If you came with a warning label, what would it say?",
+    "What's your guilty-pleasure song?",
+    "You have $1,000 and one hour to spend it. What do you buy?",
+    "What's a smell you weirdly love?",
+    "What's the most embarrassing thing you've searched online?",
+    "What's a conspiracy theory you kind of believe?",
+    "Describe your perfect Saturday in five words.",
+    "What's something you're irrationally scared of?",
+    "What would your walk-up song be?",
+    "What's your weirdest food combo?",
+    "What's the last thing that made you laugh way too hard?"
+  ],
+  pairs: [
+    ["cat", "dog"], ["pizza", "burger"], ["beach", "pool"], ["coffee", "tea"], ["vampire", "zombie"],
+    ["guitar", "violin"], ["train", "bus"], ["moon", "sun"], ["snow", "rain"], ["shark", "dolphin"],
+    ["castle", "palace"], ["pirate", "ninja"], ["spoon", "fork"], ["Halloween", "Christmas"], ["library", "bookstore"],
+    ["doctor", "dentist"], ["rollercoaster", "waterslide"], ["pancake", "waffle"], ["ketchup", "mustard"], ["tiger", "lion"],
+    ["hotel", "hospital"], ["wedding", "birthday party"], ["soccer", "basketball"], ["sushi", "tacos"], ["ghost", "alien"],
+    ["cloud", "fog"], ["piano", "drums"], ["desert", "jungle"], ["wizard", "superhero"], ["camping", "picnic"],
+    ["airport", "train station"], ["volcano", "earthquake"], ["cereal", "oatmeal"], ["robot", "cyborg"]
+  ],
+  takes: [
+    "Cereal is a soup.",
+    "A hot dog is a sandwich.",
+    "Pineapple belongs on pizza.",
+    "Socks with sandals is peak fashion.",
+    "Breakfast for dinner beats actual dinner.",
+    "Cats are just tiny landlords.",
+    "The floor is a perfectly good place to keep clothes.",
+    "Monday is the best day of the week.",
+    "Cold pizza is better than hot pizza.",
+    "Every movie should be 90 minutes, max.",
+    "Pigeons are cooler than eagles.",
+    "The moon is overrated.",
+    "Water is not wet.",
+    "Naps should be mandatory at work and school.",
+    "Ketchup goes on everything.",
+    "Winter is the best season.",
+    "Reply-all should be illegal.",
+    "Dogs would be terrible at running a country. Cats would be worse.",
+    "Spoilers make movies better.",
+    "Sitting in the back row is the only correct choice.",
+    "Mint chocolate chip tastes like toothpaste and that's fine.",
+    "Birthdays after 25 are pointless.",
+    "Texting is better than calling. Always.",
+    "Elevators should play heavy metal."
+  ],
+  cats: [
+    "Most likely to betray you",
+    "Most useful in a zombie apocalypse",
+    "Best thing to bring to a job interview",
+    "Most terrifying if it were 10 feet tall",
+    "Best roommate",
+    "Best smell",
+    "Most likely to win a fight",
+    "Most romantic gift",
+    "Hardest to explain to a medieval peasant",
+    "Best to be stuck in an elevator with",
+    "Most likely to become famous",
+    "Best at keeping a secret",
+    "Most annoying at 6 a.m.",
+    "Best pet"
+  ],
+  items: [
+    "a goose", "Tuesday", "a dentist", "lava", "socks", "a rubber duck", "a toaster", "your grandma",
+    "a pigeon", "a traffic cone", "a haunted doll", "Wi-Fi", "a kazoo", "a shark", "glitter", "a lawyer",
+    "a jar of pickles", "a ghost", "a trampoline", "a raccoon", "a leaf blower", "flat-pack furniture instructions",
+    "a clown", "a cactus", "a mime", "bubble wrap", "a vending machine", "a sumo wrestler", "a single grape",
+    "a lighthouse", "a golden retriever", "a printer", "a sword", "a llama", "an air fryer", "a snowman",
+    "a pirate", "a wheel of cheese", "a disco ball", "a horse in a suit"
+  ],
+  nums: [
+    { q: "How many keys are on a standard piano?", a: 88, u: "keys" },
+    { q: "How many bones are in an adult human body?", a: 206, u: "bones" },
+    { q: "How tall is the Eiffel Tower, tip included?", a: 330, u: "meters" },
+    { q: "How many member countries does the United Nations have?", a: 193, u: "countries" },
+    { q: "Counting every size (1×1 up to 8×8), how many squares are on a chessboard?", a: 204, u: "squares" },
+    { q: "On average, how far is the Moon from Earth?", a: 384400, u: "km" },
+    { q: "Roughly how fast does sound travel through air at sea level?", a: 1235, u: "km/h" },
+    { q: "How many hours are in a non-leap year?", a: 8760, u: "hours" },
+    { q: "How many minutes are in one week?", a: 10080, u: "minutes" },
+    { q: "How tall is Mount Everest?", a: 8849, u: "meters" },
+    { q: "What did the very first iPhone (4 GB) cost at launch in 2007?", a: 499, u: "US dollars" },
+    { q: "In what year did the Titanic sink?", a: 1912, u: "" },
+    { q: "In what year was the first email sent?", a: 1971, u: "" },
+    { q: "In what year was YouTube founded?", a: 2005, u: "" },
+    { q: "In what year did people first walk on the Moon?", a: 1969, u: "" },
+    { q: "How many dots are on a six-sided die, all faces added up?", a: 21, u: "dots" },
+    { q: "How many dots are in a full double-six domino set?", a: 168, u: "dots" },
+    { q: "How many seconds are in one day?", a: 86400, u: "seconds" },
+    { q: "How many neck bones does a giraffe have?", a: 7, u: "bones" },
+    { q: "How many letters are in the Hawaiian alphabet?", a: 13, u: "letters" },
+    { q: "How long is a marathon?", a: 42.195, u: "km" },
+    { q: "How much does a US nickel weigh?", a: 5, u: "grams" },
+    { q: "How many cards are in a standard deck, jokers included?", a: 54, u: "cards" },
+    { q: "How many sides does a UK 50p coin have?", a: 7, u: "sides" },
+    { q: "How many teeth are in a full adult set, wisdom teeth included?", a: 32, u: "teeth" },
+    { q: "How many years did the Hundred Years' War actually last?", a: 116, u: "years" },
+    { q: "How many Earth days does it take Mars to orbit the Sun?", a: 687, u: "days" },
+    { q: "In Monopoly (US), how much does Boardwalk cost?", a: 400, u: "dollars" }
+  ],
+  roasts: [
+    "was not in the same galaxy.",
+    "guessed with their eyes closed.",
+    "should ask their math teacher for a refund.",
+    "just typed a number and hoped.",
+    "is confidently, spectacularly wrong.",
+    "has been banned from calculators.",
+    "rolled a die and multiplied by vibes.",
+    "is living in an alternate universe."
+  ]
+};
+
+const COLORS = ["#ff3366", "#ffb800", "#2fd18b", "#3d9bff", "#b38cff", "#ff8a3d", "#9be15d", "#ff7eb6", "#22c7c7", "#f2e6c9"];
+
+/* ---------------- helpers ---------------- */
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const clean = (s, max) => String(s == null ? "" : s).replace(/[\u0000-\u001f\u007f\u200b-\u200f\u202a-\u202e\u2060-\u2064\ufeff]/g, " ").replace(/\s+/g, " ").trim().slice(0, max || 200);
+const norm = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\b(a|an|the)\b/g, "").replace(/\s+/g, " ").trim();
+function rid(n) { const a = "abcdefghjkmnpqrstuvwxyz23456789"; let s = ""; const r = crypto.getRandomValues(new Uint32Array(n)); for (const x of r) s += a[x % a.length]; return s; }
+function roomCode() { const a = "ABCDEFGHJKLMNPQRSTUVWXYZ"; let s = ""; const r = crypto.getRandomValues(new Uint32Array(5)); for (const x of r) s += a[x % a.length]; return s; }
+function hash(str) { let h = 1779033703 ^ str.length; for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); } return h >>> 0; }
+function rng(seed) { let a = hash(String(seed)); return () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function shuffle(arr, seed) { const r = rng(seed); const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const store = {
+  get(k, session) { try { return (session ? sessionStorage : localStorage).getItem(k); } catch (e) { return null; } },
+  set(k, v, session) { try { (session ? sessionStorage : localStorage).setItem(k, v); } catch (e) { /* storage blocked */ } }
+};
+const fmtNum = (n) => { const x = Number(n); if (!isFinite(x)) return "?"; return x.toLocaleString("en-US", { maximumFractionDigits: 3 }); };
+const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+
+/* ---------------- network: encrypted relay through a public MQTT broker ----------------
+   Every player connects only to the relay server, never to each other, so nobody sees another player's IP.
+   Messages are encrypted (AES-GCM) with a key derived from the room code, and the topic name is a hash of it. */
+const BROKERS = ["wss://broker.hivemq.com:8884/mqtt", "wss://broker.emqx.io:8084/mqtt", "wss://test.mosquitto.org:8081/mqtt"];
+const te = new TextEncoder(), td = new TextDecoder();
+async function roomKeys(code) {
+  const subtle = crypto && crypto.subtle; if (!subtle) throw new Error("no-crypto");
+  const base = await subtle.importKey("raw", te.encode("rowdy-room|" + code), "PBKDF2", false, ["deriveKey", "deriveBits"]);
+  const bits = await subtle.deriveBits({ name: "PBKDF2", salt: te.encode("rowdy-room-topic-v2"), iterations: 60000, hash: "SHA-256" }, base, 128);
+  const topic = "rowdyroom/v2/" + [...new Uint8Array(bits)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  const key = await subtle.deriveKey({ name: "PBKDF2", salt: te.encode("rowdy-room-key-v2"), iterations: 150000, hash: "SHA-256" }, base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+  return { topic, key };
+}
+
+/* a tiny MQTT 3.1.1 client over WebSocket: connect, subscribe, publish (QoS 0), ping */
+function mqttClient(url, topic, onMsg, onDown) {
+  let ws = null, buf = new Uint8Array(0), ping = null, open = false, done = false;
+  const cid = "rr" + rid(12);
+  const str = (s) => { const b = te.encode(s); const out = new Uint8Array(b.length + 2); out[0] = b.length >> 8; out[1] = b.length & 255; out.set(b, 2); return out; };
+  const varlen = (n) => { const out = []; do { let d = n % 128; n = Math.floor(n / 128); if (n > 0) d |= 128; out.push(d); } while (n > 0); return out; };
+  const packet = (h, parts) => { const total = parts.reduce((s, p) => s + p.length, 0); const L = varlen(total); const out = new Uint8Array(1 + L.length + total); out[0] = h; out.set(L, 1); let o = 1 + L.length; for (const p of parts) { out.set(p, o); o += p.length; } return out; };
+  function connect() {
+    return new Promise((resolve, reject) => {
+      try { ws = new WebSocket(url, ["mqtt"]); } catch (e) { reject(e); return; }
+      ws.binaryType = "arraybuffer";
+      const to = setTimeout(() => { reject(new Error("timeout")); try { ws.close(); } catch (e) { /* ignore */ } }, 7000);
+      ws.onopen = () => ws.send(packet(0x10, [new Uint8Array([0, 4, 77, 81, 84, 84, 4, 2, 0, 60]), str(cid)]));
+      ws.onmessage = (ev) => {
+        const chunk = new Uint8Array(ev.data); const nb = new Uint8Array(buf.length + chunk.length); nb.set(buf); nb.set(chunk, buf.length); buf = nb;
+        while (buf.length >= 2) {
+          let mult = 1, val = 0, i = 1, byte = 0;
+          do { if (i >= buf.length) return; byte = buf[i++]; val += (byte & 127) * mult; mult *= 128; } while ((byte & 128) && i < 5);
+          if (buf.length < i + val) return;
+          const type = buf[0] >> 4, flags = buf[0] & 15, body = buf.slice(i, i + val);
+          buf = buf.slice(i + val);
+          if (type === 2) {
+            clearTimeout(to);
+            if (body[1] !== 0) { reject(new Error("refused")); try { ws.close(); } catch (e) { /* ignore */ } return; }
+            open = true;
+            ws.send(packet(0x82, [new Uint8Array([0, 1]), str(topic), new Uint8Array([0])]));
+            ping = setInterval(() => { try { ws.send(new Uint8Array([0xc0, 0])); } catch (e) { /* ignore */ } }, 30000);
+            resolve();
+          } else if (type === 3) {
+            const tl = (body[0] << 8) | body[1]; let o = 2 + tl; if ((flags >> 1) & 3) o += 2;
+            onMsg(body.slice(o));
+          }
+        }
+      };
+      ws.onerror = () => {};
+      ws.onclose = () => { clearTimeout(to); clearInterval(ping); if (!open) reject(new Error("closed")); else { open = false; if (!done) onDown(); } };
+    });
+  }
+  return {
+    connect,
+    send(payload) { if (open && ws && ws.readyState === 1) ws.send(packet(0x30, [str(topic), payload])); },
+    close() { done = true; open = false; clearInterval(ping); try { if (ws) ws.close(); } catch (e) { /* ignore */ } },
+    isOpen: () => open
+  };
+}
+
+function relayRoom(code) {
+  const peerId = rid(12);
+  let mine = JSON.parse(JSON.stringify(ME));
+  const others = new Map(); const fns = new Set();
+  let snap = null, keys = null, client = null, dead = false, sendTimer = null, starting = false;
+  const status = { state: "connecting", broker: "", msg: "" };
+  const changed = () => { snap = null; for (const f of fns) { try { f({}); } catch (e) { console.error(e); } } };
+  async function encrypt(obj) {
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, keys.key, te.encode(JSON.stringify(obj))));
+    const out = new Uint8Array(12 + ct.length); out.set(iv); out.set(ct, 12); return out;
+  }
+  async function send(t) { if (!client || !client.isOpen()) return; try { client.send(await encrypt({ t, peer: peerId, p: mine })); } catch (e) { console.warn("send", e); } }
+  function handle(m) {
+    if (!m || typeof m.peer !== "string" || m.peer === peerId) return;
+    if (m.t === "bye") { if (others.delete(m.peer)) changed(); return; }
+    const prev = others.get(m.peer); const s = JSON.stringify(m.p || {});
+    others.set(m.peer, { p: m.p && typeof m.p === "object" ? m.p : {}, s, at: Date.now() });
+    if (m.t === "hello") send("hb");
+    if (!prev || prev.s !== s) changed();
+  }
+  async function onMsg(bytes) {
+    if (!keys || bytes.length < 29) return;
+    try { const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: bytes.slice(0, 12) }, keys.key, bytes.slice(12)); handle(JSON.parse(td.decode(pt))); }
+    catch (e) { /* not for this room, or tampered with: ignore */ }
+  }
+  async function start() {
+    if (starting || dead) return; starting = true;
+    try {
+      if (!keys) { try { keys = await roomKeys(code); } catch (e) { status.state = "error"; status.msg = "This browser can't do encryption. Try Chrome, Edge or Firefox."; changed(); return; } }
+      let attempt = 0;
+      while (!dead) {
+        for (const url of BROKERS) {
+          if (dead) return;
+          const c = mqttClient(url, keys.topic, onMsg, () => { if (dead) return; client = null; status.state = "reconnecting"; changed(); setTimeout(start, 1000); });
+          try { await c.connect(); if (dead) { c.close(); return; } client = c; status.state = "online"; status.broker = new URL(url).hostname; changed(); send("hello"); return; }
+          catch (e) { c.close(); }
+        }
+        status.state = "offline"; changed();
+        await new Promise((r) => setTimeout(r, Math.min(15000, 2000 * ++attempt)));
+      }
+    } finally { starting = false; }
+  }
+  const hb = setInterval(() => {
+    send("hb");
+    const now = Date.now(); let ch = false;
+    for (const [k, o] of others) if (now - o.at > 12000) { others.delete(k); ch = true; }
+    if (ch) changed();
+  }, 3000);
+  const bye = () => send("bye");
+  addEventListener("pagehide", bye);
+  start();
+  return {
+    status,
+    presence(patch) {
+      mine = Object.assign({}, mine);
+      for (const k in patch) { if (patch[k] === null) delete mine[k]; else mine[k] = patch[k]; }
+      if (!sendTimer) sendTimer = setTimeout(() => { sendTimer = null; send("p"); }, 50);
+      changed(); return Promise.resolve();
+    },
+    peers() { if (snap) return snap; const list = [{ peer: peerId, isMe: true, sameTab: true, presence: mine }]; for (const [k, o] of others) list.push({ peer: k, isMe: false, sameTab: false, presence: o.p }); return (snap = list); },
+    onPeers(f) { fns.add(f); setTimeout(() => f({}), 0); return () => fns.delete(f); },
+    close() { const c = client; dead = true; clearInterval(hb); removeEventListener("pagehide", bye); send("bye").finally(() => setTimeout(() => { if (c) c.close(); }, 300)); fns.clear(); }
+  };
+}
+
+const net = { impl: null };
+function connectRoom(code) { if (net.impl) net.impl.close(); net.impl = relayRoom(code); net.impl.onPeers(() => schedule()); schedule(); }
+function disconnectRoom() { if (net.impl) net.impl.close(); net.impl = null; schedule(); }
+
+/* ---------------- me ---------------- */
+let pid = store.get("rr-pid", true);
+if (!pid || !/^p[a-z0-9]{7}$/.test(pid)) { pid = "p" + rid(7); store.set("rr-pid", pid, true); }
+const savedName = clean(store.get("rr-name") || "", 18);
+const savedColorRaw = store.get("rr-color");
+const savedColor = savedColorRaw == null ? NaN : Number(savedColorRaw);
+const ME = { pid, nm: savedName, co: Number.isInteger(savedColor) && savedColor >= 0 && savedColor < COLORS.length ? savedColor : Math.floor(Math.random() * COLORS.length), code: null, host: false };
+function setMe(patch) {
+  for (const k in patch) { if (patch[k] === null) delete ME[k]; else ME[k] = patch[k]; }
+  if (net.impl) net.impl.presence(patch).catch((e) => console.warn("presence", e));
+  schedule();
+}
+
+let G = null;          // the live game state, only while I'm the host
+let lastPushed = "";
+let lastG = null;      // last host state I saw (for taking over if the host drops)
+const used = {};       // host memory: prompts already used this session
+const DRAFT = {};      // text being typed, kept across re-renders
+let ORDER = { k: "", list: [] };
+let ERR = "";
+let localDeadline = 0, lastGStamp = "", lastRk = "";
+
+/* ---------------- roster ---------------- */
+function roster() {
+  const map = new Map();
+  const list = net.impl ? net.impl.peers() : [];
+  for (const p of list) {
+    const pr = p.sameTab ? ME : p.presence;
+    if (!pr || typeof pr.pid !== "string" || !/^p[a-z0-9]{7}$/.test(pr.pid)) continue;
+    if (p.sameTab && pr.pid !== ME.pid) continue;
+    if (!p.sameTab && pr.pid === ME.pid) continue;
+    map.set(pr.pid, {
+      pid: pr.pid, nm: clean(pr.nm, 18) || "Someone", co: Number(pr.co) || 0, code: typeof pr.code === "string" ? pr.code : null,
+      host: !!pr.host, rd: !!pr.rd, g: pr.g && typeof pr.g === "object" ? pr.g : null, a: pr.a || null, vt: pr.vt || null, ln: pr.ln || null, me: p.sameTab
+    });
+  }
+  if (!map.has(ME.pid)) map.set(ME.pid, { pid: ME.pid, nm: ME.nm || "You", co: ME.co, code: ME.code, host: ME.host, g: ME.g || null, a: ME.a || null, vt: ME.vt || null, ln: ME.ln || null, me: true });
+  return map;
+}
+const inRoom = (R, code) => [...R.values()].filter((p) => p.code && p.code === code);
+function findHost(R) {
+  if (!ME.code) return null;
+  const hosts = inRoom(R, ME.code).filter((p) => p.host && p.g && p.g.c === ME.code).sort((a, b) => (a.pid < b.pid ? -1 : 1));
+  const h = hosts[0] || null;
+  if (G && h && h.pid !== ME.pid) { G = null; lastPushed = ""; setMe({ host: false, g: null }); }
+  if (h && h.pid === ME.pid && G) return { pid: ME.pid, g: G };
+  return h ? { pid: h.pid, g: h.g } : null;
+}
+
+let R = new Map();
+let HG = null;
+const nameOf = (id) => { const p = R.get(id); if (p) return p.nm; return (HG && HG.nm && HG.nm[id]) || "Someone"; };
+const colorOf = (id) => { const p = R.get(id); return COLORS[(p ? p.co : hash(id)) % COLORS.length] || COLORS[0]; };
+const chip = (id) => `<span class="chip" style="--pc:${colorOf(id)}">${esc(nameOf(id))}</span>`;
+const pts = (n) => (n ? `<span class="pts">+${n}</span>` : "");
+
+/* ---------------- games ---------------- */
+function pick(bank, n) {
+  const all = BANK[bank].map((_, i) => i);
+  used[bank] = used[bank] || new Set();
+  let pool = all.filter((i) => !used[bank].has(i));
+  if (pool.length < n) { used[bank].clear(); pool = all; }
+  const out = shuffle(pool, Math.random()).slice(0, n);
+  out.forEach((i) => used[bank].add(i));
+  return out;
+}
+const rounds = (n, phs) => { const out = []; for (let r = 0; r < n; r++) for (const ph of phs) out.push({ r, ph }); return out; };
+const blank = (t, fill) => esc(t).replace("___", fill == null ? '<span class="blank">&nbsp;</span>' : `<span class="filled">${esc(fill)}</span>`);
+const isStr = (x) => typeof x === "string";
+function storyLine(c, author, s, g) { const p = c.R.get(author); if (p && p.ln && p.ln.g === g.n && p.ln.l && isStr(p.ln.l[s])) return clean(p.ln.l[s], 120); return null; }
+
+const GAMES = {
+  fakefact: {
+    name: "Fake Fact", tag: "Bluffing", min: 2, color: "#ffb800", wt: 60, vt: 40,
+    blurb: "A real but weird fact with a word missing. Write a fake answer, then spot the real one.",
+    plan: (pn, n) => rounds(n, ["write", "vote", "reveal"]),
+    setup(g) { g.d = { f: pick("facts", 1)[0] }; },
+    write(g) { const f = BANK.facts[g.d.f]; return { prompt: `<div class="eyebrow">Real fact, one word missing</div><p class="big">${blank(f.t)}</p><p class="hint">Write a fake answer that sounds true enough to fool everyone.</p>`, type: "text", max: 40, ph: "Your fake answer" }; },
+    validate(g, v) { if (norm(v) === norm(BANK.facts[g.d.f].a)) return "That's actually the real answer! Write a fake one instead."; return ""; },
+    groups(g, c) {
+      const real = BANK.facts[g.d.f].a; const map = new Map();
+      map.set("*", { id: "*", text: real, authors: [] });
+      for (const [p, t] of Object.entries(c.ans)) { if (!isStr(t)) continue; const k = norm(t); if (!k || k === norm(real)) continue; const id = "f-" + k.slice(0, 40); if (!map.has(id)) map.set(id, { id, text: t, authors: [] }); map.get(id).authors.push(p); }
+      return map;
+    },
+    vote(g, me, c) {
+      const f = BANK.facts[g.d.f];
+      const opts = [...this.groups(g, c).values()].filter((o) => !o.authors.includes(me));
+      return { kind: "pick", prompt: `<div class="eyebrow">Which one is real?</div><p class="big">${blank(f.t)}</p>`, options: shuffle(opts, g.n + g.st + me).map((o) => ({ id: o.id, html: `<span>${esc(o.text)}</span>` })) };
+    },
+    score(g, c) {
+      const groups = this.groups(g, c); const d = {}; const voters = {};
+      for (const [v, id] of Object.entries(c.votes)) {
+        if (!isStr(id) || !groups.has(id)) continue; const grp = groups.get(id); if (grp.authors.includes(v)) continue;
+        (voters[id] = voters[id] || []).push(v);
+        if (id === "*") d[v] = (d[v] || 0) + 100; else for (const a of grp.authors) d[a] = (d[a] || 0) + 50;
+      }
+      return { d, rv: { p: Object.entries(voters) } };
+    },
+    reveal(g, c) {
+      const f = BANK.facts[g.d.f]; const groups = this.groups(g, c); const vmap = new Map((g.rv && g.rv.p) || []);
+      const fakes = [...groups.values()].filter((o) => o.id !== "*").sort((a, b) => (vmap.get(b.id) || []).length - (vmap.get(a.id) || []).length);
+      const found = vmap.get("*") || [];
+      return `<p class="big">${blank(f.t, f.a)}</p>
+        <ol class="results">
+          <li class="res real"><div class="res-text">${esc(f.a)} <span class="tag">The truth</span></div><div class="res-meta">${found.length ? "Found it: " + found.map((v) => chip(v) + pts(100)).join(" ") : "Nobody found the real answer."}</div></li>
+          ${fakes.map((o) => { const fooled = vmap.get(o.id) || []; return `<li class="res"><div class="res-text">${esc(o.text)}</div><div class="res-meta">Fake by ${o.authors.map(chip).join(" ")} · ${fooled.length ? "fooled " + fooled.map(chip).join(" ") + " " + pts(50 * fooled.length) : "fooled nobody"}</div></li>`; }).join("")}
+        </ol>`;
+    }
+  },
+
+  advice: {
+    name: "Worst Advice", tag: "Writing", min: 3, color: "#ff7eb6", wt: 75, vt: 40,
+    blurb: "Someone has a problem. Give them the worst advice you can. Funniest answer gets the votes.",
+    plan: (pn, n) => rounds(n, ["write", "vote", "reveal"]),
+    setup(g) { g.d = { q: pick("advice", 1)[0] }; },
+    write(g) { return { prompt: `<div class="eyebrow">Dear Rowdy Room…</div><p class="big">“${esc(BANK.advice[g.d.q])}”</p><p class="hint">Write the worst possible advice.</p>`, type: "text", max: 120, ph: "Have you tried…" }; },
+    vote(g, me, c) {
+      return { kind: "pick", prompt: `<div class="eyebrow">Vote for the most gloriously bad advice</div><p class="mid">“${esc(BANK.advice[g.d.q])}”</p>`, options: shuffle(Object.keys(c.ans).filter((p) => p !== me), g.n + g.st + me).map((p) => ({ id: p, html: `<span>${esc(c.ans[p])}</span>` })) };
+    },
+    score(g, c) { const cnt = {}; for (const [v, t] of Object.entries(c.votes)) if (isStr(t) && t !== v && c.ans[t] != null) cnt[t] = (cnt[t] || 0) + 1; const d = {}; for (const p in cnt) d[p] = cnt[p] * 100; return { d, rv: { c: cnt } }; },
+    reveal(g, c) {
+      const cnt = (g.rv && g.rv.c) || {}; const ids = Object.keys(c.ans).sort((a, b) => (cnt[b] || 0) - (cnt[a] || 0)); const top = ids.length ? cnt[ids[0]] || 0 : 0;
+      return `<p class="mid">“${esc(BANK.advice[g.d.q])}”</p><ol class="results">${ids.map((p) => `<li class="res ${top && cnt[p] === top ? "win" : ""}"><div class="res-text">${esc(c.ans[p])}</div><div class="res-meta">${chip(p)} ${plural(cnt[p] || 0, "vote")} ${pts(g.lt && g.lt[p])}</div></li>`).join("")}</ol>`;
+    }
+  },
+
+  odd: {
+    name: "One of Us Is Lying", tag: "Deduction", min: 3, color: "#3d9bff", wt: 50, vt: 45,
+    blurb: "Everyone gets the same secret word except one player. Give a clue, then vote out the odd one.",
+    plan: (pn, n) => rounds(n, ["write", "vote", "reveal"]),
+    setup(g, r, present) { const pool = g.pl.filter((p) => present.has(p)); g.d = { w: pick("pairs", 1)[0], imp: pool[Math.floor(Math.random() * pool.length)], s: Math.random() < 0.5 ? 0 : 1 }; },
+    word(g, me) { const pair = BANK.pairs[g.d.w]; return me === g.d.imp ? pair[1 - g.d.s] : pair[g.d.s]; },
+    write(g, me) { return { prompt: `<div class="eyebrow">Your secret word</div><p class="answer">${esc(this.word(g, me))}</p><p class="hint">Give a one-word clue. One player has a different word and might not know it. It could be you.</p>`, type: "text", max: 24, ph: "One-word clue" }; },
+    validate(g, v, me) { const w = norm(this.word(g, me)); if (w && norm(v).includes(w)) return "Your clue can't contain your word."; if (v.split(" ").length > 2) return "Keep it to one word (two at most)."; return ""; },
+    vote(g, me, c) {
+      const ids = g.pl.filter((p) => p !== me && (c.ans[p] != null || c.R.has(p)));
+      return { kind: "pick", prompt: `<div class="eyebrow">Your word was “${esc(this.word(g, me))}”</div><p class="mid">Who has a different word?</p>`, options: ids.map((p) => ({ id: p, html: `${chip(p)}<span class="sub">Clue: <b>${esc(c.ans[p] || "(no clue)")}</b></span>` })) };
+    },
+    score(g, c) {
+      const cnt = {}; for (const [v, t] of Object.entries(c.votes)) if (isStr(t) && t !== v && g.pl.includes(t)) cnt[t] = (cnt[t] || 0) + 1;
+      const max = Math.max(0, ...Object.values(cnt)); const tops = Object.keys(cnt).filter((p) => cnt[p] === max);
+      const caught = max > 0 && tops.length === 1 && tops[0] === g.d.imp; const d = {};
+      if (caught) { for (const [v, t] of Object.entries(c.votes)) if (t === g.d.imp) d[v] = 100; } else d[g.d.imp] = 300;
+      return { d, rv: { c: cnt, caught } };
+    },
+    reveal(g, c) {
+      const pair = BANK.pairs[g.d.w]; const cnt = (g.rv && g.rv.c) || {}; const caught = g.rv && g.rv.caught;
+      const ids = g.pl.filter((p) => c.ans[p] != null || cnt[p]).sort((a, b) => (cnt[b] || 0) - (cnt[a] || 0));
+      return `<p class="verdict">${caught ? "Caught!" : "Got away with it."}</p>
+        <p class="mid">${chip(g.d.imp)} had <span class="filled">${esc(pair[1 - g.d.s])}</span>. Everyone else had <span class="filled">${esc(pair[g.d.s])}</span>.</p>
+        <ol class="results">${ids.map((p) => `<li class="res ${p === g.d.imp ? "win" : ""}"><div class="res-text">${esc(c.ans[p] || "(no clue)")}</div><div class="res-meta">${chip(p)} ${plural(cnt[p] || 0, "vote")} ${pts(g.lt && g.lt[p])}</div></li>`).join("")}</ol>`;
+    }
+  },
+
+  whowrote: {
+    name: "Who Wrote That?", tag: "Friends", min: 3, color: "#b38cff", wt: 75, vt: 75,
+    blurb: "Everyone answers a personal question anonymously. Then match each answer to its author.",
+    plan: (pn, n) => rounds(n, ["write", "vote", "reveal"]),
+    setup(g) { g.d = { q: pick("who", 1)[0] }; },
+    write(g) { return { prompt: `<div class="eyebrow">Answer anonymously</div><p class="big">${esc(BANK.who[g.d.q])}</p><p class="hint">Everyone will try to guess it was you.</p>`, type: "text", max: 100, ph: "Your answer" }; },
+    vote(g, me, c) {
+      const ids = Object.keys(c.ans).filter((p) => p !== me);
+      return { kind: "match", prompt: `<div class="eyebrow">Who wrote what?</div><p class="mid">${esc(BANK.who[g.d.q])}</p>`, targets: shuffle(ids, g.n + g.st + me).map((p) => ({ id: p, text: c.ans[p] })), choices: shuffle(ids, g.n + "c").map((p) => ({ id: p, name: nameOf(p) })) };
+    },
+    score(g, c) {
+      const d = {}; const right = {};
+      for (const [v, guesses] of Object.entries(c.votes)) {
+        if (!guesses || typeof guesses !== "object") continue;
+        for (const [a, gp] of Object.entries(guesses)) { if (a === v || c.ans[a] == null) continue; if (gp === a) { d[v] = (d[v] || 0) + 100; (right[a] = right[a] || []).push(v); } else d[a] = (d[a] || 0) + 50; }
+      }
+      return { d, rv: { r: right } };
+    },
+    reveal(g, c) {
+      const right = (g.rv && g.rv.r) || {};
+      return `<p class="mid">${esc(BANK.who[g.d.q])}</p><ol class="results">${Object.keys(c.ans).map((p) => `<li class="res"><div class="res-text">${esc(c.ans[p])}</div><div class="res-meta">Written by ${chip(p)} · ${(right[p] || []).length ? "guessed by " + right[p].map(chip).join(" ") : "nobody guessed it"}</div></li>`).join("")}</ol>
+        <p class="hint">+100 for each correct guess. +50 to the author for every wrong guess on their answer.</p>`;
+    }
+  },
+
+  story: {
+    name: "Finish My Sentence", tag: "Writing", min: 2, color: "#2fd18b", fixed: true, wt: 60, vt: 75,
+    blurb: "Stories pass around the room one line at a time. You only see the line right before yours.",
+    steps: (pn) => Math.max(4, Math.min(pn, 6)),
+    plan(pn) { const S = this.steps(pn); const out = []; for (let s = 0; s < S; s++) out.push({ r: s, ph: "write" }); out.push({ r: S, ph: "vote" }, { r: S, ph: "reveal" }); return out; },
+    setup(g, r) { if (r === 0) g.d = { o: pick("openers", Math.min(g.pl.length, BANK.openers.length)) }; },
+    opener(g, j) { return BANK.openers[g.d.o[j % g.d.o.length]]; },
+    write(g, me, c) {
+      const n = g.pl.length; const i = g.pl.indexOf(me); const s = curStep(g).r; const j = (i + s) % n;
+      let prev = s === 0 ? this.opener(g, j) : storyLine(c, g.pl[(((j - (s - 1)) % n) + n) % n], s - 1, g);
+      const lost = prev == null;
+      return { prompt: `<div class="eyebrow">Story ${j + 1} · line ${s + 2}</div>${lost ? `<p class="mid">The last writer vanished into the void. Start a fresh twist.</p>` : `<p class="hint" style="margin:0 0 6px">The line before yours:</p><p class="big">“${esc(prev)}”</p>`}<p class="hint">Write the next sentence. Nobody after you will see anything but your line.</p>`, type: "text", max: 120, ph: "And then…" };
+    },
+    extra(g, v) { const s = curStep(g).r; const l = Object.assign({}, ME.ln && ME.ln.g === g.n ? ME.ln.l : {}); l[s] = v; return { ln: { g: g.n, l } }; },
+    full(g, c, j) { const n = g.pl.length; const S = this.steps(g.pl.length); const lines = [{ t: this.opener(g, j), by: null }]; for (let s = 0; s < S; s++) { const a = g.pl[(((j - s) % n) + n) % n]; lines.push({ t: storyLine(c, a, s, g), by: a }); } return lines; },
+    storyHTML(lines) { return `<div class="story">${lines.map((l, k) => `<div class="ln ${k === 0 ? "first" : ""}"><span>${l.t == null ? "<i>(lost to the void)</i>" : esc(l.t)}</span>${l.by ? chip(l.by) : ""}</div>`).join("")}</div>`; },
+    vote(g, me, c) {
+      const i = g.pl.indexOf(me); const ids = g.pl.map((_, j) => j).filter((j) => j !== i);
+      return { kind: "pick", prompt: `<div class="eyebrow">Read them out loud</div><p class="mid">Vote for the best story (not the one you started).</p>`, options: ids.map((j) => ({ id: "s" + j, html: this.storyHTML(this.full(g, c, j).map((l) => ({ t: l.t, by: null }))) })) };
+    },
+    score(g, c) {
+      const n = g.pl.length; const cnt = new Array(n).fill(0); const d = {};
+      for (const [v, t] of Object.entries(c.votes)) { if (!isStr(t) || !/^s\d+$/.test(t)) continue; const j = Number(t.slice(1)); if (j >= n || g.pl[j] === v) continue; cnt[j]++; const authors = new Set(this.full(g, c, j).map((l) => l.by).filter(Boolean)); for (const a of authors) d[a] = (d[a] || 0) + 50; }
+      return { d, rv: { c: cnt } };
+    },
+    reveal(g, c) {
+      const cnt = (g.rv && g.rv.c) || []; const order = g.pl.map((_, j) => j).sort((a, b) => (cnt[b] || 0) - (cnt[a] || 0)); const top = cnt[order[0]] || 0;
+      return `<ol class="results">${order.map((j) => `<li class="res ${top && cnt[j] === top ? "win" : ""}">${this.storyHTML(this.full(g, c, j))}<div class="res-meta">${plural(cnt[j] || 0, "vote")} · every writer on it gets +50 per vote</div></li>`).join("")}</ol>`;
+    }
+  },
+
+  court: {
+    name: "Hot Take Court", tag: "Debate", min: 3, color: "#ff3366", wt: 90, vt: 40,
+    blurb: "One player defends a ridiculous opinion, another attacks it, and everyone else is the jury.",
+    plan: (pn, n) => rounds(n, ["write", "vote", "reveal"]),
+    setup(g, r, present) { const pool = g.pl.filter((p) => present.has(p)); const k = r % pool.length; g.d = { t: pick("takes", 1)[0], df: pool[k], pr: pool[(k + 1) % pool.length] }; },
+    who(g, ph) { return ph === "write" ? [g.d.df, g.d.pr] : g.pl.filter((p) => p !== g.d.df && p !== g.d.pr); },
+    write(g, me) {
+      const take = `<p class="big">“${esc(BANK.takes[g.d.t])}”</p>`;
+      if (me === g.d.df) return { prompt: `<div class="eyebrow">You're the defense</div>${take}<p class="hint">Convince the jury this take is correct. On voice chat? Argue it out loud too.</p>`, type: "text", max: 240, ph: "Ladies and gentlemen of the jury…" };
+      if (me === g.d.pr) return { prompt: `<div class="eyebrow">You're the prosecution</div>${take}<p class="hint">Tear this take apart. Make the jury hate it.</p>`, type: "text", max: 240, ph: "This take is a crime because…" };
+      return { spectate: `<div class="eyebrow">You're on the jury</div>${take}<p class="hint">${chip(g.d.df)} is defending it and ${chip(g.d.pr)} is attacking it. They're writing closing statements now.</p>` };
+    },
+    vote(g, me, c) {
+      const st = (p) => esc(c.ans[p] || "(said nothing, just stared at the jury)");
+      return { kind: "pick", prompt: `<div class="eyebrow">The jury decides</div><p class="mid">“${esc(BANK.takes[g.d.t])}”</p>`, options: [
+        { id: "d", html: `<span class="sub">The defense, ${chip(g.d.df)}</span><span>${st(g.d.df)}</span>` },
+        { id: "p", html: `<span class="sub">The prosecution, ${chip(g.d.pr)}</span><span>${st(g.d.pr)}</span>` }
+      ], readonly: me === g.d.df || me === g.d.pr };
+    },
+    score(g, c) {
+      let dv = 0, pv = 0; const d = {}; const jury = this.who(g, "vote");
+      for (const [v, t] of Object.entries(c.votes)) { if (!jury.includes(v)) continue; if (t === "d") dv++; else if (t === "p") pv++; }
+      if (dv > pv) d[g.d.df] = 300; else if (pv > dv) d[g.d.pr] = 300; else { d[g.d.df] = 150; d[g.d.pr] = 150; }
+      const side = dv > pv ? "d" : pv > dv ? "p" : null;
+      if (side) for (const [v, t] of Object.entries(c.votes)) if (jury.includes(v) && t === side) d[v] = (d[v] || 0) + 50;
+      return { d, rv: { dv, pv } };
+    },
+    reveal(g, c) {
+      const dv = (g.rv && g.rv.dv) || 0, pv = (g.rv && g.rv.pv) || 0;
+      const head = dv > pv ? "The take stands." : pv > dv ? "Take overruled." : "Hung jury.";
+      return `<p class="verdict">${head}</p><p class="mid">“${esc(BANK.takes[g.d.t])}”</p>
+        <ol class="results">
+          <li class="res ${dv > pv ? "win" : ""}"><div class="res-text">${esc(c.ans[g.d.df] || "(nothing)")}</div><div class="res-meta">Defense ${chip(g.d.df)} ${plural(dv, "vote")} ${pts(g.lt && g.lt[g.d.df])}</div></li>
+          <li class="res ${pv > dv ? "win" : ""}"><div class="res-text">${esc(c.ans[g.d.pr] || "(nothing)")}</div><div class="res-meta">Prosecution ${chip(g.d.pr)} ${plural(pv, "vote")} ${pts(g.lt && g.lt[g.d.pr])}</div></li>
+        </ol><p class="hint">Jurors who sided with the verdict get +50.</p>`;
+    }
+  },
+
+  rank: {
+    name: "Rank It", tag: "Opinions", min: 2, color: "#9be15d", wt: 50,
+    blurb: "Five random things, one silly category. Rank them and score by matching the group's average.",
+    plan: (pn, n) => rounds(n, ["write", "reveal"]),
+    setup(g) { g.d = { c: pick("cats", 1)[0], it: pick("items", 5) }; },
+    write(g) { return { prompt: `<div class="eyebrow">Tap in order, 1 = most</div><p class="big">${esc(BANK.cats[g.d.c])}</p><p class="hint">Points for matching the group's average ranking.</p>`, type: "order", items: g.d.it.map((i) => BANK.items[i]) }; },
+    valid(v) { return Array.isArray(v) && v.length === 5 && [...v].sort().join() === "0,1,2,3,4"; },
+    score(g, c) {
+      const subs = Object.entries(c.ans).filter(([, v]) => this.valid(v)); const sum = [0, 0, 0, 0, 0];
+      for (const [, v] of subs) v.forEach((item, pos) => { sum[item] += pos; });
+      const go = [0, 1, 2, 3, 4].sort((a, b) => sum[a] - sum[b] || a - b); const gpos = []; go.forEach((item, pos) => { gpos[item] = pos; });
+      const d = {}; for (const [p, v] of subs) { let off = 0; v.forEach((item, pos) => { off += Math.abs(pos - gpos[item]); }); d[p] = Math.max(0, 500 - off * 50); }
+      return { d, rv: { go } };
+    },
+    reveal(g, c) {
+      const go = (g.rv && g.rv.go) || [0, 1, 2, 3, 4]; const name = (i) => esc(BANK.items[g.d.it[i]]);
+      const subs = Object.entries(c.ans).filter(([, v]) => this.valid(v)).sort((a, b) => ((g.lt && g.lt[b[0]]) || 0) - ((g.lt && g.lt[a[0]]) || 0));
+      return `<div class="eyebrow">The group's ranking</div><p class="mid">${esc(BANK.cats[g.d.c])}</p>
+        <ol class="results">${go.map((i, k) => `<li class="res ${k === 0 ? "win" : ""}"><div class="res-text">${k + 1}. ${name(i)}</div></li>`).join("")}</ol>
+        <div class="eyebrow" style="margin-top:18px">How everyone ranked it</div>
+        <ol class="results">${subs.map(([p, v]) => `<li class="res"><div class="res-meta">${chip(p)} ${pts(g.lt && g.lt[p]) || '<span class="pts">+0</span>'}</div><div>${v.map((i, k) => `${k + 1}. ${name(i)}`).join(" · ")}</div></li>`).join("")}</ol>`;
+    }
+  },
+
+  guess: {
+    name: "Closest Guess", tag: "Numbers", min: 2, color: "#ff8a3d", wt: 35,
+    blurb: "A question with a real number answer (some are prices). Closest guess wins, furthest gets roasted.",
+    plan: (pn, n) => rounds(n, ["write", "reveal"]),
+    setup(g) { g.d = { q: pick("nums", 1)[0], ro: Math.floor(Math.random() * BANK.roasts.length) }; },
+    write(g) { const q = BANK.nums[g.d.q]; return { prompt: `<div class="eyebrow">Your best guess${q.u ? ", in " + esc(q.u) : ""}</div><p class="big">${esc(q.q)}</p>`, type: "number", ph: "Type a number" }; },
+    validate(g, v) { return isFinite(Number(v)) ? "" : "Type a number."; },
+    score(g, c) {
+      const a = BANK.nums[g.d.q].a; const subs = Object.entries(c.ans).filter(([, v]) => typeof v === "number" && isFinite(v)).map(([p, v]) => ({ p, v, off: Math.abs(v - a) })).sort((x, y) => x.off - y.off);
+      const prize = [300, 200, 100]; const d = {}; let rank = -1, last = null;
+      subs.forEach((s) => { if (s.off !== last) { rank++; last = s.off; } if (rank < 3) d[s.p] = prize[rank]; if (s.off === 0 || s.off <= Math.abs(a) * 0.001) d[s.p] = (d[s.p] || 0) + 200; });
+      return { d, rv: { o: subs.map((s) => s.p) } };
+    },
+    reveal(g, c) {
+      const q = BANK.nums[g.d.q]; const order = ((g.rv && g.rv.o) || []).filter((p) => typeof c.ans[p] === "number");
+      const worst = order.length >= 3 ? order[order.length - 1] : null;
+      return `<p class="mid">${esc(q.q)}</p><p class="answer">${fmtNum(q.a)} <span style="font-size:.4em;color:var(--paper-muted)">${esc(q.u)}</span></p>
+        <ol class="results">${order.map((p, k) => `<li class="res ${k === 0 ? "win" : ""}"><div class="res-text">${fmtNum(c.ans[p])}</div><div class="res-meta">${chip(p)} off by ${fmtNum(Math.abs(c.ans[p] - q.a))} ${pts(g.lt && g.lt[p])}</div></li>`).join("")}</ol>
+        ${worst ? `<p class="mid" style="margin-top:14px">${chip(worst)} ${esc(BANK.roasts[g.d.ro])}</p>` : ""}`;
+    }
+  }
+};
+const GAME_ORDER = ["fakefact", "advice", "odd", "whowrote", "story", "court", "rank", "guess"];
+
+/* ---------------- engine (host side) ---------------- */
+const planOf = (g) => GAMES[g.gm].plan(g.pn, g.R);
+const curStep = (g) => planOf(g)[g.st] || { r: 0, ph: "final" };
+const rkey = (g) => g.n + "." + curStep(g).r;
+const whoFor = (g, ph) => { const game = GAMES[g.gm]; return game.who ? game.who(g, ph) : g.pl; };
+const durFor = (game, ph) => (ph === "write" ? game.wt || 60 : ph === "vote" ? game.vt || 40 : 0);
+
+function presentPids() { return new Set(inRoom(R, ME.code).map((p) => p.pid)); }
+function ctxFor(g) {
+  const rk = rkey(g); const ans = {}, votes = {};
+  for (const p of R.values()) {
+    if (p.code !== g.c) continue;
+    if (p.a && p.a.k === rk && p.a.d != null && (g.pl.includes(p.pid))) ans[p.pid] = p.a.d;
+    if (p.vt && p.vt.k === rk && p.vt.d != null && g.pl.includes(p.pid)) votes[p.pid] = p.vt.d;
+  }
+  return { ans, votes, R };
+}
+function enterStep() {
+  const P = planOf(G); const step = P[G.st]; const prev = P[G.st - 1]; const game = GAMES[G.gm]; const present = presentPids();
+  if (!prev || prev.r !== step.r) {
+    if (!game.fixed) for (const p of present) if (!G.pl.includes(p)) { G.pl.push(p); G.sc[p] = G.sc[p] || 0; }
+    game.setup(G, step.r, present); G.rv = null; G.lt = null;
+  }
+  G.ph = step.ph;
+  const dur = durFor(game, step.ph);
+  G.e = dur ? Date.now() + dur * 1000 : 0;
+  if (step.ph === "reveal") {
+    const res = game.score(G, ctxFor(G)); G.rv = res.rv || null; G.lt = res.d || {};
+    for (const p in G.lt) if (G.pl.includes(p)) G.sc[p] = (G.sc[p] || 0) + G.lt[p];
+  }
+}
+function advance() { G.st++; if (G.st >= planOf(G).length) { G.ph = "final"; G.e = 0; } else enterStep(); }
+function startGame(id) {
+  const game = GAMES[id]; const present = inRoom(R, ME.code);
+  if (present.length < game.min) return;
+  Object.assign(G, { gm: id, sel: id, n: rid(5), pl: shuffle(present.map((p) => p.pid), Math.random()), sc: {}, nm: {}, st: 0, rv: null, lt: null, d: null });
+  G.pn = G.pl.length; G.pl.forEach((p) => { G.sc[p] = 0; });
+  enterStep(); commit();
+}
+function commit() {
+  if (!G) return;
+  if (G.gm) for (const p of G.pl) { const r = R.get(p); if (r && r.code === G.c) G.nm[p] = r.nm; }
+  const copy = Object.assign({}, G); delete copy.t;
+  const s = JSON.stringify(copy);
+  if (s === lastPushed) return;
+  lastPushed = s; G.t = Date.now();
+  if (s.length > 3600) console.warn("host state is getting large:", s.length);
+  setMe({ g: JSON.parse(JSON.stringify(G)) });
+}
+function hostTick() {
+  if (!G || !G.gm) return;
+  if (G.ph === "write" || G.ph === "vote") {
+    const present = presentPids(); const rk = rkey(G);
+    const need = whoFor(G, G.ph).filter((p) => present.has(p));
+    const done = need.filter((p) => { const r = R.get(p); const s = G.ph === "write" ? r.a : r.vt; return s && s.k === rk; });
+    if (need.length === 0 || done.length === need.length || (G.e && Date.now() > G.e)) { advance(); commit(); }
+  }
+  commit();
+}
+function newHostState(code) { return { c: code, gm: null, ph: "lobby", sel: "fakefact", R: 3, n: "", pl: [], pn: 0, sc: {}, nm: {}, st: 0, e: 0, d: null, rv: null, lt: null }; }
+
+/* ---------------- actions ---------------- */
+function hostOnly(fn) { return (...a) => { if (G) { fn(...a); commit(); } }; }
+const ACT = {
+  color(d) { const co = Number(d.i); store.set("rr-color", String(co)); setMe({ co }); },
+  create() { if (!saveName()) return; const code = roomCode(); G = newHostState(code); lastPushed = ""; setMe({ code, host: true, rd: null, a: null, vt: null, ln: null }); connectRoom(code); commit(); },
+  joincode() { if (!saveName()) return; const el = $("#codeIn"); const code = (el ? el.value : "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 5); if (code.length !== 5) { ERR = "Room codes are 5 letters."; schedule(); return; } joinRoom(code); },
+  ready() { setMe({ rd: ME.rd ? null : true }); },
+  takeover() { G = lastG && lastG.c === ME.code ? JSON.parse(JSON.stringify(lastG)) : newHostState(ME.code); if (G.e) G.e = Date.now() + 30000; lastPushed = ""; setMe({ host: true }); commit(); },
+  sel: hostOnly((d) => { if (!G.gm && GAMES[d.id]) G.sel = d.id; }),
+  rounds: hostOnly((d) => { G.R = Math.max(1, Math.min(6, (G.R || 3) + Number(d.by))); }),
+  start: hostOnly(() => startGame(G.sel)),
+  skip: hostOnly(() => { if (G.gm && G.ph !== "final") advance(); }),
+  more: hostOnly(() => { if (G.e) G.e += 30000; }),
+  next: hostOnly(() => { if (G.gm && G.ph === "reveal") advance(); }),
+  end: hostOnly(() => { if (G.gm) { G.ph = "final"; G.e = 0; } }),
+  again: hostOnly(() => startGame(G.gm)),
+  lobby: hostOnly(() => { G.gm = null; G.ph = "lobby"; G.e = 0; }),
+  vote(d) { const g = HG; if (!g || g.ph !== "vote") return; setMe({ vt: { k: rkey(g), d: d.id } }); },
+  rank(d) { const i = Number(d.i); const L = ORDER.list; const at = L.indexOf(i); if (at >= 0) L.splice(at, 1); else if (L.length < 5) L.push(i); schedule(); },
+  rankreset() { ORDER.list = []; schedule(); },
+  submitorder() { if (ORDER.list.length === 5) submitAnswer(ORDER.list.slice()); },
+  submitmatch() {
+    const g = HG; if (!g) return; const out = {};
+    document.querySelectorAll("select[data-target]").forEach((s) => { if (s.value) out[s.dataset.target] = s.value; });
+    setMe({ vt: { k: rkey(g), d: out } });
+  }
+};
+function saveName() {
+  const el = $("#nameIn"); const nm = clean(el ? el.value : ME.nm, 18);
+  if (!nm) { ERR = "Type a name first."; schedule(); if (el) el.focus(); return false; }
+  store.set("rr-name", nm); ERR = ""; setMe({ nm }); return true;
+}
+function joinRoom(code) { ERR = ""; G = null; lastG = null; lastPushed = ""; setMe({ code, host: false, rd: null, g: null, a: null, vt: null, ln: null }); connectRoom(code); }
+function leaveRoom() { disconnectRoom(); G = null; lastG = null; lastPushed = ""; setMe({ code: null, host: false, rd: null, g: null, a: null, vt: null, ln: null }); }
+function submitAnswer(val) {
+  const g = HG; if (!g || g.ph !== "write") return; const game = GAMES[g.gm];
+  if (game.type !== "order" && typeof val === "string") val = clean(val, 240);
+  const w = game.write(g, ME.pid, ctxFor(g));
+  if (w.type === "number") { const num = Number(String(val).replace(/,/g, "")); if (!isFinite(num) || String(val).trim() === "") { ERR = "Type a number."; schedule(); return; } val = num; }
+  if (w.type === "text" && !val) { ERR = "Write something first."; schedule(); return; }
+  const err = game.validate ? game.validate(g, val, ME.pid) : ""; if (err) { ERR = err; schedule(); return; }
+  ERR = "";
+  const patch = Object.assign({ a: { k: rkey(g), d: val } }, game.extra ? game.extra(g, val) : {});
+  for (const k in DRAFT) delete DRAFT[k];
+  setMe(patch);
+}
+
+/* ---------------- views ---------------- */
+const rot = (seed, max) => { const m = max == null ? 3 : max; return (hash(String(seed)) % (m * 2 + 1)) - m; };
+const initial = (nm) => esc((clean(nm, 18)[0] || "?").toUpperCase());
+function sticker(p, o) {
+  o = o || {};
+  return `<div class="sticker ${o.cls || ""}" style="--pc:${o.color || COLORS[p.co % COLORS.length]};--rot:${rot(p.pid)}deg"><span class="av">${initial(p.nm)}</span><span class="sn">${esc(p.nm)}${o.me ? "<small>you</small>" : ""}</span>${o.right || ""}${o.stamp ? `<span class="stamp ${o.stampCls || ""}">${o.stamp}</span>` : ""}</div>`;
+}
+
+function welcomeView() {
+  return `<section class="welcome">
+    <div class="hero"><h1>Eight party games.<br><span class="hl">Zero installs.</span></h1><p>One person makes a room, everyone joins with the code, and you all play from your own screens. Best with everyone on voice chat.</p></div>
+    <div class="box name-box stack">
+      <div><label for="nameIn" class="lbl">Your name</label><input id="nameIn" class="field big-field" maxlength="18" autocomplete="off" placeholder="Type it here" data-draft="name"></div>
+      <div><span class="lbl">Your color</span><div class="swatches" role="radiogroup" aria-label="Your color">${COLORS.map((c, i) => `<button class="sw ${ME.co === i ? "sel" : ""}" style="--pc:${c}" data-act="color" data-i="${i}" aria-label="Color ${i + 1}" aria-checked="${ME.co === i}" role="radio"></button>`).join("")}</div></div>
+      ${ERR ? `<p class="err">${esc(ERR)}</p>` : ""}
+    </div>
+    <div class="actions">
+      <button class="btn go mega" data-act="create">Create a room</button>
+      <form class="box join-box stack" data-form="joincode"><label for="codeIn" class="lbl">Got a code?</label><div class="row"><input id="codeIn" class="field code-field" maxlength="5" placeholder="ABCDE" autocomplete="off" data-draft="code"><button class="btn hot" type="submit">Join</button></div></form>
+    </div>
+    <p class="fine"><b>Safe by design.</b> Everyone connects to a relay server, never to each other, so no player can see another player's IP address. Messages are encrypted with your room code before they leave your computer.</p>
+  </section>`;
+}
+
+function noHostView() {
+  const had = lastG && lastG.c === ME.code;
+  return `<div class="box stack" style="max-width:640px"><span class="lbl">Room ${esc(ME.code)}</span><h2 style="font-size:40px">${had ? "The host left." : "Waiting for the host…"}</h2>
+    <p class="muted">${had ? "Someone needs to take over. The game picks up where it stopped." : "Nobody is hosting this room yet. If your friend gave you this code, they'll show up in a sec. Or start it yourself."}</p>
+    <div><button class="btn go" data-act="takeover">${had ? "Take over as host" : "Host this room"}</button></div></div>`;
+}
+
+function lobbyView(g, amHost) {
+  const players = inRoom(R, ME.code); const sel = GAMES[g.sel] || GAMES.fakefact; const enough = players.length >= sel.min;
+  const guests = players.filter((p) => !(p.host && p.g)); const ready = guests.filter((p) => p.rd).length;
+  const tilt = [-4, 3, -2, 4, -3];
+  const code = `<div class="codehero"><span class="lbl" style="margin:0">Room code</span><div class="tiles" role="img" aria-label="Room code ${esc(ME.code)}">${[...ME.code].map((ch, i) => `<span class="tile" style="--rot:${tilt[i % 5]}deg">${esc(ch)}</span>`).join("")}</div><p>Friends open Rowdy Room and type this in.</p></div>`;
+  const trigger = amHost
+    ? `<button class="btn go start" data-act="start" ${enough ? "" : "disabled"}>${enough ? "Start!" : `Need ${sel.min}+`}</button><p class="readyline">${guests.length ? `${ready} of ${guests.length} ready` : "Waiting for friends to join…"}</p>`
+    : `<button class="btn ${ME.rd ? "on" : "go"} start" data-act="ready">${ME.rd ? "Ready!" : "Ready up"}</button><p class="readyline">${ME.rd ? "The host starts the game. Tap again to un-ready." : "Let the host know you're set."}</p>`;
+  const settings = sel.fixed ? `<div class="mini">One story per player</div>`
+    : amHost ? `<div class="mini">Rounds <button class="btn tiny" data-act="rounds" data-by="-1" aria-label="Fewer rounds">−</button><b>${g.R}</b><button class="btn tiny" data-act="rounds" data-by="1" aria-label="More rounds">+</button></div>`
+    : `<div class="mini">${plural(g.R, "round")}</div>`;
+  const tt = [-2, 1.5, -1, 2.5, -2.5, 1, -1.5, 2];
+  const tickets = GAME_ORDER.map((id, i) => { const x = GAMES[id]; return `<button class="ticket ${g.sel === id ? "sel" : ""}" style="--gc:${x.color};--rot:${tt[i]}deg" ${amHost ? `data-act="sel" data-id="${id}"` : "disabled"} aria-pressed="${g.sel === id}"><span class="tk-tag">${esc(x.tag)}</span><span class="tk-name">${esc(x.name)}</span><span class="tk-min" title="${x.min}+ players">${x.min}+</span></button>`; }).join("");
+  return `<section class="lobby">
+    <div class="lobby-top">${code}<div class="launch box"><span class="lbl" style="margin:0">Up next</span><h2 class="upnext" style="--gc:${sel.color}">${esc(sel.name)}</h2><p class="blurb">${esc(sel.blurb)}</p>${trigger}${settings}</div></div>
+    <div><h3 class="section-h">${amHost ? "Pick a game" : "The host is picking"}</h3><div class="tickets">${tickets}</div></div>
+  </section>`;
+}
+
+function statusBar(g) {
+  const game = GAMES[g.gm]; const st = curStep(g); let label;
+  if (g.ph === "final") label = "Final scores";
+  else if (game.fixed) label = st.ph === "write" ? `Line ${st.r + 1} of ${game.steps(g.pn)}` : "The stories";
+  else label = `Round ${st.r + 1} of ${g.R}`;
+  return `<div class="hud"><span class="hud-game">${esc(game.name)}</span><span class="hud-round">${label}</span><span id="timer" class="timer" hidden></span></div>`;
+}
+
+function hostBar(g) {
+  if (g.ph === "final") return `<div class="hostbar"><span class="lbl">Host</span><button class="btn go" data-act="again">Play again</button><button class="btn" data-act="lobby">Back to lobby</button></div>`;
+  if (g.ph === "reveal") { const last = g.st + 1 >= planOf(g).length; return `<div class="hostbar"><span class="lbl">Host</span><button class="btn go" data-act="next">${last ? "Final scores" : "Next round"}</button><button class="btn small" data-act="end">End game</button></div>`; }
+  return `<div class="hostbar"><span class="lbl">Host</span><button class="btn small" data-act="skip">Skip ahead</button><button class="btn small" data-act="more">+30 seconds</button><button class="btn small" data-act="end">End game</button></div>`;
+}
+
+function writeView(g, game, c) {
+  const me = ME.pid; const rk = rkey(g);
+  if (!g.pl.includes(me)) return `<div class="card"><h3>You joined mid-round.</h3><p class="hint">You'll be dealt in at the start of the next round.</p></div>`;
+  const w = game.write(g, me, c);
+  if (w.spectate || !whoFor(g, "write").includes(me)) return `<div class="card">${w.spectate || w.prompt}</div><div id="waiting" class="waiting"></div>`;
+  const mine = ME.a && ME.a.k === rk ? ME.a.d : undefined;
+  let body;
+  if (mine !== undefined) {
+    const shown = w.type === "order" ? mine.map((i, k) => `${k + 1}. ${esc(w.items[i])}`).join("<br>") : w.type === "number" ? fmtNum(mine) : esc(mine);
+    body = `<div class="locked"><span class="lbl">Locked in!</span><div class="res-text">${shown}</div></div>`;
+  } else if (w.type === "order") {
+    if (ORDER.k !== rk) ORDER = { k: rk, list: [] };
+    body = `<div class="rank">${w.items.map((t, i) => { const at = ORDER.list.indexOf(i); return `<button class="ritem ${at >= 0 ? "placed" : ""}" data-act="rank" data-i="${i}"><span class="num">${at >= 0 ? at + 1 : ""}</span>${esc(t)}</button>`; }).join("")}</div>
+      <div class="row"><button class="btn go" data-act="submitorder" ${ORDER.list.length === 5 ? "" : "disabled"}>Lock it in</button><button class="btn" data-act="rankreset">Reset</button></div>`;
+  } else {
+    const id = "ans-" + rk.replace(/[^a-z0-9]/gi, "");
+    const long = w.type === "text" && w.max > 60;
+    const input = long ? `<textarea id="${id}" class="field" rows="3" maxlength="${w.max}" placeholder="${esc(w.ph)}" data-draft="ans" aria-label="Your answer"></textarea>`
+      : `<input id="${id}" class="field" ${w.type === "number" ? 'inputmode="decimal"' : ""} maxlength="${w.max || 24}" placeholder="${esc(w.ph)}" autocomplete="off" data-draft="ans" aria-label="Your answer">`;
+    body = `<form class="stack" data-form="answer">${input}<div class="row" style="justify-content:space-between"><button class="btn go" type="submit">Submit</button>${w.type === "text" ? `<span class="count" data-count="${id}"></span>` : ""}</div>${ERR ? `<p class="err">${esc(ERR)}</p>` : ""}</form>`;
+  }
+  return `<div class="card stack">${w.prompt}${body}</div><div id="waiting" class="waiting"></div>`;
+}
+
+function voteView(g, game, c) {
+  const me = ME.pid; const rk = rkey(g); const isVoter = whoFor(g, "vote").includes(me) && g.pl.includes(me);
+  const V = game.vote(g, me, c);
+  const myVote = ME.vt && ME.vt.k === rk ? ME.vt.d : undefined;
+  let body;
+  if (V.kind === "match") {
+    if (!isVoter) body = `<p class="hint">Everyone is matching answers to authors.</p>`;
+    else if (myVote !== undefined) body = `<div class="locked"><span class="lbl">Guesses locked in!</span><div>${V.targets.map((t) => `${esc(t.text)} → <b>${esc(myVote[t.id] ? nameOf(myVote[t.id]) : "?")}</b>`).join("<br>")}</div></div>`;
+    else body = `<div class="match">${V.targets.map((t) => `<div class="mrow"><span class="res-text">${esc(t.text)}</span><select data-target="${t.id}" id="m-${t.id}-${rk.replace(/[^a-z0-9]/gi, "")}" aria-label="Who wrote this?"><option value="">Who wrote it?</option>${V.choices.map((ch) => `<option value="${ch.id}">${esc(ch.name)}</option>`).join("")}</select></div>`).join("")}</div><div><button class="btn go" data-act="submitmatch">Lock in guesses</button></div>`;
+  } else {
+    const ro = !isVoter || V.readonly;
+    body = V.options.length ? `<div class="opts">${V.options.map((o) => `<button class="opt ${myVote === o.id ? "sel" : ""}" ${ro ? "disabled" : `data-act="vote" data-id="${esc(o.id)}"`}>${o.html}</button>`).join("")}</div>` : `<p class="hint">Nothing to vote on this time.</p>`;
+    if (ro) body = `<p class="hint" style="margin:0">${V.readonly ? "The jury is deciding your fate." : "You're watching this vote."}</p>` + body;
+    else body += `<p class="hint">${myVote !== undefined ? "Vote cast. You can change it until everyone's in." : "Tap to vote."}</p>`;
+  }
+  return `<div class="card stack">${V.prompt}${body}</div><div id="waiting" class="waiting"></div>`;
+}
+
+function revealView(g, game, c) {
+  const mine = g.lt && g.lt[ME.pid];
+  return `<div class="card stack">${game.reveal(g, c)}${g.pl.includes(ME.pid) ? `<p class="hint">You scored <b>${mine || 0}</b> this round.</p>` : ""}</div>`;
+}
+
+function finalView(g) {
+  const ids = g.pl.slice().sort((a, b) => (g.sc[b] || 0) - (g.sc[a] || 0));
+  const top = ids.length ? g.sc[ids[0]] || 0 : 0;
+  const winners = ids.filter((p) => (g.sc[p] || 0) === top);
+  return `<div class="card stack"><span class="lbl">Final scores</span><p class="verdict">${winners.length > 1 ? "It's a tie!" : esc(nameOf(winners[0])) + " wins!"}</p>
+    <div class="podium">${ids.map((p, k) => `<div class="prow ${(g.sc[p] || 0) === top ? "first" : ""}"><span class="place">${k + 1}</span><span class="dot" style="--pc:${colorOf(p)}"></span><span class="pname">${esc(nameOf(p))}</span><span class="score">${g.sc[p] || 0}</span></div>`).join("")}</div></div>`;
+}
+
+function sideView(g) {
+  if (!ME.code) return `<div class="box"><span class="lbl">How it works</span><ol class="steps"><li>Someone creates a room.</li><li>Everyone else types the 5-letter code.</li><li>The host picks a game and smashes Start.</li></ol></div>
+    <div class="box" style="transform:rotate(1deg)"><span class="lbl">House rules</span><p class="muted" style="font-weight:600">Every round has a timer, so slow typers can't stall the night. If the host drops, anyone can take over.</p></div>`;
+  const players = inRoom(R, ME.code);
+  const hostPid = g ? (G ? ME.pid : [...R.values()].find((p) => p.code === ME.code && p.host && p.g === g)?.pid) : null;
+  if (g && g.gm) {
+    const rk = rkey(g); const present = new Set(players.map((p) => p.pid));
+    const all = g.pl.concat(players.map((p) => p.pid).filter((p) => !g.pl.includes(p)));
+    const ids = all.sort((a, b) => (g.sc[b] || 0) - (g.sc[a] || 0));
+    const rows = ids.map((p) => {
+      const r = R.get(p); const sub = r && ((g.ph === "write" && r.a && r.a.k === rk) || (g.ph === "vote" && r.vt && r.vt.k === rk));
+      return sticker({ pid: p, nm: nameOf(p), co: r ? r.co : hash(p) }, { me: p === ME.pid, cls: present.has(p) ? "" : "gone", right: `<span class="sc">${g.sc[p] || 0}</span>`, stamp: sub ? "DONE" : p === hostPid ? "HOST" : "", stampCls: sub ? "ok" : "host" });
+    }).join("");
+    return `<div class="box board"><span class="lbl">Scores</span><div class="stickers">${rows}</div></div>`;
+  }
+  const rows = players.map((p) => sticker(p, { me: p.me, stamp: p.pid === hostPid ? "HOST" : p.rd ? "READY" : "", stampCls: p.pid === hostPid ? "host" : "ok" })).join("");
+  return `<div class="box"><span class="lbl">In the room · ${players.length}</span><div class="stickers">${rows}</div></div>`;
+}
+
+/* ---------------- render ---------------- */
+let pending = false;
+function schedule() { if (!pending) { pending = true; setTimeout(render, 16); } }
+let stageHTML = "", sideHTML = "";
+
+function buildStage() {
+  if (!ME.code) return welcomeView();
+  const h = findHost(R);
+  HG = h ? h.g : null;
+  if (HG && !G) lastG = HG;
+  if (!HG) return noHostView();
+  const amHost = !!G;
+  if (!HG.gm || HG.ph === "lobby") return lobbyView(HG, amHost);
+  if (ME.rd) setMe({ rd: null });
+  const game = GAMES[HG.gm]; if (!game) return noHostView();
+  const rkNow = rkey(HG) + HG.ph;
+  if (rkNow !== lastRk) { lastRk = rkNow; delete DRAFT.ans; ERR = ""; }
+  const c = ctxFor(HG);
+  let body;
+  if (HG.ph === "write") body = writeView(HG, game, c);
+  else if (HG.ph === "vote") body = voteView(HG, game, c);
+  else if (HG.ph === "reveal") body = revealView(HG, game, c);
+  else body = finalView(HG);
+  return statusBar(HG) + body + (amHost ? hostBar(HG) : "");
+}
+
+function render() {
+  pending = false;
+  R = roster();
+  if (G) hostTickSafe();
+  const html = buildStage();
+  const stage = $("#stage");
+  if (html !== stageHTML) {
+    const a = document.activeElement; const fid = a && a.id; const ss = a && a.selectionStart, se = a && a.selectionEnd;
+    stage.innerHTML = html; stageHTML = html;
+    stage.querySelectorAll("[data-draft]").forEach((el) => { const k = el.dataset.draft; if (k === "name" && DRAFT.name == null) DRAFT.name = ME.nm; if (DRAFT[k] != null) el.value = DRAFT[k]; });
+    stage.querySelectorAll("select[data-target]").forEach((el) => { if (DRAFT[el.id]) el.value = DRAFT[el.id]; });
+    if (fid) { const el = document.getElementById(fid); if (el) { el.focus(); try { if (ss != null) el.setSelectionRange(ss, se); } catch (e) { /* not a text field */ } } }
+    else { const first = stage.querySelector("[data-draft='ans']"); if (first && !first.value) first.focus({ preventScroll: true }); }
+    updateCounts();
+  }
+  const side = sideView(HG && ME.code ? HG : null);
+  if (side !== sideHTML) { $("#side").innerHTML = side; sideHTML = side; }
+  const mode = $("#mode"); const st = net.impl ? net.impl.status : null;
+  mode.hidden = !st;
+  if (st) {
+    const map = { online: ["on", "Online"], connecting: ["warn", "Connecting…"], reconnecting: ["warn", "Reconnecting…"], offline: ["bad", "Can't reach the server"], error: ["bad", "Not supported"] };
+    const [cls, txt] = map[st.state] || map.connecting;
+    mode.className = "badge " + cls; mode.textContent = txt;
+    mode.title = st.state === "online" ? "Encrypted relay: " + st.broker : st.msg || "";
+  }
+  $("#leave").hidden = !ME.code;
+  live();
+}
+
+function live() {
+  const g = HG; const t = $("#timer");
+  if (g && g.gm) {
+    const stamp = g.e + "|" + g.t;
+    if (G) localDeadline = G.e; else if (stamp !== lastGStamp) { lastGStamp = stamp; localDeadline = g.e ? Date.now() + (g.e - (g.t || Date.now())) : 0; }
+    if (t) { if (localDeadline && (g.ph === "write" || g.ph === "vote")) { const s = Math.max(0, Math.ceil((localDeadline - Date.now()) / 1000)); t.hidden = false; t.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); t.classList.toggle("low", s <= 10); } else t.hidden = true; }
+    const w = $("#waiting");
+    if (w && (g.ph === "write" || g.ph === "vote")) {
+      const rk = rkey(g); const present = presentPids();
+      const left = whoFor(g, g.ph).filter((p) => present.has(p)).filter((p) => { const r = R.get(p); const s = g.ph === "write" ? r && r.a : r && r.vt; return !(s && s.k === rk); });
+      const html = left.length ? `Waiting on ${left.map(chip).join(" ")}` : "Everyone's in.";
+      if (w.innerHTML !== html) w.innerHTML = html;
+    }
+  }
+}
+function hostTickSafe() { try { hostTick(); } catch (e) { console.error("host tick", e); } }
+function updateCounts() { document.querySelectorAll("[data-count]").forEach((c) => { const el = document.getElementById(c.dataset.count); if (el) c.textContent = el.value.length + " / " + el.maxLength; }); }
+
+setInterval(() => { R = roster(); if (G) { hostTickSafe(); } live(); }, 400);
+
+/* ---------------- events ---------------- */
+const stageEl = $("#stage");
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-act]"); if (!b || b.disabled) return;
+  const fn = ACT[b.dataset.act]; if (fn) { e.preventDefault(); fn(b.dataset, b); }
+});
+stageEl.addEventListener("input", (e) => {
+  const el = e.target;
+  if (el.dataset && el.dataset.draft) { DRAFT[el.dataset.draft] = el.value; if (ERR) { ERR = ""; schedule(); } }
+  updateCounts();
+});
+stageEl.addEventListener("change", (e) => { const el = e.target; if (el.matches && el.matches("select[data-target]")) DRAFT[el.id] = el.value; });
+stageEl.addEventListener("submit", (e) => {
+  e.preventDefault(); const f = e.target.dataset.form;
+  if (f === "answer") { const el = e.target.querySelector("[data-draft='ans']"); submitAnswer(el ? el.value : ""); }
+  if (f === "joincode") ACT.joincode();
+});
+stageEl.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && e.target.tagName === "TEXTAREA") { e.preventDefault(); const f = e.target.closest("form"); if (f) f.requestSubmit(); }
+  if (e.key === "Enter" && e.target.id === "nameIn") { e.preventDefault(); const c = $("#codeIn"); if (c) c.focus(); }
+});
+$("#leave").addEventListener("click", leaveRoom);
+
+render();
+})();
+</script>
