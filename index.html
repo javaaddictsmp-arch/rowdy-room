@@ -283,6 +283,60 @@ p { margin: 0; }
 .seg button:last-child { border-right: 0; }
 .seg button[aria-pressed="true"] { background: var(--gold); color: var(--on); }
 [data-motion="off"] *, [data-motion="off"] *::before, [data-motion="off"] *::after { animation: none !important; transition: none !important; }
+/* round 3: how-to, prompts box, gifs, drawing, reactions, splash */
+.howto { background: var(--sky); color: var(--on); border: var(--b); border-radius: 12px; padding: 10px 14px; font-weight: 700; transform: rotate(.6deg); box-shadow: var(--sh-sm); }
+.howto b { font: 700 13px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; margin-right: 6px; background: var(--paper); color: var(--ink); border: 2px solid var(--on); border-radius: 6px; padding: 2px 6px; }
+.section-h.small { font-size: 20px; margin-bottom: 4px; justify-self: start; }
+.addrow { display: grid; grid-template-columns: minmax(0, 210px) minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+@media (max-width: 640px) { .addrow { grid-template-columns: minmax(0, 1fr); } }
+.addrow select { border: var(--b); border-radius: 12px; background: var(--paper); color: var(--ink); padding: 11px 10px; font-weight: 800; min-width: 0; }
+.cplist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.cplist li { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: var(--cream); border: 2px solid var(--ink); border-radius: 10px; padding: 7px 10px; }
+.cplist .cpt { flex: 1; min-width: 0; font-weight: 700; overflow-wrap: anywhere; }
+.kick { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--ink); background: var(--paper); color: var(--ink); font: 700 16px/1 var(--display); display: inline-grid; place-items: center; padding: 0; margin-left: 2px; flex: none; }
+.kick:hover { background: var(--coral); color: #fff; }
+.linkbtn { border: 0; background: none; padding: 0; color: var(--coral); font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+.sticker .stamp.typing { background: var(--sky); color: var(--on); }
+.gifrow { display: grid; gap: 6px; }
+.gif-field { font-size: 15px; padding: 9px 12px; }
+.gif-help { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+.gif { display: block; max-width: min(240px, 100%); max-height: 190px; margin-top: 8px; border: var(--b); border-radius: 10px; background: var(--cream); }
+.gifprev .err { font-size: 13px; }
+.abcd { display: inline-grid; place-items: center; width: 28px; height: 28px; margin-right: 6px; border-radius: 8px; border: 2px solid currentColor; font: 700 15px/1 var(--display); }
+.bar { height: 16px; border: var(--b); border-radius: 999px; background: var(--paper); overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--coral); border-right: 3px solid var(--ink); transition: width .6s ease; }
+.res .bar { margin: 2px 0; }
+/* drawing */
+.drawbox { display: grid; gap: 12px; }
+#pad { width: 100%; max-width: 640px; aspect-ratio: 4 / 3; height: auto; background: #fff; border: var(--bb); border-radius: 14px; box-shadow: var(--sh); touch-action: none; cursor: crosshair; }
+.tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.pcolors, .psizes { display: flex; gap: 6px; flex-wrap: wrap; }
+.pc { width: 32px; height: 32px; border-radius: 50%; border: var(--b); background: var(--pc); padding: 0; }
+.pc.sel { box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px var(--ink); transform: scale(1.1); }
+.ps { width: 36px; height: 36px; border-radius: 10px; border: var(--b); background: var(--paper); display: grid; place-items: center; padding: 0; }
+.ps span { display: block; border-radius: 50%; background: var(--ink); }
+.ps.sel { background: var(--gold); }
+.doodle { display: block; width: 100%; max-width: 420px; height: auto; border: var(--b); border-radius: 12px; background: #fff; }
+.opt .doodle { max-width: 300px; }
+.chain { display: grid; gap: 8px; padding: 14px; border: var(--b); border-radius: 16px; background: var(--cream); margin-top: 6px; }
+.chain .link { background: var(--paper); border: 2px solid var(--ink); border-radius: 12px; padding: 10px 12px; display: grid; gap: 6px; }
+.chain .link.win { background: var(--gold); color: var(--on); }
+.chain .link.win .res-meta { color: var(--on); }
+.chain .arrow { text-align: center; font: 700 22px/1 var(--display); }
+/* reactions */
+.reacts { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 4px; }
+.react { font-size: 22px; line-height: 1; width: 46px; height: 46px; border-radius: 12px; border: var(--b); background: var(--paper); box-shadow: 3px 3px 0 var(--ink); }
+.react:active { transform: translate(3px, 3px); box-shadow: none; }
+.fx { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 40; }
+.fx-emoji { position: absolute; bottom: -40px; font-size: 38px; filter: drop-shadow(3px 3px 0 var(--pc)); animation: floatup 1.7s ease-out forwards; }
+@keyframes floatup { 0% { transform: translateY(0) rotate(-8deg); opacity: 1; } 100% { transform: translateY(-70vh) rotate(10deg); opacity: 0; } }
+/* round splash and countdown */
+.splash { position: fixed; left: 50%; top: 42%; z-index: 45; pointer-events: none; transform: translate(-50%, -50%) scale(.4); opacity: 0; font: 700 clamp(56px, 12vw, 120px)/1 var(--display); background: var(--gold); color: var(--on); border: 5px solid var(--on); border-radius: 26px; padding: 10px 34px 18px; box-shadow: 10px 10px 0 var(--on); white-space: nowrap; }
+.splash.go { background: var(--coral); color: #fff; }
+.splash.show { animation: splashpop .9s cubic-bezier(.2, 1.4, .4, 1) forwards; }
+@keyframes splashpop { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.4) rotate(-8deg); } 25% { opacity: 1; transform: translate(-50%, -50%) scale(1.05) rotate(-3deg); } 75% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-2deg); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(.9) rotate(2deg); } }
+[data-motion="off"] .splash.show { opacity: 1; transform: translate(-50%, -50%); }
+[data-motion="off"] .fx-emoji { bottom: 20%; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 
@@ -310,6 +364,8 @@ p { margin: 0; }
   </div>
 </div>
 
+<div id="fx" class="fx" aria-hidden="true"></div>
+<div id="splash" class="splash" aria-hidden="true"></div>
 <script>
 (() => {
 'use strict';
@@ -638,6 +694,102 @@ const BANK = {
   ]
 };
 
+/* content for the newer games */
+BANK.wyr = [
+  "Fight one horse-sized duck|Fight 100 duck-sized horses",
+  "Always have to sing instead of talk|Always have to dance instead of walk",
+  "Have spaghetti for hair|Sweat maple syrup",
+  "Be able to talk to animals|Speak every human language",
+  "Never use the internet again|Never watch TV or movies again",
+  "Live in a treehouse|Live in a submarine",
+  "Have a rewind button for your life|Have a pause button for your life",
+  "Be invisible|Be able to fly",
+  "Eat only pizza forever|Never eat pizza again",
+  "Have a pet dragon the size of a cat|Have a pet cat the size of a dragon",
+  "Know when you'll die|Know how you'll die",
+  "Sneeze glitter|Burp bubbles",
+  "Have a personal theme song that plays everywhere|Have a laugh track for your life",
+  "Be stuck in an elevator with your ex|Be stuck in an elevator with a clown",
+  "Never be able to whisper|Never be able to shout",
+  "Have fingers as long as your legs|Have legs as long as your fingers",
+  "Go 10 years into the past|Go 10 years into the future",
+  "Have unlimited free snacks|Have unlimited free flights",
+  "Be the funniest person in the room|Be the smartest person in the room",
+  "Fight a kangaroo|Fight a goose",
+  "Only be able to text in emoji|Only be able to text in ALL CAPS",
+  "Live without music|Live without video games",
+  "Be famous but broke|Be rich but nobody knows your name",
+  "Have a rewind button for conversations|Have subtitles for what people really think",
+  "Always be 10 minutes late|Always be 2 hours early",
+  "Have a nose that glows when you lie|Have ears that wiggle when you're nervous",
+  "Wear clown shoes every day|Wear a tuxedo every day",
+  "Swim in a pool of jelly|Swim in a pool of mashed potatoes",
+  "Have a robot butler|Have a tiny wizard roommate",
+  "Never get a bad haircut again|Never get a bad grade or review again"
+];
+BANK.doodle = [
+  "a raccoon running a lemonade stand", "a haunted toaster", "a shark at a job interview", "grandma doing a kickflip",
+  "a cat stuck in a vending machine", "a snowman at the beach", "a giraffe wearing a scarf", "a pizza with legs running away",
+  "an alien ordering fast food", "a cowboy riding a chicken", "a dragon at the dentist", "a ghost doing yoga",
+  "a penguin DJ", "a volcano sneezing", "a wizard who lost his hat", "a cactus giving a hug",
+  "a dog driving a bus", "a banana bodybuilder", "the moon eating cheese", "a knight fighting a vacuum cleaner",
+  "a frog proposing to a duck", "a robot crying at a movie", "a hamster lifting weights", "a burrito in a sleeping bag",
+  "a pigeon stealing a hot dog", "a mermaid at a laundromat", "a vampire at a blood drive", "a spider knitting a sweater",
+  "a tornado made of cats", "a sloth winning a race"
+];
+const TRIVIA_LOCAL = [
+  { q: "Which planet is known as the Red Planet?", a: ["Mars", "Venus", "Jupiter", "Mercury"], ok: 0, cat: "Science" },
+  { q: "How many continents are there?", a: ["5", "6", "7", "8"], ok: 2, cat: "Geography" },
+  { q: "What is the largest ocean on Earth?", a: ["Atlantic", "Indian", "Arctic", "Pacific"], ok: 3, cat: "Geography" },
+  { q: "Which animal is the tallest in the world?", a: ["Elephant", "Giraffe", "Ostrich", "Moose"], ok: 1, cat: "Animals" },
+  { q: "What gas do plants take in from the air?", a: ["Oxygen", "Nitrogen", "Carbon dioxide", "Helium"], ok: 2, cat: "Science" },
+  { q: "In which country are the pyramids of Giza?", a: ["Mexico", "Egypt", "Peru", "Greece"], ok: 1, cat: "Geography" },
+  { q: "What is the hardest natural substance?", a: ["Gold", "Iron", "Diamond", "Quartz"], ok: 2, cat: "Science" },
+  { q: "How many sides does a hexagon have?", a: ["5", "6", "7", "8"], ok: 1, cat: "Math" },
+  { q: "What is the capital of Japan?", a: ["Kyoto", "Osaka", "Tokyo", "Seoul"], ok: 2, cat: "Geography" },
+  { q: "Which is the smallest planet in our solar system?", a: ["Mercury", "Mars", "Venus", "Earth"], ok: 0, cat: "Science" },
+  { q: "How many legs does a spider have?", a: ["6", "8", "10", "12"], ok: 1, cat: "Animals" },
+  { q: "What is H2O better known as?", a: ["Salt", "Water", "Hydrogen", "Air"], ok: 1, cat: "Science" },
+  { q: "Who painted the Mona Lisa?", a: ["Michelangelo", "Leonardo da Vinci", "Raphael", "Vincent van Gogh"], ok: 1, cat: "Art" },
+  { q: "What is the largest planet in our solar system?", a: ["Saturn", "Jupiter", "Neptune", "Earth"], ok: 1, cat: "Science" },
+  { q: "Which language has the most native speakers?", a: ["English", "Spanish", "Mandarin Chinese", "Hindi"], ok: 2, cat: "Language" },
+  { q: "What is the fastest land animal?", a: ["Cheetah", "Lion", "Pronghorn", "Greyhound"], ok: 0, cat: "Animals" },
+  { q: "How many players are on a basketball team on the court?", a: ["4", "5", "6", "7"], ok: 1, cat: "Sports" },
+  { q: "Which metal is liquid at room temperature?", a: ["Lead", "Mercury", "Tin", "Aluminum"], ok: 1, cat: "Science" },
+  { q: "What is the longest river in South America?", a: ["Amazon", "Paraná", "Orinoco", "Magdalena"], ok: 0, cat: "Geography" },
+  { q: "How many hearts does an octopus have?", a: ["1", "2", "3", "4"], ok: 2, cat: "Animals" }
+];
+BANK.trivialocal = TRIVIA_LOCAL;
+/* mix-and-match templates: {word} slots get random words; a capitalized slot gets a capitalized word */
+const WORDS = {
+  person: ["grandma", "roommate", "boss", "cat", "neighbor", "little brother", "dentist", "best friend", "landlord", "gym teacher", "mail carrier", "barber"],
+  verbing: ["stealing", "licking", "hiding", "reorganizing", "renaming", "judging", "sitting on", "sniffing", "microwaving", "complimenting"],
+  thing: ["Wi-Fi password", "left sock", "sandwich", "phone charger", "TV remote", "houseplant", "toothbrush", "car keys", "homework", "pillow", "last slice of pizza", "rubber duck"],
+  pastverb: ["sat on", "sneezed on", "deleted", "microwaved", "sold", "lost", "glued", "painted"],
+  creature: ["raccoon", "goose", "ghost", "tiny wizard", "possum", "crab", "pigeon", "squirrel"],
+  place: ["basement", "car", "bathtub", "backpack", "microwave", "closet", "garage", "fridge"],
+  contest: ["dance battle", "staring contest", "hot dog eating contest", "rap battle", "game of chess", "wrestling match"],
+  food: ["pizza", "cereal", "sushi", "spaghetti", "ice cream", "toast", "tacos", "soup"],
+  way: ["with a spoon", "upside down", "frozen", "in the shower", "with ketchup", "with chopsticks", "cold"],
+  jobs: ["pilots", "chefs", "detectives", "lifeguards", "DJs", "dentists", "magicians", "plumbers"],
+  job: ["pilot", "chef", "detective", "lifeguard", "DJ", "dentist", "magician", "plumber"],
+  animal: ["a goose", "a penguin", "a raccoon", "a llama", "a crab", "a hamster", "a sloth", "an octopus"],
+  power: ["fly", "turn invisible", "talk to animals", "read minds", "teleport", "stop time"]
+};
+const TEMPLATES = {
+  advice: ["My {person} keeps {verbing} my {thing}.", "I accidentally {pastverb} my {person}'s {thing}.", "There's a {creature} living in my {place} and it won't leave.", "My {person} challenged me to a {contest} and I can't back down.", "I {pastverb} my own {thing} and now I'm scared to go home."],
+  takes: ["{Food} should only be eaten {way}.", "{Jobs} are secretly the most dangerous job.", "Every {place} needs a {creature}.", "A {thing} is the best gift you can give anyone.", "{Animal} would make a great president."],
+  cats: ["Most likely to be found in a {place}", "Best thing to bring to a {contest}", "Most likely to be stolen by a {creature}", "Best gift for your {person}"],
+  doodle: ["{animal} in a {contest}", "a {creature} stuck in a {place}", "your {person} eating {food} {way}", "a {creature} stealing a {thing}", "{animal} working as a {job}"],
+  who: ["What would you do if your {person} started {verbing} your {thing}?", "What's the worst thing to find in your {place}?"],
+  wyr: ["Be able to {power}|Be able to {power}", "Have a {creature} as a best friend|Have a {creature} as a roommate", "Eat {food} {way} forever|Never eat {food} again"]
+};
+const CP_KINDS = [["advice", "Worst Advice problem"], ["takes", "Hot take"], ["who", "Who Wrote That? question"], ["openers", "Story opener"], ["doodle", "Doodle Relay prompt"], ["wyr", "Would you rather (this or that)"], ["items", "Rank It thing"], ["oddw", "Liar game word"]];
+const DM_THEMES = [["Ocean", "ocean"], ["Kitchen", "kitchen"], ["Outer space", "space"], ["School", "school"], ["Farm", "farm"], ["Circus", "circus"], ["Winter", "winter"], ["Camping", "camping"], ["Pirates", "pirate"], ["Hospital", "hospital"], ["Jungle", "jungle"], ["Birthday party", "birthday"], ["Medieval times", "medieval"], ["Beach", "beach"], ["Garden", "garden"], ["Gym", "gym"]];
+const REACTS = ["😂", "🔥", "😱", "👏", "💀", "🤡"];
+const PAL = ["#141414", "#ffffff", "#ff3366", "#ffb800", "#2fd18b", "#3d9bff", "#b38cff", "#ff8a3d", "#8b5a2b"];
+const WID = [3, 7, 14];
+
 /* flavor lines, picked per round so things don't feel the same every time */
 const FLAVOR = {
   locked: ["Locked in!", "No take-backs!", "Sealed and delivered!", "Bold choice. Locked in!", "It's in. Good luck.", "Submitted with confidence!", "Done. No regrets. Probably."],
@@ -748,7 +900,7 @@ function mqttClient(url, topic, onMsg, onDown) {
       try { ws = new WebSocket(url, ["mqtt"]); } catch (e) { reject(e); return; }
       ws.binaryType = "arraybuffer";
       const to = setTimeout(() => { reject(new Error("timeout")); try { ws.close(); } catch (e) { /* ignore */ } }, 7000);
-      ws.onopen = () => ws.send(packet(0x10, [new Uint8Array([0, 4, 77, 81, 84, 84, 4, 2, 0, 60]), str(cid)]));
+      ws.onopen = () => ws.send(packet(0x10, [new Uint8Array([0, 4, 77, 81, 84, 84, 4, 2, 0, 120]), str(cid)]));
       ws.onmessage = (ev) => {
         const chunk = new Uint8Array(ev.data); const nb = new Uint8Array(buf.length + chunk.length); nb.set(buf); nb.set(chunk, buf.length); buf = nb;
         while (buf.length >= 2) {
@@ -785,7 +937,7 @@ function mqttClient(url, topic, onMsg, onDown) {
 function relayRoom(code) {
   const peerId = rid(12);
   let mine = JSON.parse(JSON.stringify(ME));
-  const others = new Map(); const fns = new Set();
+  const others = new Map(); const fns = new Set(); const myBlobs = new Map(); const blobFns = new Set();
   let snap = null, keys = null, client = null, dead = false, sendTimer = null, starting = false;
   const status = { state: "connecting", broker: "", msg: "" };
   const changed = () => { snap = null; for (const f of fns) { try { f({}); } catch (e) { console.error(e); } } };
@@ -795,12 +947,16 @@ function relayRoom(code) {
     const out = new Uint8Array(12 + ct.length); out.set(iv); out.set(ct, 12); return out;
   }
   async function send(t) { if (!client || !client.isOpen()) return; try { client.send(await encrypt({ t, peer: peerId, p: mine })); } catch (e) { console.warn("send", e); } }
+  async function sendRaw(obj) { if (!client || !client.isOpen()) return; try { client.send(await encrypt(obj)); } catch (e) { console.warn("send", e); } }
+  function sendBlob(k) { return sendRaw({ t: "blob", peer: peerId, k, v: myBlobs.get(k) }); }
   function handle(m) {
     if (!m || typeof m.peer !== "string" || m.peer === peerId) return;
+    if (m.t === "blob") { if (isStr(m.k) && isStr(m.v) && m.k.length < 80 && m.v.length < 300000) for (const f of blobFns) f(m.k, m.v); return; }
+    if (m.t === "need") { if (isStr(m.k) && myBlobs.has(m.k)) sendBlob(m.k); return; }
     if (m.t === "bye") { if (others.delete(m.peer)) changed(); return; }
     const prev = others.get(m.peer); const s = JSON.stringify(m.p || {});
     others.set(m.peer, { p: m.p && typeof m.p === "object" ? m.p : {}, s, at: Date.now() });
-    if (m.t === "hello") send("hb");
+    if (m.t === "hello") { send("hb"); for (const k of myBlobs.keys()) sendBlob(k); }
     if (!prev || prev.s !== s) changed();
   }
   async function onMsg(bytes) {
@@ -817,7 +973,7 @@ function relayRoom(code) {
         for (const url of BROKERS) {
           if (dead) return;
           const c = mqttClient(url, keys.topic, onMsg, () => { if (dead) return; client = null; status.state = "reconnecting"; changed(); setTimeout(start, 1000); });
-          try { await c.connect(); if (dead) { c.close(); return; } client = c; status.state = "online"; status.broker = new URL(url).hostname; changed(); send("hello"); return; }
+          try { await c.connect(); if (dead) { c.close(); return; } client = c; status.state = "online"; status.broker = new URL(url).hostname; changed(); send("hello"); for (const k of myBlobs.keys()) sendBlob(k); return; }
           catch (e) { c.close(); }
         }
         status.state = "offline"; changed();
@@ -825,21 +981,31 @@ function relayRoom(code) {
       }
     } finally { starting = false; }
   }
-  const hb = setInterval(() => {
+  let lastBeat = 0;
+  const beat = () => {
+    const now = Date.now(); if (now - lastBeat < 2500) return; lastBeat = now;
     send("hb");
-    const now = Date.now(); let ch = false;
-    for (const [k, o] of others) if (now - o.at > 12000) { others.delete(k); ch = true; }
+    let ch = false;
+    for (const [k, o] of others) if (now - o.at > 30000) { others.delete(k); ch = true; }
     if (ch) changed();
-  }, 3000);
+  };
+  const hb = setInterval(beat, 3000);
   const bye = () => send("bye");
   addEventListener("pagehide", bye);
   start();
   return {
     status,
+    tick: beat,
+    blob(k, v) { myBlobs.set(k, v); sendBlob(k); },
+    need(k) { sendRaw({ t: "need", peer: peerId, k }); },
+    onBlob(f) { blobFns.add(f); },
+    exportBlobs() { return [...myBlobs]; },
+    importBlobs(list) { for (const [k, v] of list || []) if (isStr(k) && isStr(v)) myBlobs.set(k, v); },
     presence(patch) {
       mine = Object.assign({}, mine);
       for (const k in patch) { if (patch[k] === null) delete mine[k]; else mine[k] = patch[k]; }
-      if (!sendTimer) sendTimer = setTimeout(() => { sendTimer = null; send("p"); }, 50);
+      if (document.hidden) send("p");
+      else if (!sendTimer) sendTimer = setTimeout(() => { sendTimer = null; send("p"); }, 50);
       changed(); return Promise.resolve();
     },
     peers() { if (snap) return snap; const list = [{ peer: peerId, isMe: true, sameTab: true, presence: mine }]; for (const [k, o] of others) list.push({ peer: k, isMe: false, sameTab: false, presence: o.p }); return (snap = list); },
@@ -849,7 +1015,7 @@ function relayRoom(code) {
 }
 
 const net = { impl: null };
-function connectRoom(code) { if (net.impl) net.impl.close(); net.impl = relayRoom(code); net.impl.onPeers(() => schedule()); schedule(); }
+function connectRoom(code) { if (net.impl) net.impl.close(); net.impl = relayRoom(code); net.impl.onPeers(() => schedule()); net.impl.onBlob((k, v) => { if (!BLOBS.has(k)) { BLOBS.set(k, v); schedule(); } }); schedule(); }
 function disconnectRoom() { if (net.impl) net.impl.close(); net.impl = null; schedule(); }
 
 /* ---------------- settings (saved in this browser) ---------------- */
@@ -1035,6 +1201,7 @@ const ME = { pid, nm: savedName, co: Number.isInteger(savedColor) && savedColor 
 function setMe(patch) {
   for (const k in patch) { if (patch[k] === null) delete ME[k]; else ME[k] = patch[k]; }
   if (net.impl) net.impl.presence(patch).catch((e) => console.warn("presence", e));
+  saveSoon();
   schedule();
 }
 
@@ -1058,10 +1225,10 @@ function roster() {
     if (!p.sameTab && pr.pid === ME.pid) continue;
     map.set(pr.pid, {
       pid: pr.pid, nm: clean(pr.nm, 18) || "Someone", co: Number(pr.co) || 0, code: typeof pr.code === "string" ? pr.code : null,
-      host: !!pr.host, rd: !!pr.rd, g: pr.g && typeof pr.g === "object" ? pr.g : null, a: pr.a || null, vt: pr.vt || null, ln: pr.ln || null, me: p.sameTab
+      host: !!pr.host, rd: !!pr.rd, ty: isStr(pr.ty) ? pr.ty : null, rx: pr.rx && typeof pr.rx === "object" ? pr.rx : null, gf: pr.gf && typeof pr.gf === "object" ? pr.gf : null, cp: Array.isArray(pr.cp) ? pr.cp : null, g: pr.g && typeof pr.g === "object" ? pr.g : null, a: pr.a || null, vt: pr.vt || null, ln: pr.ln || null, me: p.sameTab
     });
   }
-  if (!map.has(ME.pid)) map.set(ME.pid, { pid: ME.pid, nm: ME.nm || "You", co: ME.co, code: ME.code, host: ME.host, g: ME.g || null, a: ME.a || null, vt: ME.vt || null, ln: ME.ln || null, me: true });
+  if (!map.has(ME.pid)) map.set(ME.pid, { pid: ME.pid, nm: ME.nm || "You", co: ME.co, code: ME.code, host: ME.host, g: ME.g || null, a: ME.a || null, vt: ME.vt || null, ln: ME.ln || null, cp: ME.cp || null, ty: ME.ty || null, rx: ME.rx || null, gf: ME.gf || null, me: true });
   return map;
 }
 const inRoom = (R, code) => [...R.values()].filter((p) => p.code && p.code === code);
@@ -1082,15 +1249,144 @@ const chip = (id) => `<span class="chip" style="--pc:${colorOf(id)}">${esc(nameO
 const pts = (n) => (n ? `<span class="pts">+${n}</span>` : "");
 
 /* ---------------- games ---------------- */
+/* prompt sources: built-in banks, player-added prompts, mix-and-match templates, and (host only) online extras */
+const T = (bank, v) => (v != null && typeof v === "object") ? v : typeof v === "string" ? v : (BANK[bank] || [])[v];
+function customPool(bank) {
+  const ban = new Set((G && G.ban) || []); const out = [];
+  for (const p of R.values()) {
+    if (p.code !== ME.code || !Array.isArray(p.cp)) continue;
+    for (const x of p.cp.slice(0, 20)) if (x && x.k === bank && isStr(x.t)) { const t = clean(x.t, 120); if (t && !ban.has(hash(t))) out.push(t); }
+  }
+  return [...new Set(out)];
+}
+function makeTemplate(bank) {
+  const list = TEMPLATES[bank]; if (!list) return null;
+  const tpl = list[Math.floor(Math.random() * list.length)];
+  return tpl.replace(/\{(\w+)\}/g, (m, key) => {
+    const words = WORDS[key.toLowerCase()]; if (!words) return m;
+    const w = words[Math.floor(Math.random() * words.length)];
+    return key[0] === key[0].toUpperCase() ? w[0].toUpperCase() + w.slice(1) : w;
+  });
+}
+const ONLINE = { trivia: [], oddcats: [] };
+let onlineBusy = false, onlineAt = 0, onlineNote = "";
+async function prefetchOnline() {
+  if (onlineBusy || Date.now() - onlineAt < 8000) return;
+  onlineBusy = true; onlineAt = Date.now();
+  try {
+    if (ONLINE.trivia.length < 10) {
+      const r = await fetch("https://opentdb.com/api.php?amount=20&type=multiple&encode=url3986");
+      const j = await r.json();
+      if (j && j.response_code === 0 && Array.isArray(j.results)) for (const q of j.results) {
+        const dec = (x) => clean(decodeURIComponent(String(x)), 120);
+        const right = dec(q.correct_answer); const choices = shuffle([right, ...q.incorrect_answers.map(dec)], Math.random());
+        ONLINE.trivia.push({ q: dec(q.question), a: choices, ok: choices.indexOf(right), cat: dec(q.category).replace(/^Entertainment: |^Science: /, "") });
+      }
+    }
+    if (ONLINE.oddcats.length < 4) {
+      for (const [name, w] of shuffle(DM_THEMES, Math.random()).slice(0, 4)) {
+        const r = await fetch("https://api.datamuse.com/words?rel_trg=" + encodeURIComponent(w) + "&md=p&max=60");
+        const j = await r.json();
+        const words = (Array.isArray(j) ? j : []).filter((x) => x && Array.isArray(x.tags) && x.tags.includes("n") && /^[a-z]{3,14}$/.test(x.word) && x.word !== w).map((x) => x.word);
+        if (words.length >= 8) ONLINE.oddcats.push({ c: name, w: shuffle(words, Math.random()).slice(0, 12) });
+      }
+    }
+    onlineNote = `Online extras loaded: ${ONLINE.trivia.length} trivia questions, ${ONLINE.oddcats.length} liar categories.`;
+  } catch (e) { onlineNote = "Couldn't load online extras. Using the built-in prompts."; }
+  finally { onlineBusy = false; schedule(); }
+}
 function pick(bank, n) {
-  const all = BANK[bank].map((_, i) => i);
   used[bank] = used[bank] || new Set();
-  let pool = all.filter((i) => !used[bank].has(i));
-  if (pool.length < n) { used[bank].clear(); pool = all; }
-  const out = shuffle(pool, Math.random()).slice(0, n);
-  out.forEach((i) => used[bank].add(i));
+  const base = (BANK[bank] || []).map((_, i) => i);
+  let pool = base.filter((i) => !used[bank].has(i));
+  const custom = customPool(bank).filter((t) => !used[bank].has(t));
+  const out = [];
+  for (let tries = 0; out.length < n && tries < n * 6; tries++) {
+    let v = null; const roll = Math.random();
+    if (custom.length && roll < 0.5) v = custom.splice(Math.floor(Math.random() * custom.length), 1)[0];
+    else if (TEMPLATES[bank] && roll < 0.7) v = makeTemplate(bank);
+    if (v == null && ONLINE[bank] && ONLINE[bank].length && Math.random() < 0.4) v = ONLINE[bank].shift();
+    if (v == null) {
+      if (!pool.length) { used[bank].clear(); pool = base.slice(); }
+      if (!pool.length) continue;
+      v = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
+    }
+    if (out.some((x) => x === v || (typeof x === "string" && x === T(bank, v)))) continue;
+    used[bank].add(v); out.push(v);
+  }
   return out;
 }
+
+/* GIF links: only from big GIF sites, always https */
+const GIF_HOSTS = /^(media\d?\.giphy\.com|i\.giphy\.com|media\d?\.tenor\.com|c\.tenor\.com|i\.imgur\.com)$/i;
+function gifURL(raw) {
+  let u; try { u = new URL(String(raw || "").trim()); } catch (e) { return null; }
+  if (u.protocol !== "https:") return null;
+  if (/^(www\.)?giphy\.com$/i.test(u.hostname)) { const m = u.pathname.match(/-([A-Za-z0-9]+)\/?$/) || u.pathname.match(/\/gifs\/([A-Za-z0-9]+)\/?$/); return m ? "https://media.giphy.com/media/" + m[1] + "/giphy.gif" : null; }
+  if (!GIF_HOSTS.test(u.hostname)) return null;
+  if (/\.gifv$/i.test(u.pathname)) u.pathname = u.pathname.replace(/\.gifv$/i, ".gif");
+  if (!/\.(gif|webp|png|jpe?g)$/i.test(u.pathname) && !/giphy\.com$/i.test(u.hostname)) return null;
+  return u.href.slice(0, 400);
+}
+const gifImg = (url) => `<img class="gif" src="${esc(url)}" alt="GIF" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`;
+const ansH = (c, p) => esc(c.ans[p]) + (c.gifs && c.gifs[p] ? gifImg(c.gifs[p]) : "");
+
+/* drawings: shared as small encoded strokes over the relay */
+const BLOBS = new Map(); const wantAt = {};
+function wantBlob(key) {
+  if (BLOBS.has(key)) return BLOBS.get(key);
+  const now = Date.now();
+  if (net.impl && (!wantAt[key] || now - wantAt[key] > 4000)) { wantAt[key] = now; net.impl.need(key); }
+  return null;
+}
+let DRAW = { k: "", strokes: [], c: 0, w: 1 };
+const encDraw = (strokes) => strokes.map((s) => s.c + ":" + s.w + ":" + s.p.join(",")).join(";");
+function decDraw(str) {
+  if (typeof str !== "string") return [];
+  return str.split(";").slice(0, 800).map((part) => {
+    const [c, w, pts] = part.split(":");
+    const p = String(pts || "").split(",").slice(0, 8000).map((x) => Math.max(0, Math.min(320, Math.round(Number(x)) || 0)));
+    if (p.length % 2) p.pop();
+    return { c: Math.max(0, Math.min(PAL.length - 1, Number(c) | 0)), w: Math.max(0, Math.min(2, Number(w) | 0)), p };
+  }).filter((s) => s.p.length >= 2);
+}
+function drawSVG(str) {
+  const pairs = (p) => { const o = []; for (let i = 0; i < p.length; i += 2) o.push(p[i] + "," + p[i + 1]); return o.join(" "); };
+  return `<svg class="doodle" viewBox="0 0 320 240" role="img" aria-label="A player's drawing"><rect width="320" height="240" fill="#fff"/>${decDraw(str).map((s) => s.p.length === 2
+    ? `<circle cx="${s.p[0]}" cy="${s.p[1]}" r="${WID[s.w] / 2}" fill="${PAL[s.c]}"/>`
+    : `<polyline points="${pairs(s.p)}" fill="none" stroke="${PAL[s.c]}" stroke-width="${WID[s.w]}" stroke-linecap="round" stroke-linejoin="round"/>`).join("")}</svg>`;
+}
+function mountPad() {
+  const cv = document.getElementById("pad"); if (!cv || cv._bound) return; cv._bound = true;
+  const ctx = cv.getContext("2d"); const S = cv.width / 320;
+  const paint = (s) => {
+    ctx.strokeStyle = ctx.fillStyle = PAL[s.c]; ctx.lineWidth = WID[s.w] * S; ctx.lineCap = ctx.lineJoin = "round";
+    if (s.p.length === 2) { ctx.beginPath(); ctx.arc(s.p[0] * S, s.p[1] * S, (WID[s.w] * S) / 2, 0, 7); ctx.fill(); return; }
+    ctx.beginPath(); ctx.moveTo(s.p[0] * S, s.p[1] * S); for (let i = 2; i < s.p.length; i += 2) ctx.lineTo(s.p[i] * S, s.p[i + 1] * S); ctx.stroke();
+  };
+  const redraw = () => { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, cv.width, cv.height); for (const s of DRAW.strokes) paint(s); };
+  redraw(); cv._redraw = redraw;
+  let cur = null;
+  const total = () => DRAW.strokes.reduce((n, s) => n + s.p.length, 0);
+  const pos = (e) => { const r = cv.getBoundingClientRect(); return [Math.round(((e.clientX - r.left) / r.width) * 320), Math.round(((e.clientY - r.top) / r.height) * 240)]; };
+  cv.addEventListener("pointerdown", (e) => { e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch (x) { /* ignore */ } const [x, y] = pos(e); cur = { c: DRAW.c, w: DRAW.w, p: [x, y] }; DRAW.strokes.push(cur); paint(cur); });
+  cv.addEventListener("pointermove", (e) => {
+    if (!cur) return; const [x, y] = pos(e); const n = cur.p.length;
+    if (Math.abs(x - cur.p[n - 2]) + Math.abs(y - cur.p[n - 1]) < 2 || total() > 12000) return;
+    cur.p.push(x, y); ctx.strokeStyle = PAL[cur.c]; ctx.lineWidth = WID[cur.w] * S; ctx.lineCap = ctx.lineJoin = "round";
+    ctx.beginPath(); ctx.moveTo(cur.p[n - 2] * S, cur.p[n - 1] * S); ctx.lineTo(x * S, y * S); ctx.stroke();
+  });
+  const end = () => { cur = null; };
+  cv.addEventListener("pointerup", end); cv.addEventListener("pointercancel", end);
+}
+function submitDrawing() {
+  const g = HG; if (!g || g.ph !== "write") return; const rk = rkey(g);
+  if (DRAW.k !== rk || !DRAW.strokes.length) { ERR = "Draw something first!"; Sound.sfx("nope"); schedule(); return; }
+  const key = g.n + "." + curStep(g).r + "." + ME.pid; const v = encDraw(DRAW.strokes);
+  BLOBS.set(key, v); if (net.impl) net.impl.blob(key, v);
+  ERR = ""; Sound.sfx("submit"); setMe({ a: { k: rk, d: "drawing" }, ty: null });
+}
+
 const rounds = (n, phs) => { const out = []; for (let r = 0; r < n; r++) for (const ph of phs) out.push({ r, ph }); return out; };
 const blank = (t, fill) => esc(t).replace("___", fill == null ? '<span class="blank">&nbsp;</span>' : `<span class="filled">${esc(fill)}</span>`);
 const isStr = (x) => typeof x === "string";
@@ -1137,18 +1433,18 @@ const GAMES = {
   },
 
   advice: {
-    name: "Worst Advice", tag: "Writing", min: 3, needsClues: true, color: "#ff7eb6", wt: 75, vt: 40,
+    name: "Worst Advice", tag: "Writing", min: 3, needsClues: true, gifs: true, color: "#ff7eb6", wt: 75, vt: 40,
     blurb: "Someone has a problem. Give them the worst advice you can. Funniest answer gets the votes.",
     plan: (pn, n) => rounds(n, ["write", "vote", "reveal"]),
     setup(g) { g.d = { q: pick("advice", 1)[0] }; },
-    write(g) { return { prompt: `<div class="eyebrow">Dear Rowdy Room…</div><p class="big">“${esc(BANK.advice[g.d.q])}”</p><p class="hint">Write the worst possible advice.</p>`, type: "text", max: 120, ph: "Have you tried…" }; },
+    write(g) { return { prompt: `<div class="eyebrow">Dear Rowdy Room…</div><p class="big">“${esc(T("advice", g.d.q))}”</p><p class="hint">Write the worst possible advice.</p>`, type: "text", max: 120, ph: "Have you tried…" }; },
     vote(g, me, c) {
-      return { kind: "pick", prompt: `<div class="eyebrow">Vote for the most gloriously bad advice</div><p class="mid">“${esc(BANK.advice[g.d.q])}”</p>`, options: shuffle(Object.keys(c.ans).filter((p) => p !== me), g.n + g.st + me).map((p) => ({ id: p, html: `<span>${esc(c.ans[p])}</span>` })) };
+      return { kind: "pick", prompt: `<div class="eyebrow">Vote for the most gloriously bad advice</div><p class="mid">“${esc(T("advice", g.d.q))}”</p>`, options: shuffle(Object.keys(c.ans).filter((p) => p !== me), g.n + g.st + me).map((p) => ({ id: p, html: `<span>${ansH(c, p)}</span>` })) };
     },
     score(g, c) { const cnt = {}; for (const [v, t] of Object.entries(c.votes)) if (isStr(t) && t !== v && c.ans[t] != null) cnt[t] = (cnt[t] || 0) + 1; const d = {}; for (const p in cnt) d[p] = cnt[p] * 100; return { d, rv: { c: cnt } }; },
     reveal(g, c) {
       const cnt = (g.rv && g.rv.c) || {}; const ids = Object.keys(c.ans).sort((a, b) => (cnt[b] || 0) - (cnt[a] || 0)); const top = ids.length ? cnt[ids[0]] || 0 : 0;
-      return `<p class="mid">“${esc(BANK.advice[g.d.q])}”</p><ol class="results">${ids.map((p) => `<li class="res ${top && cnt[p] === top ? "win" : ""}"><div class="res-text">${esc(c.ans[p])}</div><div class="res-meta">${chip(p)} ${plural(cnt[p] || 0, "vote")} ${pts(g.lt && g.lt[p])}</div></li>`).join("")}</ol>`;
+      return `<p class="mid">“${esc(T("advice", g.d.q))}”</p><ol class="results">${ids.map((p) => `<li class="res ${top && cnt[p] === top ? "win" : ""}"><div class="res-text">${ansH(c, p)}</div><div class="res-meta">${chip(p)} ${plural(cnt[p] || 0, "vote")} ${pts(g.lt && g.lt[p])}</div></li>`).join("")}</ol>`;
     }
   },
 
@@ -1156,8 +1452,8 @@ const GAMES = {
     name: "One of Us Is Lying", tag: "Deduction", min: 3, needsClues: true, color: "#3d9bff", wt: 50, vt: 45,
     blurb: "Everyone gets the same secret word except the liar, who only knows the category. Give a clue, then vote out the liar.",
     plan: (pn, n) => rounds(n, ["write", "vote", "reveal"]),
-    setup(g, r, present) { const pool = g.pl.filter((p) => present.has(p)); const c = pick("oddcats", 1)[0]; g.d = { c, w: Math.floor(Math.random() * BANK.oddcats[c].w.length), imp: pool[Math.floor(Math.random() * pool.length)] }; },
-    cat(g) { return BANK.oddcats[g.d.c]; },
+    setup(g, r, present) { const pool = g.pl.filter((p) => present.has(p)); let c = pick("oddcats", 1)[0]; const cw = customPool("oddw"); if (cw.length >= 4 && Math.random() < 0.4) c = { c: "Your group's words", w: shuffle(cw, Math.random()).slice(0, 12) }; g.d = { c, w: Math.floor(Math.random() * T("oddcats", c).w.length), imp: pool[Math.floor(Math.random() * pool.length)] }; },
+    cat(g) { return T("oddcats", g.d.c); },
     word(g) { return this.cat(g).w[g.d.w]; },
     write(g, me) {
       const cat = esc(this.cat(g).c);
@@ -1187,14 +1483,14 @@ const GAMES = {
   },
 
   whowrote: {
-    name: "Who Wrote That?", tag: "Friends", min: 3, needsClues: true, color: "#b38cff", wt: 75, vt: 75,
+    name: "Who Wrote That?", tag: "Friends", min: 3, needsClues: true, gifs: true, color: "#b38cff", wt: 75, vt: 75,
     blurb: "Everyone answers a personal question anonymously. Then match each answer to its author.",
     plan: (pn, n) => rounds(n, ["write", "vote", "reveal"]),
     setup(g) { g.d = { q: pick("who", 1)[0] }; },
-    write(g) { return { prompt: `<div class="eyebrow">Answer anonymously</div><p class="big">${esc(BANK.who[g.d.q])}</p><p class="hint">Everyone will try to guess it was you.</p>`, type: "text", max: 100, ph: "Your answer" }; },
+    write(g) { return { prompt: `<div class="eyebrow">Answer anonymously</div><p class="big">${esc(T("who", g.d.q))}</p><p class="hint">Everyone will try to guess it was you.</p>`, type: "text", max: 100, ph: "Your answer" }; },
     vote(g, me, c) {
       const ids = Object.keys(c.ans).filter((p) => p !== me);
-      return { kind: "match", prompt: `<div class="eyebrow">Who wrote what?</div><p class="mid">${esc(BANK.who[g.d.q])}</p>`, targets: shuffle(ids, g.n + g.st + me).map((p) => ({ id: p, text: c.ans[p] })), choices: shuffle(ids, g.n + "c").map((p) => ({ id: p, name: nameOf(p) })) };
+      return { kind: "match", prompt: `<div class="eyebrow">Who wrote what?</div><p class="mid">${esc(T("who", g.d.q))}</p>`, targets: shuffle(ids, g.n + g.st + me).map((p) => ({ id: p, text: c.ans[p], gif: c.gifs[p] })), choices: shuffle(ids, g.n + "c").map((p) => ({ id: p, name: nameOf(p) })) };
     },
     score(g, c) {
       const d = {}; const right = {};
@@ -1206,7 +1502,7 @@ const GAMES = {
     },
     reveal(g, c) {
       const right = (g.rv && g.rv.r) || {};
-      return `<p class="mid">${esc(BANK.who[g.d.q])}</p><ol class="results">${Object.keys(c.ans).map((p) => `<li class="res"><div class="res-text">${esc(c.ans[p])}</div><div class="res-meta">Written by ${chip(p)} · ${(right[p] || []).length ? "guessed by " + right[p].map(chip).join(" ") : "nobody guessed it"}</div></li>`).join("")}</ol>
+      return `<p class="mid">${esc(T("who", g.d.q))}</p><ol class="results">${Object.keys(c.ans).map((p) => `<li class="res"><div class="res-text">${ansH(c, p)}</div><div class="res-meta">Written by ${chip(p)} · ${(right[p] || []).length ? "guessed by " + right[p].map(chip).join(" ") : "nobody guessed it"}</div></li>`).join("")}</ol>
         <p class="hint">+100 for each correct guess. +50 to the author for every wrong guess on their answer.</p>`;
     }
   },
@@ -1217,7 +1513,7 @@ const GAMES = {
     steps: (pn) => Math.max(4, Math.min(pn, 6)),
     plan(pn) { const S = this.steps(pn); const out = []; for (let s = 0; s < S; s++) out.push({ r: s, ph: "write" }); out.push({ r: S, ph: "vote" }, { r: S, ph: "reveal" }); return out; },
     setup(g, r) { if (r === 0) g.d = { o: pick("openers", Math.min(g.pl.length, BANK.openers.length)) }; },
-    opener(g, j) { return BANK.openers[g.d.o[j % g.d.o.length]]; },
+    opener(g, j) { return T("openers", g.d.o[j % g.d.o.length]); },
     write(g, me, c) {
       const n = g.pl.length; const i = g.pl.indexOf(me); const s = curStep(g).r; const j = (i + s) % n;
       let prev = s === 0 ? this.opener(g, j) : storyLine(c, g.pl[(((j - (s - 1)) % n) + n) % n], s - 1, g);
@@ -1243,40 +1539,58 @@ const GAMES = {
   },
 
   court: {
-    name: "Hot Take Court", tag: "Debate", min: 3, color: "#ff3366", wt: 90, vt: 40,
-    blurb: "One player defends a ridiculous opinion, another attacks it, and everyone else is the jury.",
+    name: "Hot Take Court", tag: "Debate", min: 3, gifs: true, color: "#ff3366", wt: 90, vt: 45,
+    blurb: "One player defends a ridiculous opinion and another attacks it. The jury heckles with objections, then decides. Lawyers win the verdict, jurors win with the best objection.",
     plan: (pn, n) => rounds(n, ["write", "vote", "reveal"]),
     setup(g, r, present) { const pool = g.pl.filter((p) => present.has(p)); const k = r % pool.length; g.d = { t: pick("takes", 1)[0], df: pool[k], pr: pool[(k + 1) % pool.length] }; },
-    who(g, ph) { return ph === "write" ? [g.d.df, g.d.pr] : g.pl.filter((p) => p !== g.d.df && p !== g.d.pr); },
+    jury(g) { return g.pl.filter((p) => p !== g.d.df && p !== g.d.pr); },
+    who(g, ph) {
+      if (ph === "write") return g.pl.slice();
+      const jury = this.jury(g); const c = ctxFor(g);
+      return jury.concat(jury.some((p) => c.ans[p] != null) ? [g.d.df, g.d.pr] : []);
+    },
+    take(g) { return T("takes", g.d.t); },
     write(g, me) {
-      const take = `<p class="big">“${esc(BANK.takes[g.d.t])}”</p>`;
+      const take = `<p class="big">“${esc(this.take(g))}”</p>`;
       if (me === g.d.df) return { prompt: `<div class="eyebrow">You're the defense</div>${take}<p class="hint">Convince the jury this take is correct. On voice chat? Argue it out loud too.</p>`, type: "text", max: 240, ph: "Ladies and gentlemen of the jury…" };
       if (me === g.d.pr) return { prompt: `<div class="eyebrow">You're the prosecution</div>${take}<p class="hint">Tear this take apart. Make the jury hate it.</p>`, type: "text", max: 240, ph: "This take is a crime because…" };
-      return { spectate: `<div class="eyebrow">You're on the jury</div>${take}<p class="hint">${chip(g.d.df)} is defending it and ${chip(g.d.pr)} is attacking it. They're writing closing statements now.</p>` };
+      return { prompt: `<div class="eyebrow">You're on the jury</div>${take}<p class="hint">${chip(g.d.df)} is defending it and ${chip(g.d.pr)} is attacking it. While they write, shout your best objection or heckle. The lawyers pick the best one, and it's worth points.</p>`, type: "text", max: 90, ph: "OBJECTION! …" };
     },
     vote(g, me, c) {
-      const st = (p) => esc(c.ans[p] || "(said nothing, just stared at the jury)");
-      return { kind: "pick", prompt: `<div class="eyebrow">The jury decides</div><p class="mid">“${esc(BANK.takes[g.d.t])}”</p>`, options: [
+      const st = (p) => (c.ans[p] != null ? ansH(c, p) : "(said nothing, just stared at the jury)");
+      if (me === g.d.df || me === g.d.pr) {
+        const objs = this.jury(g).filter((p) => c.ans[p] != null);
+        return { kind: "pick", prompt: `<div class="eyebrow">While the jury decides your fate…</div><p class="mid">Pick the best objection from the jury.</p>`, options: shuffle(objs, g.n + me).map((p) => ({ id: p, html: `<span>${ansH(c, p)}</span>` })) };
+      }
+      return { kind: "pick", prompt: `<div class="eyebrow">The jury decides</div><p class="mid">“${esc(this.take(g))}”</p>`, options: [
         { id: "d", html: `<span class="sub">The defense, ${chip(g.d.df)}</span><span>${st(g.d.df)}</span>` },
         { id: "p", html: `<span class="sub">The prosecution, ${chip(g.d.pr)}</span><span>${st(g.d.pr)}</span>` }
-      ], readonly: me === g.d.df || me === g.d.pr };
+      ] };
     },
     score(g, c) {
-      let dv = 0, pv = 0; const d = {}; const jury = this.who(g, "vote");
-      for (const [v, t] of Object.entries(c.votes)) { if (!jury.includes(v)) continue; if (t === "d") dv++; else if (t === "p") pv++; }
+      const jury = this.jury(g); let dv = 0, pv = 0; const ob = {}; const d = {};
+      for (const [v, t] of Object.entries(c.votes)) {
+        if (jury.includes(v)) { if (t === "d") dv++; else if (t === "p") pv++; }
+        else if ((v === g.d.df || v === g.d.pr) && isStr(t) && jury.includes(t) && c.ans[t] != null) ob[t] = (ob[t] || 0) + 1;
+      }
       if (dv > pv) d[g.d.df] = 300; else if (pv > dv) d[g.d.pr] = 300; else { d[g.d.df] = 150; d[g.d.pr] = 150; }
       const side = dv > pv ? "d" : pv > dv ? "p" : null;
-      if (side) for (const [v, t] of Object.entries(c.votes)) if (jury.includes(v) && t === side) d[v] = (d[v] || 0) + 50;
-      return { d, rv: { dv, pv } };
+      if (side) for (const [v, t] of Object.entries(c.votes)) if (jury.includes(v) && t === side) d[v] = (d[v] || 0) + 100;
+      for (const p in ob) d[p] = (d[p] || 0) + ob[p] * 75;
+      return { d, rv: { dv, pv, ob } };
     },
     reveal(g, c) {
-      const dv = (g.rv && g.rv.dv) || 0, pv = (g.rv && g.rv.pv) || 0;
+      const dv = (g.rv && g.rv.dv) || 0, pv = (g.rv && g.rv.pv) || 0, ob = (g.rv && g.rv.ob) || {};
       const head = dv > pv ? "The take stands." : pv > dv ? "Take overruled." : "Hung jury.";
-      return `<p class="verdict">${head}</p><p class="mid">“${esc(BANK.takes[g.d.t])}”</p>
+      const objs = this.jury(g).filter((p) => c.ans[p] != null).sort((a, b) => (ob[b] || 0) - (ob[a] || 0));
+      const topOb = objs.length ? ob[objs[0]] || 0 : 0;
+      return `<p class="verdict">${head}</p><p class="mid">“${esc(this.take(g))}”</p>
         <ol class="results">
-          <li class="res ${dv > pv ? "win" : ""}"><div class="res-text">${esc(c.ans[g.d.df] || "(nothing)")}</div><div class="res-meta">Defense ${chip(g.d.df)} ${plural(dv, "vote")} ${pts(g.lt && g.lt[g.d.df])}</div></li>
-          <li class="res ${pv > dv ? "win" : ""}"><div class="res-text">${esc(c.ans[g.d.pr] || "(nothing)")}</div><div class="res-meta">Prosecution ${chip(g.d.pr)} ${plural(pv, "vote")} ${pts(g.lt && g.lt[g.d.pr])}</div></li>
-        </ol><p class="hint">Jurors who sided with the verdict get +50.</p>`;
+          <li class="res ${dv > pv ? "win" : ""}"><div class="res-text">${c.ans[g.d.df] != null ? ansH(c, g.d.df) : "(nothing)"}</div><div class="res-meta">Defense ${chip(g.d.df)} ${plural(dv, "vote")} ${pts(g.lt && g.lt[g.d.df])}</div></li>
+          <li class="res ${pv > dv ? "win" : ""}"><div class="res-text">${c.ans[g.d.pr] != null ? ansH(c, g.d.pr) : "(nothing)"}</div><div class="res-meta">Prosecution ${chip(g.d.pr)} ${plural(pv, "vote")} ${pts(g.lt && g.lt[g.d.pr])}</div></li>
+        </ol>
+        ${objs.length ? `<div class="eyebrow" style="margin-top:8px">Objections from the jury</div><ol class="results">${objs.map((p) => `<li class="res ${topOb && ob[p] === topOb ? "win" : ""}"><div class="res-text">${ansH(c, p)}</div><div class="res-meta">${chip(p)} ${plural(ob[p] || 0, "lawyer vote")} ${pts(g.lt && g.lt[p])}</div></li>`).join("")}</ol>` : ""}
+        <p class="hint">Jurors get +75 for each lawyer who picks their objection, and +100 for siding with the verdict.</p>`;
     }
   },
 
@@ -1285,7 +1599,7 @@ const GAMES = {
     blurb: "Five random things, one silly category. Rank them and score by matching the group's average.",
     plan: (pn, n) => rounds(n, ["write", "reveal"]),
     setup(g) { g.d = { c: pick("cats", 1)[0], it: pick("items", 5) }; },
-    write(g) { return { prompt: `<div class="eyebrow">Tap in order, 1 = most</div><p class="big">${esc(BANK.cats[g.d.c])}</p><p class="hint">Points for matching the group's average ranking.</p>`, type: "order", items: g.d.it.map((i) => BANK.items[i]) }; },
+    write(g) { return { prompt: `<div class="eyebrow">Tap in order, 1 = most</div><p class="big">${esc(T("cats", g.d.c))}</p><p class="hint">Points for matching the group's average ranking.</p>`, type: "order", items: g.d.it.map((i) => T("items", i)) }; },
     valid(v) { return Array.isArray(v) && v.length === 5 && [...v].sort().join() === "0,1,2,3,4"; },
     score(g, c) {
       const subs = Object.entries(c.ans).filter(([, v]) => this.valid(v)); const sum = [0, 0, 0, 0, 0];
@@ -1295,9 +1609,9 @@ const GAMES = {
       return { d, rv: { go } };
     },
     reveal(g, c) {
-      const go = (g.rv && g.rv.go) || [0, 1, 2, 3, 4]; const name = (i) => esc(BANK.items[g.d.it[i]]);
+      const go = (g.rv && g.rv.go) || [0, 1, 2, 3, 4]; const name = (i) => esc(T("items", g.d.it[i]));
       const subs = Object.entries(c.ans).filter(([, v]) => this.valid(v)).sort((a, b) => ((g.lt && g.lt[b[0]]) || 0) - ((g.lt && g.lt[a[0]]) || 0));
-      return `<div class="eyebrow">The group's ranking</div><p class="mid">${esc(BANK.cats[g.d.c])}</p>
+      return `<div class="eyebrow">The group's ranking</div><p class="mid">${esc(T("cats", g.d.c))}</p>
         <ol class="results">${go.map((i, k) => `<li class="res ${k === 0 ? "win" : ""}"><div class="res-text">${k + 1}. ${name(i)}</div></li>`).join("")}</ol>
         <div class="eyebrow" style="margin-top:18px">How everyone ranked it</div>
         <ol class="results">${subs.map(([p, v]) => `<li class="res"><div class="res-meta">${chip(p)} ${pts(g.lt && g.lt[p]) || '<span class="pts">+0</span>'}</div><div>${v.map((i, k) => `${k + 1}. ${name(i)}`).join(" · ")}</div></li>`).join("")}</ol>`;
@@ -1324,9 +1638,111 @@ const GAMES = {
         <ol class="results">${order.map((p, k) => `<li class="res ${k === 0 ? "win" : ""}"><div class="res-text">${fmtNum(c.ans[p])}</div><div class="res-meta">${chip(p)} off by ${fmtNum(Math.abs(c.ans[p] - q.a))} ${pts(g.lt && g.lt[p])}</div></li>`).join("")}</ol>
         ${worst ? `<p class="mid" style="margin-top:14px">${chip(worst)} ${esc(BANK.roasts[g.d.ro])}</p>` : ""}`;
     }
+  },
+
+  doodle: {
+    name: "Doodle Relay", tag: "Drawing", min: 3, fixed: true, fixedNote: "One chain per player", color: "#22c7c7", wt: 75, vt: 60,
+    blurb: "Write something weird. The next player draws it, the next guesses what the drawing is, and so on down the line. Then see how badly it went.",
+    steps: (pn) => Math.max(3, Math.min(pn, 7)),
+    plan(pn) { const S = this.steps(pn); const out = []; for (let s = 0; s < S; s++) out.push({ r: s, ph: "write" }); out.push({ r: S, ph: "vote" }, { r: S, ph: "reveal" }); return out; },
+    setup(g, r) { if (r === 0) g.d = { s: this.steps(g.pl.length) }; },
+    kind: (s) => (s === 0 ? "prompt" : s % 2 === 1 ? "draw" : "guess"),
+    stepLabel(s) { return { prompt: "Write", draw: "Draw", guess: "Guess" }[this.kind(s)]; },
+    author(g, j, s) { const n = g.pl.length; return g.pl[(((j - s) % n) + n) % n]; },
+    entry(g, c, j, s) {
+      const by = this.author(g, j, s); const kind = this.kind(s);
+      return { kind, by, s, v: kind === "draw" ? wantBlob(g.n + "." + s + "." + by) : storyLine(c, by, s, g) };
+    },
+    write(g, me, c) {
+      const n = g.pl.length; const i = g.pl.indexOf(me); const s = curStep(g).r; const j = (i + s) % n; const kind = this.kind(s);
+      if (kind === "prompt") return { prompt: `<div class="eyebrow">Chain ${j + 1} · start it off</div><p class="big">Write something for the next player to draw.</p><p class="hint">The weirder the better. Stuck? <button type="button" class="linkbtn" data-act="idea">Give me an idea</button></p>`, type: "text", max: 80, ph: "a raccoon running a lemonade stand" };
+      const prev = this.entry(g, c, j, s - 1);
+      if (kind === "draw") return { prompt: `<div class="eyebrow">Chain ${j + 1} · draw it</div>${prev.v ? `<p class="hint" style="margin:0">Draw this:</p><p class="big">“${esc(prev.v)}”</p>` : `<p class="mid">The last player vanished. Draw anything you want!</p>`}`, type: "draw" };
+      return { prompt: `<div class="eyebrow">Chain ${j + 1} · guess it</div><p class="hint" style="margin:0">What is this drawing?</p>${prev.v ? drawSVG(prev.v) : `<p class="mid">This drawing got lost on the way. Make up something good.</p>`}`, type: "text", max: 80, ph: "I think it's…" };
+    },
+    extra(g, v) { const s = curStep(g).r; const l = Object.assign({}, ME.ln && ME.ln.g === g.n ? ME.ln.l : {}); l[s] = v; return { ln: { g: g.n, l } }; },
+    chain(g, c, j) { const out = []; for (let s = 0; s < this.steps(g.pl.length); s++) out.push(this.entry(g, c, j, s)); return out; },
+    emptyVote(g) { return ![...BLOBS.keys()].some((k) => k.startsWith(g.n + ".")); },
+    vote(g, me, c) {
+      const n = g.pl.length; const S = this.steps(n); const opts = [];
+      for (let j = 0; j < n; j++) for (let s = 1; s < S; s += 2) {
+        const by = this.author(g, j, s); if (by === me) continue;
+        const key = g.n + "." + s + "." + by; const v = wantBlob(key); if (!v) continue;
+        const prev = this.entry(g, c, j, s - 1);
+        opts.push({ id: key, html: `${drawSVG(v)}<span class="sub">Drawn for: “${esc(prev.v || "?")}”</span>` });
+      }
+      return { kind: "pick", prompt: `<div class="eyebrow">Art show</div><p class="mid">Vote for the best drawing (not your own).</p>`, options: shuffle(opts, g.n + me) };
+    },
+    score(g, c) {
+      const cnt = {}; const d = {};
+      for (const [v, k] of Object.entries(c.votes)) {
+        if (!isStr(k)) continue; const parts = k.split(".");
+        if (parts.length !== 3 || parts[0] !== g.n) continue; const by = parts[2];
+        if (by === v || !g.pl.includes(by)) continue;
+        cnt[k] = (cnt[k] || 0) + 1; d[by] = (d[by] || 0) + 100;
+      }
+      return { d, rv: { c: cnt } };
+    },
+    reveal(g, c) {
+      const cnt = (g.rv && g.rv.c) || {}; const top = Math.max(0, ...Object.values(cnt));
+      const label = { prompt: "Started by", draw: "Drawn by", guess: "Guessed by" };
+      return `<p class="mid">Here's how every chain turned out.</p>` + g.pl.map((_, j) => `<div class="chain"><span class="lbl" style="margin:0">Chain ${j + 1}</span>${this.chain(g, c, j).map((e) => {
+        const key = g.n + "." + e.s + "." + e.by; const votes = cnt[key] || 0;
+        const body = e.kind === "draw" ? (e.v ? drawSVG(e.v) : `<p class="muted">(drawing lost)</p>`) : `<p class="${e.kind === "prompt" ? "big" : "mid"}">“${esc(e.v || "…")}”</p>`;
+        return `<div class="link ${e.kind === "draw" && top && votes === top ? "win" : ""}">${body}<div class="res-meta">${label[e.kind]} ${chip(e.by)}${e.kind === "draw" ? ` ${plural(votes, "vote")} ${pts(votes * 100)}` : ""}</div></div>`;
+      }).join(`<div class="arrow" aria-hidden="true">↓</div>`)}</div>`).join("");
+    }
+  },
+
+  trivia: {
+    name: "Trivia Rush", tag: "Trivia", min: 2, color: "#9be15d", vt: 20,
+    blurb: "Multiple-choice trivia, pulled fresh from an online question bank when it can. Right answers score, and the fastest right answer scores extra.",
+    plan: (pn, n) => rounds(n, ["vote", "reveal"]),
+    setup(g) {
+      if (ONLINE.trivia.length < 5) prefetchOnline();
+      let q = ONLINE.trivia.shift();
+      if (!q) { const i = pick("trivialocal", 1)[0]; const base = TRIVIA_LOCAL[i]; const order = shuffle([0, 1, 2, 3], Math.random()); q = { q: base.q, a: order.map((k) => base.a[k]), ok: order.indexOf(base.ok), cat: base.cat }; }
+      g.d = { q: q.q, a: q.a, ok: q.ok, cat: q.cat || "Trivia", ord: [] };
+    },
+    tick(g) { const rk = rkey(g); if (g.ph !== "vote") return; for (const p of g.pl) { if (g.d.ord.includes(p)) continue; const r = R.get(p); if (r && r.vt && r.vt.k === rk) g.d.ord.push(p); } },
+    vote(g) { return { kind: "pick", lock: true, prompt: `<div class="eyebrow">${esc(g.d.cat)}</div><p class="big">${esc(g.d.q)}</p>`, options: g.d.a.map((t, i) => ({ id: "a" + i, html: `<span><b class="abcd">${"ABCD"[i]}</b> ${esc(t)}</span>` })) }; },
+    score(g, c) {
+      const d = {}; const right = [];
+      for (const [v, t] of Object.entries(c.votes)) if (t === "a" + g.d.ok) { d[v] = 200; right.push(v); }
+      const first = (g.d.ord || []).find((p) => right.includes(p));
+      if (first) d[first] += 100;
+      return { d, rv: { first: first || null } };
+    },
+    reveal(g, c) {
+      const by = {}; for (const [v, t] of Object.entries(c.votes)) (by[t] = by[t] || []).push(v);
+      const first = g.rv && g.rv.first;
+      return `<div class="eyebrow">${esc(g.d.cat)}</div><p class="mid">${esc(g.d.q)}</p><ol class="results">${g.d.a.map((t, i) => `<li class="res ${i === g.d.ok ? "real" : ""}"><div class="res-text"><b class="abcd">${"ABCD"[i]}</b> ${esc(t)} ${i === g.d.ok ? '<span class="tag">Correct</span>' : ""}</div><div class="res-meta">${(by["a" + i] || []).map((p) => chip(p) + (i === g.d.ok ? pts(g.lt && g.lt[p]) : "")).join(" ") || "Nobody"}</div></li>`).join("")}</ol>
+        ${first ? `<p class="mid">${chip(first)} was the fastest right answer. +100 bonus!</p>` : `<p class="mid">Nobody got it. Brutal.</p>`}`;
+    }
+  },
+
+  majority: {
+    name: "Majority Rules", tag: "Opinions", min: 3, color: "#ffb800", vt: 25,
+    blurb: "Would-you-rather questions. Pick a side, and score if you end up with the majority. Lone wolves get called out.",
+    plan: (pn, n) => rounds(n, ["vote", "reveal"]),
+    setup(g) { g.d = { q: pick("wyr", 1)[0] }; },
+    opts(g) { const parts = String(T("wyr", g.d.q) || "This|That").split("|"); return [parts[0] || "This", parts[1] || "That"]; },
+    vote(g) { const o = this.opts(g); return { kind: "pick", lock: true, prompt: `<div class="eyebrow">Would you rather…</div>`, options: o.map((t, i) => ({ id: "o" + i, html: `<span class="big">${esc(t)}</span>` })) }; },
+    score(g, c) {
+      const cnt = [0, 0]; for (const t of Object.values(c.votes)) if (t === "o0") cnt[0]++; else if (t === "o1") cnt[1]++;
+      const d = {}; let lone = null;
+      if (cnt[0] === cnt[1]) for (const v of Object.keys(c.votes)) d[v] = 50;
+      else { const win = cnt[0] > cnt[1] ? "o0" : "o1"; for (const [v, t] of Object.entries(c.votes)) if (t === win) d[v] = 100; const lose = win === "o0" ? "o1" : "o0"; const losers = Object.keys(c.votes).filter((v) => c.votes[v] === lose); if (losers.length === 1 && cnt[0] + cnt[1] >= 3) lone = losers[0]; }
+      return { d, rv: { cnt, lone } };
+    },
+    reveal(g, c) {
+      const o = this.opts(g); const cnt = (g.rv && g.rv.cnt) || [0, 0]; const total = Math.max(1, cnt[0] + cnt[1]); const lone = g.rv && g.rv.lone;
+      return `<div class="eyebrow">Would you rather…</div>${o.map((t, i) => { const who = Object.keys(c.votes).filter((v) => c.votes[v] === "o" + i); return `<div class="res ${cnt[i] > cnt[1 - i] ? "win" : ""}"><div class="res-text">${esc(t)}</div><div class="bar"><span style="width:${Math.round((cnt[i] / total) * 100)}%"></span></div><div class="res-meta">${plural(cnt[i], "vote")} ${who.map((p) => chip(p) + pts(g.lt && g.lt[p])).join(" ")}</div></div>`; }).join("")}
+        ${cnt[0] === cnt[1] ? `<p class="mid">Dead even. Everyone gets +50.</p>` : lone ? `<p class="mid">${chip(lone)} stood alone. Lone wolf! 🐺</p>` : ""}`;
+    }
   }
 };
-const GAME_ORDER = ["fakefact", "advice", "odd", "whowrote", "story", "court", "rank", "guess"];
+const GAME_ORDER = ["fakefact", "advice", "odd", "whowrote", "story", "court", "rank", "guess", "doodle", "trivia", "majority"];
 
 /* ---------------- engine (host side) ---------------- */
 const planOf = (g) => GAMES[g.gm].plan(g.pn, g.R);
@@ -1337,13 +1753,14 @@ const durFor = (game, ph) => (ph === "write" ? game.wt || 60 : ph === "vote" ? g
 
 function presentPids() { return new Set(inRoom(R, ME.code).map((p) => p.pid)); }
 function ctxFor(g) {
-  const rk = rkey(g); const ans = {}, votes = {};
+  const rk = rkey(g); const ans = {}, votes = {}, gifs = {};
   for (const p of R.values()) {
-    if (p.code !== g.c) continue;
-    if (p.a && p.a.k === rk && p.a.d != null && (g.pl.includes(p.pid))) ans[p.pid] = p.a.d;
-    if (p.vt && p.vt.k === rk && p.vt.d != null && g.pl.includes(p.pid)) votes[p.pid] = p.vt.d;
+    if (p.code !== g.c || !g.pl.includes(p.pid)) continue;
+    if (p.a && p.a.k === rk && p.a.d != null) ans[p.pid] = p.a.d;
+    if (p.vt && p.vt.k === rk && p.vt.d != null) votes[p.pid] = p.vt.d;
+    if (p.gf && p.gf.k === rk && isStr(p.gf.u)) { const u = gifURL(p.gf.u); if (u) gifs[p.pid] = u; }
   }
-  return { ans, votes, R };
+  return { ans, votes, gifs, R };
 }
 function enterStep() {
   const P = planOf(G); const step = P[G.st]; const prev = P[G.st - 1]; const game = GAMES[G.gm]; const present = presentPids();
@@ -1364,9 +1781,10 @@ function enterStep() {
 }
 function advance() {
   G.st++;
-  if (G.st >= planOf(G).length) { G.ph = "final"; G.e = 0; return; }
+  if (G.st >= planOf(G).length) { G.ph = "final"; G.e = 0; finalize(); return; }
   enterStep();
-  if (G.ph === "vote" && GAMES[G.gm].needsClues && !Object.keys(ctxFor(G).ans).length) advance();
+  const gm = GAMES[G.gm];
+  if (G.ph === "vote" && ((gm.needsClues && !Object.keys(ctxFor(G).ans).length) || (gm.emptyVote && gm.emptyVote(G)))) advance();
 }
 const twistOf = (g) => (g && g.gm && g.tw >= 0 && TWISTS[g.gm] ? TWISTS[g.gm][g.tw] || null : null);
 function startGame(id) {
@@ -1390,9 +1808,10 @@ function hostTick() {
   if (!G || !G.gm) return;
   if (G.ph === "write" || G.ph === "vote") {
     const present = presentPids(); const rk = rkey(G);
+    if (GAMES[G.gm].tick) GAMES[G.gm].tick(G);
     const need = whoFor(G, G.ph).filter((p) => present.has(p));
     const done = need.filter((p) => { const r = R.get(p); const s = G.ph === "write" ? r.a : r.vt; return s && s.k === rk; });
-    if (need.length === 0 || done.length === need.length || (G.e && Date.now() > G.e)) { advance(); commit(); }
+    if (need.length === 0 || done.length === need.length || (G.e && Date.now() > G.e + 1500)) { advance(); commit(); }
   }
   commit();
 }
@@ -1402,17 +1821,31 @@ function newHostState(code) { return { c: code, gm: null, ph: "lobby", sel: "fak
 function hostOnly(fn) { return (...a) => { if (G) { fn(...a); commit(); } }; }
 const ACT = {
   color(d) { const co = Number(d.i); store.set("rr-color", String(co)); setMe({ co }); },
-  create() { if (!saveName()) return; const code = roomCode(); G = newHostState(code); lastPushed = ""; setMe({ code, host: true, rd: null, a: null, vt: null, ln: null }); connectRoom(code); commit(); },
+  create() { if (!saveName()) return; const code = roomCode(); G = newHostState(code); lastPushed = ""; setMe({ code, host: true, rd: null, a: null, vt: null, ln: null }); connectRoom(code); commit(); prefetchOnline(); },
   joincode() { if (!saveName()) return; const el = $("#codeIn"); const code = (el ? el.value : "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 5); if (code.length !== 5) { ERR = "Room codes are 5 letters."; schedule(); return; } joinRoom(code); },
   ready() { setMe({ rd: ME.rd ? null : true }); },
-  takeover() { G = lastG && lastG.c === ME.code ? JSON.parse(JSON.stringify(lastG)) : newHostState(ME.code); if (G.e) G.e = Date.now() + 30000; lastPushed = ""; setMe({ host: true }); commit(); },
+  kick: hostOnly((d) => { if (d.pid && d.pid !== ME.pid) G.kick = (G.kick || []).filter((x) => x !== d.pid).concat(d.pid).slice(-40); }),
+  react(d) { if (Date.now() - lastReact < 300) return; lastReact = Date.now(); setMe({ rx: { e: Number(d.i) || 0, t: Date.now() } }); },
+  idea() { const v = Math.random() < 0.5 ? makeTemplate("doodle") : BANK.doodle[Math.floor(Math.random() * BANK.doodle.length)]; DRAFT.ans = v; const el = document.querySelector("[data-draft='ans']"); if (el) { el.value = v; el.focus(); updateCounts(); } },
+  pcolor(d) { DRAW.c = Number(d.i) || 0; schedule(); },
+  psize(d) { DRAW.w = Number(d.i) || 0; schedule(); },
+  pundo() { DRAW.strokes.pop(); const cv = document.getElementById("pad"); if (cv && cv._redraw) cv._redraw(); },
+  pclear() { DRAW.strokes = []; const cv = document.getElementById("pad"); if (cv && cv._redraw) cv._redraw(); },
+  submitdraw() { submitDrawing(); },
+  rmprompt(d) {
+    const i = Number(d.i);
+    if (d.pid === ME.pid) { const cp = (Array.isArray(ME.cp) ? ME.cp : []).slice(); cp.splice(i, 1); setMe({ cp }); return; }
+    if (!G) return; const r = R.get(d.pid); const x = r && Array.isArray(r.cp) && r.cp[i];
+    if (x && isStr(x.t)) { G.ban = (G.ban || []).concat(hash(clean(x.t, 120))).slice(-200); commit(); }
+  },
+  takeover() { G = lastG && lastG.c === ME.code ? JSON.parse(JSON.stringify(lastG)) : newHostState(ME.code); if (G.e) G.e = Date.now() + 30000; lastPushed = ""; setMe({ host: true }); commit(); prefetchOnline(); },
   sel: hostOnly((d) => { if (!G.gm && GAMES[d.id]) G.sel = d.id; }),
   rounds: hostOnly((d) => { G.R = Math.max(1, Math.min(6, (G.R || 3) + Number(d.by))); }),
   start: hostOnly(() => startGame(G.sel)),
   skip: hostOnly(() => { if (!G.gm || G.ph === "final" || G.ph === "reveal" || Date.now() - lastSkip < 1500) return; lastSkip = Date.now(); advance(); }),
   more: hostOnly(() => { if (G.e) G.e += 30000; }),
   next: hostOnly(() => { if (G.gm && G.ph === "reveal") advance(); }),
-  end: hostOnly(() => { if (G.gm) { G.ph = "final"; G.e = 0; } }),
+  end: hostOnly(() => { if (G.gm) { G.ph = "final"; G.e = 0; finalize(); } }),
   again: hostOnly(() => startGame(G.gm)),
   lobby: hostOnly(() => { G.gm = null; G.ph = "lobby"; G.e = 0; }),
   vote(d) { const g = HG; if (!g || g.ph !== "vote") return; Sound.sfx("pop"); setMe({ vt: { k: rkey(g), d: d.id } }); },
@@ -1430,8 +1863,8 @@ function saveName() {
   if (!nm) { ERR = "Type a name first."; schedule(); if (el) el.focus(); return false; }
   store.set("rr-name", nm); ERR = ""; setMe({ nm }); return true;
 }
-function joinRoom(code) { ERR = ""; G = null; lastG = null; lastPushed = ""; setMe({ code, host: false, rd: null, g: null, a: null, vt: null, ln: null }); connectRoom(code); }
-function leaveRoom() { disconnectRoom(); G = null; lastG = null; lastPushed = ""; setMe({ code: null, host: false, rd: null, g: null, a: null, vt: null, ln: null }); }
+function joinRoom(code) { ERR = ""; G = null; lastG = null; lastPushed = ""; setMe({ code, host: false, rd: null, g: null, a: null, vt: null, ln: null, ty: null, rx: null, gf: null }); connectRoom(code); }
+function leaveRoom() { disconnectRoom(); G = null; lastG = null; lastPushed = ""; setMe({ code: null, host: false, rd: null, g: null, a: null, vt: null, ln: null, ty: null, rx: null, gf: null }); }
 function submitAnswer(val) {
   const g = HG; if (!g || g.ph !== "write") return; const game = GAMES[g.gm];
   if (game.type !== "order" && typeof val === "string") val = clean(val, 240);
@@ -1440,8 +1873,10 @@ function submitAnswer(val) {
   if (w.type === "text" && !val) { ERR = "Write something first."; schedule(); return; }
   const tw = twistOf(g); const terr = tw && tw.check && typeof val === "string" ? tw.check(val) : "";
   const err = terr || (game.validate ? game.validate(g, val, ME.pid) : ""); if (err) { ERR = err; Sound.sfx("nope"); schedule(); return; }
+  const gu = game.gifs && DRAFT.gif && String(DRAFT.gif).trim() ? gifURL(DRAFT.gif) : null;
+  if (game.gifs && DRAFT.gif && String(DRAFT.gif).trim() && !gu) { ERR = "That link isn't a GIF from GIPHY, Tenor or Imgur. Right-click the GIF and pick \"Copy image address\"."; Sound.sfx("nope"); schedule(); return; }
   ERR = "";
-  const patch = Object.assign({ a: { k: rkey(g), d: val } }, game.extra ? game.extra(g, val) : {});
+  const patch = Object.assign({ a: { k: rkey(g), d: val }, gf: gu ? { k: rkey(g), u: gu } : null, ty: null }, game.extra ? game.extra(g, val) : {});
   for (const k in DRAFT) delete DRAFT[k];
   Sound.sfx("submit");
   setMe(patch);
@@ -1457,7 +1892,7 @@ function sticker(p, o) {
 
 function welcomeView() {
   return `<section class="welcome">
-    <div class="hero"><h1>Eight party games.<br><span class="hl">Zero installs.</span></h1><p>One person makes a room, everyone joins with the code, and you all play from your own screens. Best with everyone on voice chat.</p></div>
+    <div class="hero"><h1>Eleven party games.<br><span class="hl">Zero installs.</span></h1><p>One person makes a room, everyone joins with the code, and you all play from your own screens. Best with everyone on voice chat.</p></div>
     <div class="box name-box stack">
       <div><label for="nameIn" class="lbl">Your name</label><input id="nameIn" class="field big-field" maxlength="18" autocomplete="off" placeholder="Type it here" data-draft="name"></div>
       <div><span class="lbl">Your color</span><div class="swatches" role="radiogroup" aria-label="Your color">${COLORS.map((c, i) => `<button class="sw ${ME.co === i ? "sel" : ""}" style="--pc:${c}" data-act="color" data-i="${i}" aria-label="Color ${i + 1}" aria-checked="${ME.co === i}" role="radio"></button>`).join("")}</div></div>
@@ -1486,23 +1921,24 @@ function lobbyView(g, amHost) {
   const trigger = amHost
     ? `<button class="btn go start" data-act="start" ${enough ? "" : "disabled"}>${enough ? "Start!" : `Need ${sel.min}+`}</button><p class="readyline">${guests.length ? `${ready} of ${guests.length} ready` : "Waiting for friends to join…"}</p>`
     : `<button class="btn ${ME.rd ? "on" : "go"} start" data-act="ready">${ME.rd ? "Ready!" : "Ready up"}</button><p class="readyline">${ME.rd ? "The host starts the game. Tap again to un-ready." : "Let the host know you're set."}</p>`;
-  const settings = sel.fixed ? `<div class="mini">One story per player</div>`
+  const settings = sel.fixed ? `<div class="mini">${esc(sel.fixedNote || "One story per player")}</div>`
     : amHost ? `<div class="mini">Rounds <button class="btn tiny" data-act="rounds" data-by="-1" aria-label="Fewer rounds">−</button><b>${g.R}</b><button class="btn tiny" data-act="rounds" data-by="1" aria-label="More rounds">+</button></div>`
     : `<div class="mini">${plural(g.R, "round")}</div>`;
-  const tt = [-2, 1.5, -1, 2.5, -2.5, 1, -1.5, 2];
+  const tt = [-2, 1.5, -1, 2.5, -2.5, 1, -1.5, 2, -2, 1.5, -1];
   const tickets = GAME_ORDER.map((id, i) => { const x = GAMES[id]; return `<button class="ticket ${g.sel === id ? "sel" : ""}" style="--gc:${x.color};--rot:${tt[i]}deg" ${amHost ? `data-act="sel" data-id="${id}"` : "disabled"} aria-pressed="${g.sel === id}"><span class="tk-tag">${esc(x.tag)}</span><span class="tk-name">${esc(x.name)}</span><span class="tk-min" title="${x.min}+ players">${x.min}+</span></button>`; }).join("");
   return `<section class="lobby">
     <div class="lobby-top">${code}<div class="launch box"><span class="lbl" style="margin:0">Up next</span><h2 class="upnext" style="--gc:${sel.color}">${esc(sel.name)}</h2><p class="blurb">${esc(sel.blurb)}</p>${trigger}${settings}</div></div>
     <div><h3 class="section-h">${amHost ? "Pick a game" : "The host is picking"}</h3><div class="tickets">${tickets}</div></div>
+    ${promptsBox(amHost)}
   </section>`;
 }
 
 function statusBar(g) {
   const game = GAMES[g.gm]; const st = curStep(g); let label;
   if (g.ph === "final") label = "Final scores";
-  else if (game.fixed) label = st.ph === "write" ? `Line ${st.r + 1} of ${game.steps(g.pn)}` : "The stories";
+  else if (game.fixed) label = st.ph === "write" ? `${game.stepLabel ? game.stepLabel(st.r) : "Line"} · ${st.r + 1} of ${game.steps(g.pn)}` : "Results";
   else label = `Round ${st.r + 1} of ${g.R}`;
-  const phase = { write: "Writing", vote: "Voting", reveal: "Results" }[g.ph];
+  const phase = g.ph === "write" && game.kind && game.kind(st.r) === "draw" ? "Drawing" : { write: "Writing", vote: planOf(g)[0].ph === "vote" ? "Answering" : "Voting", reveal: "Results" }[g.ph];
   const tw = twistOf(g);
   return `<div class="hud"><span class="hud-game">${esc(game.name)}</span><span class="hud-round">${label}</span>${phase ? `<span class="hud-phase">${phase}</span>` : ""}${tw && tw.x2 && g.ph !== "final" ? `<span class="hud-x2">2× points</span>` : ""}<span id="timer" class="timer" hidden></span></div>`;
 }
@@ -1510,7 +1946,7 @@ function statusBar(g) {
 function hostBar(g) {
   if (g.ph === "final") return `<div class="hostbar"><span class="lbl">Host</span><button class="btn go" data-act="again">Play again</button><button class="btn" data-act="lobby">Back to lobby</button></div>`;
   if (g.ph === "reveal") { const last = g.st + 1 >= planOf(g).length; return `<div class="hostbar"><span class="lbl">Host</span><button class="btn go" data-act="next">${last ? "Final scores" : "Next round"}</button><button class="btn small" data-act="end">End game</button></div>`; }
-  const nx = planOf(g)[g.st + 1]; const skipTo = !nx ? "Skip to final scores" : nx.ph === "vote" ? "Skip to voting" : nx.ph === "reveal" ? "Skip to results" : "Skip to next line";
+  const nx = planOf(g)[g.st + 1]; const skipTo = !nx ? "Skip to final scores" : nx.ph === "vote" ? "Skip to voting" : nx.ph === "reveal" ? "Skip to results" : GAMES[g.gm].kind ? "Skip to next turn" : "Skip to next line";
   return `<div class="hostbar"><span class="lbl">Host</span><button class="btn small" data-act="skip" title="Ends this part only">${skipTo}</button><button class="btn small" data-act="more">+30 seconds</button><button class="btn small" data-act="end">End game</button></div>`;
 }
 
@@ -1518,12 +1954,14 @@ function writeView(g, game, c) {
   const me = ME.pid; const rk = rkey(g);
   if (!g.pl.includes(me)) return `<div class="card"><h3>You joined mid-round.</h3><p class="hint">You'll be dealt in at the start of the next round.</p></div>`;
   const w = game.write(g, me, c);
-  if (w.spectate || !whoFor(g, "write").includes(me)) return `<div class="card stack">${twistHTML(g)}${w.spectate || w.prompt}</div><div id="waiting" class="waiting"></div>`;
+  if (w.spectate || !whoFor(g, "write").includes(me)) return `<div class="card stack">${topBits(g, game)}${w.spectate || w.prompt}</div><div id="waiting" class="waiting"></div>`;
   const mine = ME.a && ME.a.k === rk ? ME.a.d : undefined;
   let body;
   if (mine !== undefined) {
-    const shown = w.type === "order" ? mine.map((i, k) => `${k + 1}. ${esc(w.items[i])}`).join("<br>") : w.type === "number" ? fmtNum(mine) : esc(mine);
-    body = `<div class="locked"><span class="lbl">${esc(pickF("locked", rk + me))}</span><div class="res-text">${shown}</div></div>`;
+    const shown = w.type === "draw" ? drawSVG(BLOBS.get(g.n + "." + curStep(g).r + "." + me) || "") : w.type === "order" ? mine.map((i, k) => `${k + 1}. ${esc(w.items[i])}`).join("<br>") : w.type === "number" ? fmtNum(mine) : esc(mine);
+    body = `<div class="locked"><span class="lbl">${esc(pickF("locked", rk + me))}</span><div class="res-text">${shown}${ME.gf && ME.gf.k === rk ? gifImg(ME.gf.u) : ""}</div></div>`;
+  } else if (w.type === "draw") {
+    body = padHTML(rk);
   } else if (w.type === "order") {
     if (ORDER.k !== rk) ORDER = { k: rk, list: [] };
     body = `<div class="rank">${w.items.map((t, i) => { const at = ORDER.list.indexOf(i); return `<button class="ritem ${at >= 0 ? "placed" : ""}" data-act="rank" data-i="${i}"><span class="num">${at >= 0 ? at + 1 : ""}</span>${esc(t)}</button>`; }).join("")}</div>
@@ -1533,9 +1971,9 @@ function writeView(g, game, c) {
     const long = w.type === "text" && w.max > 60;
     const input = long ? `<textarea id="${id}" class="field" rows="3" maxlength="${w.max}" placeholder="${esc(w.ph)}" data-draft="ans" aria-label="Your answer"></textarea>`
       : `<input id="${id}" class="field" ${w.type === "number" ? 'inputmode="decimal"' : ""} maxlength="${w.max || 24}" placeholder="${esc(w.ph)}" autocomplete="off" data-draft="ans" aria-label="Your answer">`;
-    body = `<form class="stack" data-form="answer">${input}<div class="row" style="justify-content:space-between"><button class="btn go" type="submit">Submit</button>${w.type === "text" ? `<span class="count" data-count="${id}"></span>` : ""}</div>${ERR ? `<p class="err">${esc(ERR)}</p>` : ""}</form>`;
+    body = `<form class="stack" data-form="answer">${input}${game.gifs && w.type === "text" ? gifRow(rk) : ""}<div class="row" style="justify-content:space-between"><button class="btn go" type="submit">Submit</button>${w.type === "text" ? `<span class="count" data-count="${id}"></span>` : ""}</div>${ERR ? `<p class="err">${esc(ERR)}</p>` : ""}</form>`;
   }
-  return `<div class="card stack">${twistHTML(g)}${w.prompt}${body}</div><div id="waiting" class="waiting"></div>`;
+  return `<div class="card stack">${topBits(g, game)}${w.prompt}${body}</div><div id="waiting" class="waiting"></div>`;
 }
 function twistHTML(g) { const tw = twistOf(g); return tw ? `<div class="twist"><b>Twist!</b> ${esc(tw.t)}</div>` : ""; }
 
@@ -1547,21 +1985,21 @@ function voteView(g, game, c) {
   if (V.kind === "match") {
     if (!isVoter) body = `<p class="hint">Everyone is matching answers to authors.</p>`;
     else if (myVote !== undefined) body = `<div class="locked"><span class="lbl">Guesses locked in!</span><div>${V.targets.map((t) => `${esc(t.text)} → <b>${esc(myVote[t.id] ? nameOf(myVote[t.id]) : "?")}</b>`).join("<br>")}</div></div>`;
-    else body = `<div class="match">${V.targets.map((t) => `<div class="mrow"><span class="res-text">${esc(t.text)}</span><select data-target="${t.id}" id="m-${t.id}-${rk.replace(/[^a-z0-9]/gi, "")}" aria-label="Who wrote this?"><option value="">Who wrote it?</option>${V.choices.map((ch) => `<option value="${ch.id}">${esc(ch.name)}</option>`).join("")}</select></div>`).join("")}</div><div><button class="btn go" data-act="submitmatch">Lock in guesses</button></div>`;
+    else body = `<div class="match">${V.targets.map((t) => `<div class="mrow"><span class="res-text">${esc(t.text)}${t.gif ? gifImg(t.gif) : ""}</span><select data-target="${t.id}" id="m-${t.id}-${rk.replace(/[^a-z0-9]/gi, "")}" aria-label="Who wrote this?"><option value="">Who wrote it?</option>${V.choices.map((ch) => `<option value="${ch.id}">${esc(ch.name)}</option>`).join("")}</select></div>`).join("")}</div><div><button class="btn go" data-act="submitmatch">Lock in guesses</button></div>`;
   } else {
-    const ro = !isVoter || V.readonly;
+    const ro = !isVoter || V.readonly || (V.lock && myVote !== undefined);
     body = V.options.length ? `<div class="opts">${V.options.map((o) => `<button class="opt ${myVote === o.id ? "sel" : ""}" ${ro ? "disabled" : `data-act="vote" data-id="${esc(o.id)}"`}>${o.html}</button>`).join("")}</div>` : `<p class="hint">Nothing to vote on this time.</p>`;
-    if (ro) body = `<p class="hint" style="margin:0">${V.readonly ? "The jury is deciding your fate." : "You're watching this vote."}</p>` + body;
-    else body += `<p class="hint">${myVote !== undefined ? "Vote cast. You can change it until everyone's in." : "Tap to vote."}</p>`;
+    if (ro) body = `<p class="hint" style="margin:0">${V.lock && myVote !== undefined ? "Answer locked in!" : V.readonly ? "The jury is deciding your fate." : "You're watching this vote."}</p>` + body;
+    else body += `<p class="hint">${V.lock ? "Tap your answer. No take-backs!" : myVote !== undefined ? "Vote cast. You can change it until everyone's in." : "Tap to vote."}</p>`;
   }
   const tw = twistOf(g);
-  return `<div class="card stack">${tw && tw.x2 ? twistHTML(g) : ""}${V.prompt}${body}<p class="quip">${esc(pickF("vote", rk))}</p></div><div id="waiting" class="waiting"></div>`;
+  return `<div class="card stack">${g.st === 0 ? topBits(g, game) : tw && tw.x2 ? twistHTML(g) : ""}${V.prompt}${body}<p class="quip">${esc(pickF("vote", rk))}</p></div><div id="waiting" class="waiting"></div>`;
 }
 
 function revealView(g, game, c) {
   const mine = g.lt && g.lt[ME.pid];
   const tw = twistOf(g);
-  return `<div class="card stack"><p class="shout">${esc(pickF("reveal", rkey(g)))}</p>${tw && tw.x2 ? `<div class="twist"><b>Twist!</b> Double points this round</div>` : ""}${game.reveal(g, c)}${g.pl.includes(ME.pid) ? `<p class="hint">You scored <b>${mine || 0}</b> this round.</p>` : ""}</div>`;
+  return `<div class="card stack"><p class="shout">${esc(pickF("reveal", rkey(g)))}</p>${tw && tw.x2 ? `<div class="twist"><b>Twist!</b> Double points this round</div>` : ""}${game.reveal(g, c)}${g.pl.includes(ME.pid) ? `<p class="hint">You scored <b>${mine || 0}</b> this round.</p>` : ""}${reactBar()}</div>`;
 }
 
 function finalView(g) {
@@ -1569,7 +2007,7 @@ function finalView(g) {
   const top = ids.length ? g.sc[ids[0]] || 0 : 0;
   const winners = ids.filter((p) => (g.sc[p] || 0) === top);
   return `<div class="card stack"><span class="lbl">Final scores</span><p class="verdict">${winners.length > 1 ? "It's a tie!" : esc(nameOf(winners[0])) + " wins!"}</p>${winners.length === 1 ? `<p class="champ">${esc(pickF("champ", g.n))}</p>` : ""}
-    <div class="podium">${ids.map((p, k) => `<div class="prow ${(g.sc[p] || 0) === top ? "first" : ""}"><span class="place">${k + 1}</span><span class="dot" style="--pc:${colorOf(p)}"></span><span class="pname">${esc(nameOf(p))}</span><span class="score">${g.sc[p] || 0}</span></div>`).join("")}</div></div>`;
+    <div class="podium">${ids.map((p, k) => `<div class="prow ${(g.sc[p] || 0) === top ? "first" : ""}"><span class="place">${k + 1}</span><span class="dot" style="--pc:${colorOf(p)}"></span><span class="pname">${esc(nameOf(p))}</span><span class="score">${g.sc[p] || 0}</span></div>`).join("")}</div>${reactBar()}</div>`;
 }
 
 function sideView(g) {
@@ -1583,12 +2021,102 @@ function sideView(g) {
     const ids = all.sort((a, b) => (g.sc[b] || 0) - (g.sc[a] || 0));
     const rows = ids.map((p) => {
       const r = R.get(p); const sub = r && ((g.ph === "write" && r.a && r.a.k === rk) || (g.ph === "vote" && r.vt && r.vt.k === rk));
-      return sticker({ pid: p, nm: nameOf(p), co: r ? r.co : hash(p) }, { me: p === ME.pid, cls: present.has(p) ? "" : "gone", right: `<span class="sc">${g.sc[p] || 0}</span>`, stamp: sub ? "DONE" : p === hostPid ? "HOST" : "", stampCls: sub ? "ok" : "host" });
+      return sticker({ pid: p, nm: nameOf(p), co: r ? r.co : hash(p) }, { me: p === ME.pid, cls: present.has(p) ? "" : "gone", right: `<span class="sc">${g.sc[p] || 0}</span>`, stamp: sub ? "DONE" : (g.ph === "write" && r && r.ty === rk) ? "TYPING…" : p === hostPid ? "HOST" : "", stampCls: sub ? "ok" : (g.ph === "write" && r && r.ty === rk) ? "typing" : "host" });
     }).join("");
     return `<div class="box board"><span class="lbl">Scores</span><div class="stickers">${rows}</div></div>`;
   }
-  const rows = players.map((p) => sticker(p, { me: p.me, stamp: p.pid === hostPid ? "HOST" : p.rd ? "READY" : "", stampCls: p.pid === hostPid ? "host" : "ok" })).join("");
-  return `<div class="box"><span class="lbl">In the room · ${players.length}</span><div class="stickers">${rows}</div></div>`;
+  const tot = (g && g.tot) || {}; const hasTot = Object.keys(tot).length > 0;
+  const rows = players.map((p) => sticker(p, { me: p.me, right: (hasTot ? `<span class="sc" title="Points tonight">${tot[p.pid] || 0}</span>` : "") + (G && !p.me ? `<button type="button" class="kick" data-act="kick" data-pid="${p.pid}" aria-label="Remove ${esc(p.nm)} from the room">×</button>` : ""), stamp: p.pid === hostPid ? "HOST" : p.rd ? "READY" : "", stampCls: p.pid === hostPid ? "host" : "ok" })).join("");
+  return `<div class="box"><span class="lbl">In the room · ${players.length}</span><div class="stickers">${rows}</div>${hasTot ? `<p class="muted" style="font-size:13px;font-weight:700;margin-top:6px">Numbers are total points tonight.</p>` : ""}</div>`;
+}
+
+/* ---------------- round 3 helpers ---------------- */
+function topBits(g, game) { return (g.st === 0 && g.ph !== "reveal" && g.ph !== "final" ? `<div class="howto"><b>How to play</b> ${esc(game.blurb)}</div>` : "") + twistHTML(g); }
+function reactBar() { return `<div class="reacts" role="group" aria-label="React">${REACTS.map((e, i) => `<button type="button" class="react" data-act="react" data-i="${i}" aria-label="React ${e}">${e}</button>`).join("")}</div>`; }
+function gifRow(rk) { return `<div class="gifrow"><input id="gif-${rk.replace(/[^a-z0-9]/gi, "")}" class="field gif-field" data-draft="gif" placeholder="Optional: paste a GIF link" autocomplete="off" aria-label="GIF link"><span class="gif-help">On GIPHY or Tenor, right-click a GIF and pick "Copy image address".</span><div id="gifprev" class="gifprev"></div></div>`; }
+function updateGifPreview() {
+  const box = $("#gifprev"); if (!box) return;
+  const raw = String(DRAFT.gif || "").trim(); const u = raw ? gifURL(raw) : null;
+  const html = u ? gifImg(u) : raw ? `<span class="muted" style="font-size:13px;font-weight:700">That doesn't look like a GIF link yet.</span>` : "";
+  if (box.innerHTML !== html) box.innerHTML = html;
+}
+function padHTML(rk) {
+  if (DRAW.k !== rk) DRAW = { k: rk, strokes: [], c: 0, w: 1 };
+  return `<div class="drawbox"><canvas id="pad" width="640" height="480" aria-label="Drawing pad"></canvas>
+    <div class="tools"><div class="pcolors">${PAL.map((c, i) => `<button type="button" class="pc ${DRAW.c === i ? "sel" : ""}" style="--pc:${c}" data-act="pcolor" data-i="${i}" aria-label="Color ${i + 1}" aria-pressed="${DRAW.c === i}"></button>`).join("")}</div>
+    <div class="psizes">${WID.map((w, i) => `<button type="button" class="ps ${DRAW.w === i ? "sel" : ""}" data-act="psize" data-i="${i}" aria-label="Brush size ${i + 1}" aria-pressed="${DRAW.w === i}"><span style="width:${w + 3}px;height:${w + 3}px"></span></button>`).join("")}</div>
+    <button type="button" class="btn small" data-act="pundo">Undo</button><button type="button" class="btn small" data-act="pclear">Clear</button></div>
+    ${ERR ? `<p class="err">${esc(ERR)}</p>` : ""}<div><button type="button" class="btn go" data-act="submitdraw">Done drawing</button></div></div>`;
+}
+function promptsBox(amHost) {
+  const ban = new Set((HG && HG.ban) || []); const rows = []; const label = Object.fromEntries(CP_KINDS);
+  for (const p of inRoom(R, ME.code)) if (Array.isArray(p.cp)) p.cp.slice(0, 20).forEach((x, i) => {
+    if (!x || !isStr(x.t) || !label[x.k]) return; const t = clean(x.t, 120); if (!t || ban.has(hash(t))) return;
+    rows.push({ pid: p.pid, i, k: x.k, t });
+  });
+  return `<div class="box addbox stack"><h3 class="section-h small">Add your own prompts</h3><p class="muted" style="font-weight:600">They get mixed into the games. Inside jokes encouraged.</p>
+    <form class="addrow" data-form="addprompt"><select id="cpKind" data-draft="cpk" aria-label="Prompt type">${CP_KINDS.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("")}</select><input id="cpText" class="field" maxlength="120" placeholder="Type a prompt. Would you rather? Write: this or that" autocomplete="off" data-draft="cp" aria-label="Your prompt"><button class="btn go" type="submit">Add</button></form>
+    ${ERR ? `<p class="err">${esc(ERR)}</p>` : ""}
+    ${rows.length ? `<ul class="cplist">${rows.map((r) => `<li><span class="tag">${esc(label[r.k])}</span><span class="cpt">${esc(r.k === "wyr" ? r.t.replace("|", " or ") : r.t)}</span>${chip(r.pid)}${r.pid === ME.pid || amHost ? `<button type="button" class="kick" data-act="rmprompt" data-pid="${r.pid}" data-i="${r.i}" aria-label="Remove this prompt">×</button>` : ""}</li>`).join("")}</ul>` : `<p class="muted">No player prompts yet.</p>`}
+    ${amHost && onlineNote ? `<p class="hint" style="margin:0">${esc(onlineNote)}</p>` : ""}</div>`;
+}
+function addPrompt() {
+  const k = CP_KINDS.some(([x]) => x === DRAFT.cpk) ? DRAFT.cpk : "advice";
+  let t = clean(DRAFT.cp || "", 120); if (!t) return;
+  if (k === "wyr") { const m = t.split(/\s+or\s+/i); if (m.length < 2) { ERR = "Write would-you-rathers like: this or that"; schedule(); return; } t = clean(m[0], 58) + "|" + clean(m.slice(1).join(" or "), 58); }
+  if (k === "oddw") t = clean(t, 24);
+  const cp = (Array.isArray(ME.cp) ? ME.cp : []).filter((x) => !(x.k === k && x.t === t)).concat({ k, t }).slice(-15);
+  DRAFT.cp = ""; ERR = ""; const el = $("#cpText"); if (el) el.value = "";
+  setMe({ cp });
+}
+function finalize() {
+  if (!G || !G.gm || G.fin === G.n) return; G.fin = G.n; G.tot = G.tot || {};
+  for (const p of G.pl) G.tot[p] = (G.tot[p] || 0) + (G.sc[p] || 0);
+}
+let splashTimer = null, lastRoundSplash = "", lastReact = 0, autoDone = "";
+const seenRx = {};
+function splash(text, cls) {
+  const el = $("#splash"); if (!el) return;
+  el.className = "splash"; void el.offsetWidth;
+  el.textContent = text; el.className = "splash show " + (cls || "");
+  clearTimeout(splashTimer); splashTimer = setTimeout(() => { el.className = "splash"; }, 950);
+}
+function countdown() { ["3", "2", "1", "Go!"].forEach((t, i) => setTimeout(() => { splash(t, i === 3 ? "go" : ""); Sound.sfx(i === 3 ? "start" : "tick"); }, i * 520)); }
+function spawnReact(e, color) {
+  const i = Number(e); const fx = $("#fx"); if (!REACTS[i] || !fx || fx.children.length > 30) return;
+  const s = document.createElement("span"); s.className = "fx-emoji"; s.textContent = REACTS[i];
+  s.style.left = 8 + Math.random() * 84 + "%"; s.style.setProperty("--pc", color);
+  fx.appendChild(s); setTimeout(() => s.remove(), 1800);
+}
+function autoSubmit(g) {
+  const rk = rkey(g); if (autoDone === rk || (ME.a && ME.a.k === rk)) return;
+  if (document.getElementById("pad") && DRAW.k === rk && DRAW.strokes.length) { autoDone = rk; submitDrawing(); return; }
+  if (ORDER.k === rk && ORDER.list.length === 5) { autoDone = rk; submitAnswer(ORDER.list.slice()); return; }
+  if (DRAFT.ans && String(DRAFT.ans).trim()) { autoDone = rk; submitAnswer(DRAFT.ans); }
+}
+/* remember the room in this tab so a refresh drops you back into your seat */
+let saveT = null;
+function saveSoon() {
+  if (saveT) return;
+  saveT = setTimeout(() => {
+    saveT = null;
+    try {
+      if (!ME.code) { sessionStorage.removeItem("rr-room"); return; }
+      sessionStorage.setItem("rr-room", JSON.stringify({ code: ME.code, g: G, me: { a: ME.a || null, vt: ME.vt || null, ln: ME.ln || null, gf: ME.gf || null }, blobs: net.impl ? net.impl.exportBlobs() : [] }));
+    } catch (e) { /* storage full or blocked */ }
+  }, 400);
+}
+function resumeSession() {
+  let s = null; try { s = JSON.parse(sessionStorage.getItem("rr-room") || "null"); } catch (e) { s = null; }
+  if (!s || typeof s.code !== "string" || !/^[A-Z]{5}$/.test(s.code) || !ME.nm) return;
+  if (s.g && typeof s.g === "object" && s.g.c === s.code) { G = s.g; lastPushed = ""; if (G.e) G.e = Math.max(G.e, Date.now() + 15000); }
+  ME.code = s.code; ME.host = !!G;
+  if (s.me) for (const k of ["a", "vt", "ln", "gf"]) if (s.me[k]) ME[k] = s.me[k];
+  const blobs = Array.isArray(s.blobs) ? s.blobs : [];
+  for (const [k, v] of blobs) if (isStr(k) && isStr(v)) BLOBS.set(k, v);
+  connectRoom(s.code);
+  if (net.impl) net.impl.importBlobs(blobs);
+  if (G) { prefetchOnline(); commit(); }
 }
 
 /* ---------------- render ---------------- */
@@ -1600,6 +2128,7 @@ function buildStage() {
   if (!ME.code) return welcomeView();
   const h = findHost(R);
   HG = h ? h.g : null;
+  if (HG && !G && Array.isArray(HG.kick) && HG.kick.includes(ME.pid)) { leaveRoom(); HG = null; ERR = "The host removed you from the room."; return welcomeView(); }
   if (HG && !G) lastG = HG;
   if (!HG) return noHostView();
   const amHost = !!G;
@@ -1625,15 +2154,25 @@ function render() {
   const pk = HG && ME.code ? [HG.gm || "lobby", HG.n, HG.st, HG.ph].join("|") : "";
   if (pk !== lastPK) { const ph = HG ? HG.ph : ""; if (lastPK && HG && HG.gm) Sound.sfx(ph === "write" ? "start" : ph === "vote" ? "vote" : ph === "reveal" ? "reveal" : ph === "final" ? "win" : "click"); lastPK = pk; }
   const cnt = ME.code ? inRoom(R, ME.code).length : 0; if (cnt > lastCnt && lastCnt > 0) Sound.sfx("join"); lastCnt = cnt;
+  if (HG && HG.gm && HG.ph !== "final") {
+    const rr = rkey(HG);
+    if (rr !== lastRoundSplash) { const was = lastRoundSplash; lastRoundSplash = rr; if (was && HG.ph !== "reveal") { if (HG.st === 0) countdown(); else { const gm = GAMES[HG.gm], st = curStep(HG); splash(gm.stepLabel ? gm.stepLabel(st.r) + "!" : gm.fixed ? "Next line!" : "Round " + (st.r + 1) + "!"); } } }
+  } else if (ME.code) lastRoundSplash = "lobby";
+  for (const p of ME.code ? inRoom(R, ME.code) : []) {
+    const rt = p.rx && typeof p.rx.t === "number" ? p.rx.t : 0;
+    if (seenRx[p.pid] === undefined) { seenRx[p.pid] = rt; continue; }
+    if (rt && rt !== seenRx[p.pid]) { seenRx[p.pid] = rt; spawnReact(p.rx.e, COLORS[p.co % COLORS.length]); }
+  }
   const stage = $("#stage");
   if (html !== stageHTML) {
     const a = document.activeElement; const fid = a && a.id; const ss = a && a.selectionStart, se = a && a.selectionEnd;
     stage.innerHTML = html; stageHTML = html;
+    mountPad();
     stage.querySelectorAll("[data-draft]").forEach((el) => { const k = el.dataset.draft; if (k === "name" && DRAFT.name == null) DRAFT.name = ME.nm; if (DRAFT[k] != null) el.value = DRAFT[k]; });
     stage.querySelectorAll("select[data-target]").forEach((el) => { if (DRAFT[el.id]) el.value = DRAFT[el.id]; });
     if (fid) { const el = document.getElementById(fid); if (el) { el.focus(); try { if (ss != null) el.setSelectionRange(ss, se); } catch (e) { /* not a text field */ } } }
     else { const first = stage.querySelector("[data-draft='ans']"); if (first && !first.value) first.focus({ preventScroll: true }); }
-    updateCounts();
+    updateCounts(); updateGifPreview();
   }
   const side = sideView(HG && ME.code ? HG : null);
   if (side !== sideHTML) { $("#side").innerHTML = side; sideHTML = side; }
@@ -1654,7 +2193,7 @@ function live() {
   if (g && g.gm) {
     const stamp = g.e + "|" + g.t;
     if (G) localDeadline = G.e; else if (stamp !== lastGStamp) { lastGStamp = stamp; localDeadline = g.e ? Date.now() + (g.e - (g.t || Date.now())) : 0; }
-    if (t) { if (localDeadline && (g.ph === "write" || g.ph === "vote")) { const s = Math.max(0, Math.ceil((localDeadline - Date.now()) / 1000)); t.hidden = false; t.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); t.classList.toggle("low", s <= 10); if (s !== lastTick) { lastTick = s; if (s > 0 && s <= 5) Sound.sfx("tick"); } } else t.hidden = true; }
+    if (t) { if (localDeadline && (g.ph === "write" || g.ph === "vote")) { const s = Math.max(0, Math.ceil((localDeadline - Date.now()) / 1000)); t.hidden = false; t.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); t.classList.toggle("low", s <= 10); if (s !== lastTick) { lastTick = s; if (s > 0 && s <= 5) Sound.sfx("tick"); } if (s <= 1 && g.ph === "write") autoSubmit(g); } else t.hidden = true; }
     const w = $("#waiting");
     if (w && (g.ph === "write" || g.ph === "vote")) {
       const rk = rkey(g); const present = presentPids();
@@ -1667,7 +2206,14 @@ function live() {
 function hostTickSafe() { try { hostTick(); } catch (e) { console.error("host tick", e); } }
 function updateCounts() { document.querySelectorAll("[data-count]").forEach((c) => { const el = document.getElementById(c.dataset.count); if (el) c.textContent = el.value.length + " / " + el.maxLength; }); }
 
-setInterval(() => { R = roster(); if (G) { hostTickSafe(); } live(); }, 400);
+function pulse() { R = roster(); if (G) hostTickSafe(); live(); if (net.impl && net.impl.tick) net.impl.tick(); }
+setInterval(pulse, 400);
+/* background tabs throttle timers hard, so a tiny worker keeps the heartbeat and the host's clock going */
+try {
+  const wk = new Worker(URL.createObjectURL(new Blob(["setInterval(function () { postMessage(0); }, 1000);"], { type: "text/javascript" })));
+  wk.onmessage = () => { if (document.hidden) pulse(); };
+} catch (e) { /* no workers: plain timers only */ }
+document.addEventListener("visibilitychange", () => { if (!document.hidden) schedule(); });
 
 /* ---------------- events ---------------- */
 const stageEl = $("#stage");
@@ -1678,6 +2224,8 @@ document.addEventListener("click", (e) => {
 stageEl.addEventListener("input", (e) => {
   const el = e.target;
   if (el.dataset && el.dataset.draft) { DRAFT[el.dataset.draft] = el.value; if (ERR) { ERR = ""; schedule(); } }
+  if (el.dataset && el.dataset.draft === "ans" && HG && HG.gm && HG.ph === "write") { const want = el.value.trim() ? rkey(HG) : null; if ((ME.ty || null) !== want) setMe({ ty: want }); }
+  if (el.dataset && el.dataset.draft === "gif") updateGifPreview();
   updateCounts();
 });
 stageEl.addEventListener("change", (e) => { const el = e.target; if (el.matches && el.matches("select[data-target]")) DRAFT[el.id] = el.value; });
@@ -1685,6 +2233,7 @@ stageEl.addEventListener("submit", (e) => {
   e.preventDefault(); const f = e.target.dataset.form;
   if (f === "answer") { const el = e.target.querySelector("[data-draft='ans']"); submitAnswer(el ? el.value : ""); }
   if (f === "joincode") ACT.joincode();
+  if (f === "addprompt") addPrompt();
 });
 stageEl.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey && e.target.tagName === "TEXTAREA") { e.preventDefault(); const f = e.target.closest("form"); if (f) f.requestSubmit(); }
@@ -1723,6 +2272,7 @@ addEventListener("pointerdown", () => Sound.unlock(), { once: true });
 addEventListener("keydown", () => Sound.unlock(), { once: true });
 applyTheme();
 syncSettings();
+resumeSession();
 render();
 })();
 </script>
