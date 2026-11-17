@@ -1273,9 +1273,10 @@ let onlineBusy = false, onlineAt = 0, onlineNote = "";
 async function prefetchOnline() {
   if (onlineBusy || Date.now() - onlineAt < 8000) return;
   onlineBusy = true; onlineAt = Date.now();
+  const notes = [];
   try {
     if (ONLINE.trivia.length < 10) {
-      const r = await fetch("https://opentdb.com/api.php?amount=20&type=multiple&encode=url3986");
+      const r = await fetch("https://opentdb.com/api.php?amount=20&type=multiple&encode=url3986", { cache: "no-store" });
       const j = await r.json();
       if (j && j.response_code === 0 && Array.isArray(j.results)) for (const q of j.results) {
         const dec = (x) => clean(decodeURIComponent(String(x)), 120);
@@ -1283,17 +1284,19 @@ async function prefetchOnline() {
         ONLINE.trivia.push({ q: dec(q.question), a: choices, ok: choices.indexOf(right), cat: dec(q.category).replace(/^Entertainment: |^Science: /, "") });
       }
     }
+  } catch (e) { notes.push("trivia"); }
+  try {
     if (ONLINE.oddcats.length < 4) {
       for (const [name, w] of shuffle(DM_THEMES, Math.random()).slice(0, 4)) {
-        const r = await fetch("https://api.datamuse.com/words?rel_trg=" + encodeURIComponent(w) + "&md=p&max=60");
+        const r = await fetch("https://api.datamuse.com/words?rel_trg=" + encodeURIComponent(w) + "&md=p&max=60&nc=" + Date.now(), { cache: "no-store" });
         const j = await r.json();
         const words = (Array.isArray(j) ? j : []).filter((x) => x && Array.isArray(x.tags) && x.tags.includes("n") && /^[a-z]{3,14}$/.test(x.word) && x.word !== w).map((x) => x.word);
         if (words.length >= 8) ONLINE.oddcats.push({ c: name, w: shuffle(words, Math.random()).slice(0, 12) });
       }
     }
-    onlineNote = `Online extras loaded: ${ONLINE.trivia.length} trivia questions, ${ONLINE.oddcats.length} liar categories.`;
-  } catch (e) { onlineNote = "Couldn't load online extras. Using the built-in prompts."; }
-  finally { onlineBusy = false; schedule(); }
+  } catch (e) { notes.push("words"); }
+  onlineNote = notes.length === 2 ? "Couldn't load online extras. Using the built-in prompts." : `Online extras loaded: ${ONLINE.trivia.length} trivia questions, ${ONLINE.oddcats.length} liar categories.`;
+  onlineBusy = false; schedule();
 }
 function pick(bank, n) {
   used[bank] = used[bank] || new Set();
@@ -1390,7 +1393,17 @@ function submitDrawing() {
 const rounds = (n, phs) => { const out = []; for (let r = 0; r < n; r++) for (const ph of phs) out.push({ r, ph }); return out; };
 const blank = (t, fill) => esc(t).replace("___", fill == null ? '<span class="blank">&nbsp;</span>' : `<span class="filled">${esc(fill)}</span>`);
 const isStr = (x) => typeof x === "string";
-function storyLine(c, author, s, g) { const p = c.R.get(author); if (p && p.ln && p.ln.g === g.n && p.ln.l && isStr(p.ln.l[s])) return clean(p.ln.l[s], 120); return null; }
+const LNC = {};
+function storyLine(c, author, s, g) {
+  const key = g.n + "|" + author; const p = c.R.get(author);
+  if (p && p.ln && p.ln.g === g.n && p.ln.l && typeof p.ln.l === "object") LNC[key] = Object.assign(LNC[key] || {}, p.ln.l);
+  const l = LNC[key]; return l && isStr(l[s]) ? clean(l[s], 120) : null;
+}
+/* the first few seconds of a turn, missing pieces are probably still on their way */
+const FIRST = {};
+const firstSeen = (k) => (FIRST[k] = FIRST[k] || Date.now());
+const stillLoading = (k) => Date.now() - firstSeen(k) < 8000;
+const loadingHTML = (k, text) => `<p class="mid" data-wait-until="${firstSeen(k) + 8000}">${text}</p>`;
 
 const GAMES = {
   fakefact: {
@@ -1518,7 +1531,7 @@ const GAMES = {
       const n = g.pl.length; const i = g.pl.indexOf(me); const s = curStep(g).r; const j = (i + s) % n;
       let prev = s === 0 ? this.opener(g, j) : storyLine(c, g.pl[(((j - (s - 1)) % n) + n) % n], s - 1, g);
       const lost = prev == null;
-      return { prompt: `<div class="eyebrow">Story ${j + 1} · line ${s + 2}</div>${lost ? `<p class="mid">The last writer vanished into the void. Start a fresh twist.</p>` : `<p class="hint" style="margin:0 0 6px">The line before yours:</p><p class="big">“${esc(prev)}”</p>`}<p class="hint">Write the next sentence. Nobody after you will see anything but your line.</p>`, type: "text", max: 120, ph: "And then…" };
+      return { prompt: `<div class="eyebrow">Story ${j + 1} · line ${s + 2}</div>${lost ? (stillLoading(rkey(g)) ? loadingHTML(rkey(g), "Getting the line before yours…") : `<p class="mid">The line before yours didn't come through. Start a fresh twist!</p>`) : `<p class="hint" style="margin:0 0 6px">The line before yours:</p><p class="big">“${esc(prev)}”</p>`}<p class="hint">Write the next sentence. Nobody after you will see anything but your line.</p>`, type: "text", max: 120, ph: "And then…" };
     },
     extra(g, v) { const s = curStep(g).r; const l = Object.assign({}, ME.ln && ME.ln.g === g.n ? ME.ln.l : {}); l[s] = v; return { ln: { g: g.n, l } }; },
     full(g, c, j) { const n = g.pl.length; const S = this.steps(g.pl.length); const lines = [{ t: this.opener(g, j), by: null }]; for (let s = 0; s < S; s++) { const a = g.pl[(((j - s) % n) + n) % n]; lines.push({ t: storyLine(c, a, s, g), by: a }); } return lines; },
@@ -1558,14 +1571,14 @@ const GAMES = {
     },
     vote(g, me, c) {
       const st = (p) => (c.ans[p] != null ? ansH(c, p) : "(said nothing, just stared at the jury)");
-      if (me === g.d.df || me === g.d.pr) {
-        const objs = this.jury(g).filter((p) => c.ans[p] != null);
+      const lawyer = me === g.d.df || me === g.d.pr; const objs = this.jury(g).filter((p) => c.ans[p] != null);
+      if (lawyer && objs.length) {
         return { kind: "pick", prompt: `<div class="eyebrow">While the jury decides your fate…</div><p class="mid">Pick the best objection from the jury.</p>`, options: shuffle(objs, g.n + me).map((p) => ({ id: p, html: `<span>${ansH(c, p)}</span>` })) };
       }
       return { kind: "pick", prompt: `<div class="eyebrow">The jury decides</div><p class="mid">“${esc(this.take(g))}”</p>`, options: [
         { id: "d", html: `<span class="sub">The defense, ${chip(g.d.df)}</span><span>${st(g.d.df)}</span>` },
         { id: "p", html: `<span class="sub">The prosecution, ${chip(g.d.pr)}</span><span>${st(g.d.pr)}</span>` }
-      ] };
+      ], readonly: lawyer };
     },
     score(g, c) {
       const jury = this.jury(g); let dv = 0, pv = 0; const ob = {}; const d = {};
@@ -1648,6 +1661,8 @@ const GAMES = {
     setup(g, r) { if (r === 0) g.d = { s: this.steps(g.pl.length) }; },
     kind: (s) => (s === 0 ? "prompt" : s % 2 === 1 ? "draw" : "guess"),
     stepLabel(s) { return { prompt: "Write", draw: "Draw", guess: "Guess" }[this.kind(s)]; },
+    wtFor(s) { return { prompt: 50, draw: 90, guess: 45 }[this.kind(s)]; },
+    fallback(g, j, s) { return BANK.doodle[hash(g.n + "|" + j + "|" + s) % BANK.doodle.length]; },
     author(g, j, s) { const n = g.pl.length; return g.pl[(((j - s) % n) + n) % n]; },
     entry(g, c, j, s) {
       const by = this.author(g, j, s); const kind = this.kind(s);
@@ -1657,8 +1672,15 @@ const GAMES = {
       const n = g.pl.length; const i = g.pl.indexOf(me); const s = curStep(g).r; const j = (i + s) % n; const kind = this.kind(s);
       if (kind === "prompt") return { prompt: `<div class="eyebrow">Chain ${j + 1} · start it off</div><p class="big">Write something for the next player to draw.</p><p class="hint">The weirder the better. Stuck? <button type="button" class="linkbtn" data-act="idea">Give me an idea</button></p>`, type: "text", max: 80, ph: "a raccoon running a lemonade stand" };
       const prev = this.entry(g, c, j, s - 1);
-      if (kind === "draw") return { prompt: `<div class="eyebrow">Chain ${j + 1} · draw it</div>${prev.v ? `<p class="hint" style="margin:0">Draw this:</p><p class="big">“${esc(prev.v)}”</p>` : `<p class="mid">The last player vanished. Draw anything you want!</p>`}`, type: "draw" };
-      return { prompt: `<div class="eyebrow">Chain ${j + 1} · guess it</div><p class="hint" style="margin:0">What is this drawing?</p>${prev.v ? drawSVG(prev.v) : `<p class="mid">This drawing got lost on the way. Make up something good.</p>`}`, type: "text", max: 80, ph: "I think it's…" };
+      const rk = rkey(g);
+      if (kind === "draw") {
+        const body = prev.v ? `<p class="hint" style="margin:0">Draw this:</p><p class="big">“${esc(prev.v)}”</p>`
+          : stillLoading(rk) ? loadingHTML(rk, "Getting your prompt…")
+          : `<p class="hint" style="margin:0">${prev.kind === "prompt" ? "Nobody wrote a prompt for this chain, so here's a random one." : "The last guess didn't come through, so here's a random one."} Draw this:</p><p class="big">“${esc(this.fallback(g, j, s))}”</p>`;
+        return { prompt: `<div class="eyebrow">Chain ${j + 1} · draw it</div>${body}`, type: "draw" };
+      }
+      const pic = prev.v ? drawSVG(prev.v) : stillLoading(rk) ? loadingHTML(rk, "Loading the drawing…") : `<p class="mid">No drawing came through for this one. Make up your best guess anyway!</p>`;
+      return { prompt: `<div class="eyebrow">Chain ${j + 1} · guess it</div><p class="hint" style="margin:0">What is this drawing?</p>${pic}`, type: "text", max: 80, ph: "I think it's…" };
     },
     extra(g, v) { const s = curStep(g).r; const l = Object.assign({}, ME.ln && ME.ln.g === g.n ? ME.ln.l : {}); l[s] = v; return { ln: { g: g.n, l } }; },
     chain(g, c, j) { const out = []; for (let s = 0; s < this.steps(g.pl.length); s++) out.push(this.entry(g, c, j, s)); return out; },
@@ -1688,7 +1710,9 @@ const GAMES = {
       const label = { prompt: "Started by", draw: "Drawn by", guess: "Guessed by" };
       return `<p class="mid">Here's how every chain turned out.</p>` + g.pl.map((_, j) => `<div class="chain"><span class="lbl" style="margin:0">Chain ${j + 1}</span>${this.chain(g, c, j).map((e) => {
         const key = g.n + "." + e.s + "." + e.by; const votes = cnt[key] || 0;
-        const body = e.kind === "draw" ? (e.v ? drawSVG(e.v) : `<p class="muted">(drawing lost)</p>`) : `<p class="${e.kind === "prompt" ? "big" : "mid"}">“${esc(e.v || "…")}”</p>`;
+        const body = e.kind === "draw" ? (e.v ? drawSVG(e.v) : `<p class="muted">(no drawing came through)</p>`)
+          : e.v ? `<p class="${e.kind === "prompt" ? "big" : "mid"}">“${esc(e.v)}”</p>`
+          : `<p class="muted">(nothing written, so the next player got a random prompt: “${esc(this.fallback(g, j, e.s + 1))}”)</p>`;
         return `<div class="link ${e.kind === "draw" && top && votes === top ? "win" : ""}">${body}<div class="res-meta">${label[e.kind]} ${chip(e.by)}${e.kind === "draw" ? ` ${plural(votes, "vote")} ${pts(votes * 100)}` : ""}</div></div>`;
       }).join(`<div class="arrow" aria-hidden="true">↓</div>`)}</div>`).join("");
     }
@@ -1752,15 +1776,29 @@ const whoFor = (g, ph) => { const game = GAMES[g.gm]; return game.who ? game.who
 const durFor = (game, ph) => (ph === "write" ? game.wt || 60 : ph === "vote" ? game.vt || 40 : 0);
 
 function presentPids() { return new Set(inRoom(R, ME.code).map((p) => p.pid)); }
+const ANSC = {};
 function ctxFor(g) {
   const rk = rkey(g); const ans = {}, votes = {}, gifs = {};
+  const cache = ANSC[rk] || (ANSC[rk] = {});
   for (const p of R.values()) {
     if (p.code !== g.c || !g.pl.includes(p.pid)) continue;
-    if (p.a && p.a.k === rk && p.a.d != null) ans[p.pid] = p.a.d;
-    if (p.vt && p.vt.k === rk && p.vt.d != null) votes[p.pid] = p.vt.d;
-    if (p.gf && p.gf.k === rk && isStr(p.gf.u)) { const u = gifURL(p.gf.u); if (u) gifs[p.pid] = u; }
+    const e = cache[p.pid] || (cache[p.pid] = {});
+    if (p.a && p.a.k === rk && p.a.d != null) e.a = p.a.d;
+    if (p.vt && p.vt.k === rk && p.vt.d != null) e.vt = p.vt.d;
+    if (p.gf && p.gf.k === rk && isStr(p.gf.u)) { const u = gifURL(p.gf.u); if (u) e.gf = u; }
+  }
+  for (const pid in cache) {
+    if (!g.pl.includes(pid)) continue; const e = cache[pid];
+    if (e.a != null) ans[pid] = e.a; if (e.vt != null) votes[pid] = e.vt; if (e.gf) gifs[pid] = e.gf;
   }
   return { ans, votes, gifs, R };
+}
+/* players who dropped a few seconds ago (a refresh, a blip) still count, so the host doesn't skip their turn */
+const LASTSEEN = {};
+function activePids() {
+  const now = Date.now();
+  for (const p of inRoom(R, ME.code)) LASTSEEN[p.pid] = now;
+  return new Set(Object.keys(LASTSEEN).filter((k) => now - LASTSEEN[k] < 8000));
 }
 function enterStep() {
   const P = planOf(G); const step = P[G.st]; const prev = P[G.st - 1]; const game = GAMES[G.gm]; const present = presentPids();
@@ -1771,7 +1809,7 @@ function enterStep() {
   }
   G.ph = step.ph;
   const tw = twistOf(G);
-  const dur = tw && tw.dur && step.ph === "write" ? tw.dur : durFor(game, step.ph);
+  const dur = tw && tw.dur && step.ph === "write" ? tw.dur : step.ph === "write" && game.wtFor ? game.wtFor(step.r) : durFor(game, step.ph);
   G.e = dur ? Date.now() + dur * 1000 : 0;
   if (step.ph === "reveal") {
     const res = game.score(G, ctxFor(G)); G.rv = res.rv || null; G.lt = res.d || {};
@@ -1807,10 +1845,11 @@ function commit() {
 function hostTick() {
   if (!G || !G.gm) return;
   if (G.ph === "write" || G.ph === "vote") {
-    const present = presentPids(); const rk = rkey(G);
+    const present = activePids(); const rk = rkey(G);
     if (GAMES[G.gm].tick) GAMES[G.gm].tick(G);
     const need = whoFor(G, G.ph).filter((p) => present.has(p));
-    const done = need.filter((p) => { const r = R.get(p); const s = G.ph === "write" ? r.a : r.vt; return s && s.k === rk; });
+    const cache = ANSC[rk] || {};
+    const done = need.filter((p) => { const r = R.get(p); const s = r ? (G.ph === "write" ? r.a : r.vt) : null; const e = cache[p]; return (s && s.k === rk) || (e && (G.ph === "write" ? e.a != null : e.vt != null)); });
     if (need.length === 0 || done.length === need.length || (G.e && Date.now() > G.e + 1500)) { advance(); commit(); }
   }
   commit();
@@ -2189,6 +2228,7 @@ function render() {
 }
 
 function live() {
+  const ld = document.querySelector("[data-wait-until]"); if (ld && Date.now() > Number(ld.dataset.waitUntil)) schedule();
   const g = HG; const t = $("#timer");
   if (g && g.gm) {
     const stamp = g.e + "|" + g.t;
