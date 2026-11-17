@@ -27,14 +27,20 @@
   --sh: 6px 6px 0 var(--ink);
   --sh-sm: 4px 4px 0 var(--ink);
   --r: 18px;
+  --on: #141414;
+  --dot: rgba(20, 20, 20, .10);
 }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --cream: #16130f; --paper: #262119; --ink: #fff3d6; --ink-soft: #d8cbae; --dot: rgba(255, 243, 214, .09); color-scheme: dark; }
+}
+:root[data-theme="dark"] { --cream: #16130f; --paper: #262119; --ink: #fff3d6; --ink-soft: #d8cbae; --dot: rgba(255, 243, 214, .09); color-scheme: dark; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html, body { min-height: 100%; }
 body {
   margin: 0;
   background-color: var(--cream);
-  background-image: radial-gradient(rgba(20, 20, 20, .10) 1.3px, transparent 1.6px);
+  background-image: radial-gradient(var(--dot) 1.3px, transparent 1.6px);
   background-size: 22px 22px;
   color: var(--ink);
   font: 500 16px/1.5 var(--body);
@@ -247,13 +253,33 @@ p { margin: 0; }
 .prow.first { background: var(--gold); border-width: 4px; padding-block: 18px; }
 .prow.first .pname { font-size: 30px; }
 
+/* header controls, twists, flavor */
+.ctrls { display: flex; gap: 8px; flex-wrap: wrap; }
+.ctrl { font: 800 12px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; padding: 8px 12px; border-radius: 999px; border: var(--b); background: var(--paper); color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+.ctrl[aria-pressed="false"] { text-decoration: line-through; opacity: .65; }
+.ctrl:active { transform: translate(2px, 2px); box-shadow: none; }
+.twist { justify-self: start; background: var(--coral); color: #fff; border: var(--b); border-radius: 12px; padding: 8px 14px 9px; font: 600 17px/1.3 var(--display); transform: rotate(-1.5deg); box-shadow: var(--sh-sm); }
+.twist b { font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-right: 6px; background: var(--gold); color: var(--on); padding: 1px 7px 2px; border-radius: 6px; border: 2px solid var(--on); }
+.shout { font: 800 14px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--coral); }
+.quip { font-weight: 700; font-style: italic; color: var(--ink-soft); }
+.champ { font: 700 22px/1.1 var(--display); }
+.answer.liar { color: var(--coral); }
+.hud-phase, .hud-x2 { font: 800 12px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; border: var(--b); border-radius: 999px; padding: 8px 12px; }
+.hud-phase { background: var(--gold); color: var(--on); transform: rotate(-1.5deg); }
+.hud-x2 { background: var(--coral); color: #fff; transform: rotate(2deg); }
+/* text that sits on a bright sticker color stays dark in both themes */
+.btn.go, .btn.on, .codehero, .codehero .lbl, .join-box, .join-box .lbl, .mark .m2, .sticker .av, .sticker .stamp.ok, .sticker .stamp.host, .ticket:not(.sel), .ticket .tk-tag, .pts, .tag, .filled, .opt.sel, .opt.sel .sub, .res.win, .res.real, .res.win .res-meta, .res.real .res-meta, .locked, .locked .lbl, .ritem.placed, .prow.first, .prow.first .pname, .prow.first .score, .btn.start.on { color: var(--on); }
+.tile, .ticket .tk-min { color: var(--ink); }
+.btn.start.go, .btn.hot, .mark .m1, .hero .hl, .verdict, .err, .timer.low, .ritem.placed .num, .sticker .stamp:not(.ok):not(.host) { color: #fff; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 
+<script>try { var t = localStorage.getItem("rr-theme"); if (t === "dark" || t === "light") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <div class="wrap">
   <header class="top">
     <div class="mark" aria-label="Rowdy Room"><span class="m1">Rowdy</span><span class="m2">Room</span></div>
     <div class="spacer"></div>
+    <div class="ctrls"><button id="musicBtn" class="ctrl" type="button">Music on</button><button id="sfxBtn" class="ctrl" type="button">Sound on</button><button id="themeBtn" class="ctrl" type="button">Dark mode</button></div>
     <span id="mode" class="badge" hidden>Connecting</span>
     <button id="leave" class="btn small" hidden>Leave room</button>
   </header>
@@ -294,11 +320,33 @@ const BANK = {
     "I've been calling my coworker the wrong name for a year.",
     "There was a spider in my room and now I can't find it.",
     "I want to quit my job to become a professional napper.",
-    "My parents want to 'talk about my screen time'."
+    "My parents want to 'talk about my screen time'.",
+    "My cat keeps knocking things off the table while making eye contact.",
+    "I accidentally sent my boss a voice memo of me singing.",
+    "My GPS says 'recalculating' in a really disappointed voice.",
+    "I ate the last slice of pizza and my roommate has noticed.",
+    "My neighbor keeps leaving passive-aggressive sticky notes.",
+    "I said I'd 'circle back' and now I actually have to circle back.",
+    "My little brother figured out how to change the Wi-Fi password.",
+    "I tripped in front of my entire class. Twice.",
+    "I can't remember if I turned off the stove and I'm on a plane.",
+    "A seagull stole my sandwich and I want revenge.",
+    "I signed up for a free trial and now I'm paying for a llama subscription.",
+    "My friend asked me to be honest about their mixtape.",
+    "I've been pretending to understand crypto for three years.",
+    "My phone autocorrected 'love you' to 'leave you' in a text to my mom.",
+    "I joined a video call and forgot my camera was on while I ate cereal out of a pot.",
+    "My haunted house has terrible Wi-Fi.",
+    "I got stuck in a revolving door for eleven minutes.",
+    "Someone at work keeps microwaving fish.",
+    "I showed up wearing the exact same outfit as my teacher.",
+    "My smart speaker keeps ordering things on its own."
   ],
   facts: [
     { t: "A group of flamingos is called a ___.", a: "flamboyance" },
     { t: "A group of crows is called a ___.", a: "murder" },
+    { t: "A group of owls is called a ___.", a: "parliament" },
+    { t: "A group of jellyfish is called a ___.", a: "smack" },
     { t: "Wombat poop is shaped like ___.", a: "cubes" },
     { t: "Octopuses have three ___.", a: "hearts" },
     { t: "Scotland's national animal is the ___.", a: "unicorn" },
@@ -306,6 +354,7 @@ const BANK = {
     { t: "Bananas are slightly ___.", a: "radioactive" },
     { t: "Sea otters hold ___ while they sleep so they don't drift apart.", a: "hands" },
     { t: "The dot over a lowercase i is called a ___.", a: "tittle" },
+    { t: "The # symbol is officially called an ___.", a: "octothorpe" },
     { t: "Cleopatra lived closer in time to the Moon landing than to the building of the Great ___.", a: "Pyramid" },
     { t: "In 1932, Australia's military fought a 'war' against ___, and lost.", a: "emus" },
     { t: "The man who designed the Pringles can had some of his ashes buried in a ___.", a: "Pringles can" },
@@ -320,6 +369,7 @@ const BANK = {
     { t: "Butterflies taste things with their ___.", a: "feet" },
     { t: "A 'jiffy' is an actual unit of ___.", a: "time" },
     { t: "Peanuts aren't nuts. They're ___.", a: "legumes" },
+    { t: "Strawberries aren't technically berries, but ___ are.", a: "bananas" },
     { t: "The Eiffel Tower grows about 15 cm taller in the ___.", a: "summer" },
     { t: "Gentoo penguins 'propose' to a mate by offering a ___.", a: "pebble" },
     { t: "Koala ___ are so close to human ones they could confuse a crime scene.", a: "fingerprints" },
@@ -327,7 +377,20 @@ const BANK = {
     { t: "A bolt of lightning is about five times hotter than the surface of the ___.", a: "sun" },
     { t: "Sharks have been around longer than ___.", a: "trees" },
     { t: "After he died, the inventor of the Frisbee was turned into a ___.", a: "frisbee" },
-    { t: "Honeybees can learn to recognize human ___.", a: "faces" }
+    { t: "Honeybees can learn to recognize human ___.", a: "faces" },
+    { t: "Cows have a stomach with ___ compartments.", a: "four" },
+    { t: "Some turtles can breathe through their ___.", a: "butts" },
+    { t: "Google's original name was ___.", a: "BackRub" },
+    { t: "Before alarm clocks, 'knocker-uppers' woke people by tapping on their ___ with long sticks.", a: "windows" },
+    { t: "Pigeons have been trained to tell the difference between paintings by Monet and ___.", a: "Picasso" },
+    { t: "A study found the Scots language has over 400 words for ___.", a: "snow" },
+    { t: "Rats make laughing sounds when they're ___.", a: "tickled" },
+    { t: "The microwave oven was invented after a ___ melted in an engineer's pocket.", a: "chocolate bar" },
+    { t: "An ostrich's eye is bigger than its ___.", a: "brain" },
+    { t: "Bottlenose dolphins call each other by signature whistles that work like ___.", a: "names" },
+    { t: "Lobster used to be considered cheap food for ___.", a: "prisoners" },
+    { t: "Hawaiian pizza was invented in ___.", a: "Canada" },
+    { t: "A crocodile can't stick out its ___.", a: "tongue" }
   ],
   openers: [
     "It was supposed to be a normal trip to the grocery store.",
@@ -344,7 +407,19 @@ const BANK = {
     "The GPS said \"turn left\", directly into the ocean.",
     "I won the lottery, but the prize was a haunted castle.",
     "On Monday morning the museum's dinosaur skeleton was gone.",
-    "Every cat in town showed up at my door at once."
+    "Every cat in town showed up at my door at once.",
+    "The vending machine gave me a note that said \"Help.\"",
+    "Our class hamster has been elected mayor.",
+    "Halfway through the movie, the screen started showing us.",
+    "The elevator skipped floor 13 and stopped at floor 14½.",
+    "Grandpa's new invention was supposed to make toast.",
+    "I woke up and every clock in the house said \"nope.\"",
+    "The ice cream truck was playing its song backwards.",
+    "Somebody replaced every stop sign in town with a \"maybe\" sign.",
+    "The talent show was going great until the magician vanished for real.",
+    "My reflection waved first.",
+    "The aliens landed, looked around, and asked for the Wi-Fi password.",
+    "The field trip to the cheese factory went horribly wrong."
   ],
   who: [
     "What's a food you secretly hate?",
@@ -366,16 +441,36 @@ const BANK = {
     "What's something you're irrationally scared of?",
     "What would your walk-up song be?",
     "What's your weirdest food combo?",
-    "What's the last thing that made you laugh way too hard?"
+    "What's the last thing that made you laugh way too hard?",
+    "What's the weirdest dream you remember?",
+    "What would your autobiography be called?",
+    "What's a talent you wish you had?",
+    "What's the worst haircut you've ever had?",
+    "What's the most useless thing you own?",
+    "What would you do if you were invisible for a day?",
+    "What's your secret comfort food?",
+    "What's the strangest thing you believed as a kid?",
+    "If you were a ghost, how would you haunt people?",
+    "What's a word you always mispronounce?",
+    "What's the pettiest thing you've ever done?",
+    "What's your most-used emoji, and why?",
+    "What would you name a boat?",
+    "What job would you be terrible at?",
+    "What's the first thing you'd buy if you got rich?"
   ],
-  pairs: [
-    ["cat", "dog"], ["pizza", "burger"], ["beach", "pool"], ["coffee", "tea"], ["vampire", "zombie"],
-    ["guitar", "violin"], ["train", "bus"], ["moon", "sun"], ["snow", "rain"], ["shark", "dolphin"],
-    ["castle", "palace"], ["pirate", "ninja"], ["spoon", "fork"], ["Halloween", "Christmas"], ["library", "bookstore"],
-    ["doctor", "dentist"], ["rollercoaster", "waterslide"], ["pancake", "waffle"], ["ketchup", "mustard"], ["tiger", "lion"],
-    ["hotel", "hospital"], ["wedding", "birthday party"], ["soccer", "basketball"], ["sushi", "tacos"], ["ghost", "alien"],
-    ["cloud", "fog"], ["piano", "drums"], ["desert", "jungle"], ["wizard", "superhero"], ["camping", "picnic"],
-    ["airport", "train station"], ["volcano", "earthquake"], ["cereal", "oatmeal"], ["robot", "cyborg"]
+  oddcats: [
+    { c: "Animals", w: ["penguin", "giraffe", "octopus", "kangaroo", "sloth", "flamingo", "crocodile", "panda", "hedgehog", "eagle", "shark", "camel"] },
+    { c: "Food", w: ["pizza", "sushi", "tacos", "pancakes", "spaghetti", "ice cream", "popcorn", "hot dog", "burrito", "salad", "soup", "donut"] },
+    { c: "Places", w: ["beach", "library", "airport", "hospital", "zoo", "castle", "desert", "bowling alley", "haunted house", "space station", "mall", "farm"] },
+    { c: "Jobs", w: ["firefighter", "chef", "astronaut", "dentist", "pilot", "teacher", "plumber", "magician", "lifeguard", "farmer", "detective", "clown"] },
+    { c: "Sports & games", w: ["soccer", "basketball", "tennis", "golf", "swimming", "boxing", "skateboarding", "bowling", "surfing", "chess", "hide-and-seek", "dodgeball"] },
+    { c: "Stuff at home", w: ["toaster", "couch", "bathtub", "fridge", "vacuum", "lamp", "mirror", "pillow", "washing machine", "toilet", "doorbell", "bookshelf"] },
+    { c: "Ways to travel", w: ["helicopter", "submarine", "bicycle", "rocket", "train", "skateboard", "hot air balloon", "canoe", "tractor", "limousine", "pogo stick", "camel ride"] },
+    { c: "Fantasy & spooky", w: ["dragon", "wizard", "mermaid", "unicorn", "vampire", "ghost", "robot", "zombie", "fairy", "giant", "werewolf", "alien"] },
+    { c: "Events", w: ["wedding", "birthday party", "sleepover", "graduation", "concert", "Halloween", "camping trip", "job interview", "road trip", "field trip", "funeral for a goldfish", "talent show"] },
+    { c: "Music", w: ["guitar", "drums", "piano", "violin", "trumpet", "harmonica", "tuba", "triangle", "DJ", "karaoke", "bagpipes", "kazoo"] },
+    { c: "Nature", w: ["volcano", "tornado", "rainbow", "earthquake", "snowstorm", "waterfall", "glacier", "jungle", "thunderstorm", "sunset", "cave", "coral reef"] },
+    { c: "Clothes", w: ["sock", "tuxedo", "pajamas", "raincoat", "crown", "flip-flops", "scarf", "cowboy hat", "swimsuit", "onesie", "tutu", "helmet"] }
   ],
   takes: [
     "Cereal is a soup.",
@@ -401,7 +496,23 @@ const BANK = {
     "Mint chocolate chip tastes like toothpaste and that's fine.",
     "Birthdays after 25 are pointless.",
     "Texting is better than calling. Always.",
-    "Elevators should play heavy metal."
+    "Elevators should play heavy metal.",
+    "Pancakes are better than waffles. It's not close.",
+    "Tomatoes don't belong in sandwiches.",
+    "Mornings are good, actually.",
+    "Every chair should be a beanbag.",
+    "Wearing shoes inside the house is fine.",
+    "Grapes are bite-size water balloons and that's great.",
+    "The crust is the best part of the pizza.",
+    "Board games are better than video games.",
+    "Clowns are the most trustworthy profession.",
+    "Waking up early on weekends is a power move.",
+    "Soup is a drink.",
+    "Showering at night is the only correct choice.",
+    "Socks should be sold in threes.",
+    "Popcorn is a breakfast food.",
+    "Snakes are just long lizards that gave up on legs.",
+    "Fireworks are overrated."
   ],
   cats: [
     "Most likely to betray you",
@@ -417,7 +528,17 @@ const BANK = {
     "Most likely to become famous",
     "Best at keeping a secret",
     "Most annoying at 6 a.m.",
-    "Best pet"
+    "Best pet",
+    "Most likely to survive on a desert island",
+    "Best superhero sidekick",
+    "Worst thing to find in your sandwich",
+    "Most likely to start a band",
+    "Best to take on a road trip",
+    "Most suspicious",
+    "Most likely to cry at a movie",
+    "Best at hide-and-seek",
+    "Worst babysitter",
+    "Most likely to be secretly rich"
   ],
   items: [
     "a goose", "Tuesday", "a dentist", "lava", "socks", "a rubber duck", "a toaster", "your grandma",
@@ -425,7 +546,12 @@ const BANK = {
     "a jar of pickles", "a ghost", "a trampoline", "a raccoon", "a leaf blower", "flat-pack furniture instructions",
     "a clown", "a cactus", "a mime", "bubble wrap", "a vending machine", "a sumo wrestler", "a single grape",
     "a lighthouse", "a golden retriever", "a printer", "a sword", "a llama", "an air fryer", "a snowman",
-    "a pirate", "a wheel of cheese", "a disco ball", "a horse in a suit"
+    "a pirate", "a wheel of cheese", "a disco ball", "a horse in a suit",
+    "a toddler", "a submarine", "a karaoke machine", "a pineapple", "a wizard", "a parking ticket",
+    "a selfie stick", "a haunted mirror", "a hot tub", "a squirrel", "a tuba", "a bouncy castle",
+    "a librarian", "a meteor", "a microwave", "a fidget spinner", "a burrito", "a pigeon in a tiny hat",
+    "a samurai", "a lava lamp", "a robot vacuum", "a time traveler", "a moose", "a glue stick",
+    "a scarecrow", "a hamster on a wheel", "a fire extinguisher", "a substitute teacher", "a cursed sock", "a giant pretzel"
   ],
   nums: [
     { q: "How many keys are on a standard piano?", a: 88, u: "keys" },
@@ -443,6 +569,7 @@ const BANK = {
     { q: "In what year was the first email sent?", a: 1971, u: "" },
     { q: "In what year was YouTube founded?", a: 2005, u: "" },
     { q: "In what year did people first walk on the Moon?", a: 1969, u: "" },
+    { q: "In what year did the Berlin Wall fall?", a: 1989, u: "" },
     { q: "How many dots are on a six-sided die, all faces added up?", a: 21, u: "dots" },
     { q: "How many dots are in a full double-six domino set?", a: 168, u: "dots" },
     { q: "How many seconds are in one day?", a: 86400, u: "seconds" },
@@ -455,7 +582,20 @@ const BANK = {
     { q: "How many teeth are in a full adult set, wisdom teeth included?", a: 32, u: "teeth" },
     { q: "How many years did the Hundred Years' War actually last?", a: 116, u: "years" },
     { q: "How many Earth days does it take Mars to orbit the Sun?", a: 687, u: "days" },
-    { q: "In Monopoly (US), how much does Boardwalk cost?", a: 400, u: "dollars" }
+    { q: "In Monopoly (US), how much does Boardwalk cost?", a: 400, u: "dollars" },
+    { q: "How many keys are on a standard full-size US computer keyboard?", a: 104, u: "keys" },
+    { q: "How many minutes of regulation time are in an NBA game?", a: 48, u: "minutes" },
+    { q: "How many players does each team have on the field in rugby union?", a: 15, u: "players" },
+    { q: "How many legs does a lobster have, claws included?", a: 10, u: "legs" },
+    { q: "How many bones are in one human hand, wrist included?", a: 27, u: "bones" },
+    { q: "Joey Chestnut set the hot dog eating record in 2021. How many did he eat in 10 minutes?", a: 76, u: "hot dogs" },
+    { q: "How tall is the Statue of Liberty from the ground to the tip of the torch?", a: 93, u: "meters" },
+    { q: "How many countries are in Africa?", a: 54, u: "countries" },
+    { q: "How many time zones does Russia have?", a: 11, u: "time zones" },
+    { q: "Roughly how many Earths could fit inside the Sun?", a: 1300000, u: "Earths" },
+    { q: "How many floors does the Burj Khalifa have?", a: 163, u: "floors" },
+    { q: "How many squares are on a standard Scrabble board?", a: 225, u: "squares" },
+    { q: "A 2012 survey measured the Great Wall of China with all its branches. How long is it?", a: 21196, u: "km" }
   ],
   roasts: [
     "was not in the same galaxy.",
@@ -465,9 +605,82 @@ const BANK = {
     "is confidently, spectacularly wrong.",
     "has been banned from calculators.",
     "rolled a die and multiplied by vibes.",
-    "is living in an alternate universe."
+    "is living in an alternate universe.",
+    "needs a new calculator and possibly a new brain.",
+    "was close, if you squint from space.",
+    "made that number up and we all know it.",
+    "should never be allowed near a budget.",
+    "answered a completely different question.",
+    "has the confidence of a genius and the aim of a toddler.",
+    "would get lost in a hallway.",
+    "just smashed the keyboard, didn't they?"
   ]
 };
+
+/* flavor lines, picked per round so things don't feel the same every time */
+const FLAVOR = {
+  locked: ["Locked in!", "No take-backs!", "Sealed and delivered!", "Bold choice. Locked in!", "It's in. Good luck.", "Submitted with confidence!", "Done. No regrets. Probably."],
+  reveal: ["The results are in!", "Drumroll, please…", "Moment of truth.", "Let's see the damage.", "Brace yourselves.", "And the crowd goes…", "Okay, this is good."],
+  wait: ["Someone is overthinking it.", "Somebody's typing a novel.", "Tick tock.", "No pressure. Lots of pressure.", "Take your time. Actually, don't.", "The suspense is unbearable.", "Hurry up, legends."],
+  champ: ["Supreme Chaos Champion", "Certified Menace", "Undisputed Legend", "Professional Goofball", "Ruler of the Room", "Big Brain Energy", "Absolute Unit of Fun", "The People's Champion"],
+  vote: ["Choose wisely.", "No voting for yourself. We checked.", "Trust your gut.", "Vote with your heart. Or spite.", "Pick the one that made you snort."]
+};
+
+function words(v) { return String(v || "").trim().split(/\s+/).filter(Boolean).length; }
+const caps = (v) => (/[a-z]/.test(v) ? "Twist rule: ALL CAPS!" : "");
+/* round twists: picked by the host for some rounds (never round 1) */
+const TWISTS = {
+  advice: [
+    { t: "Give your advice like a pirate." },
+    { t: "Use exactly five words.", check: (v) => (words(v) === 5 ? "" : "Twist rule: exactly five words.") },
+    { t: "No letter E allowed!", check: (v) => (/e/i.test(v) ? "Twist rule: no letter E!" : "") },
+    { t: "Start your advice with \"Honestly,\"", check: (v) => (/^honestly\b/i.test(v.trim()) ? "" : "Twist rule: start with \"Honestly,\"") },
+    { t: "Your advice must involve a goose.", check: (v) => (/goose|geese/i.test(v) ? "" : "Twist rule: mention a goose!") },
+    { t: "Answer as a very disappointed grandma." },
+    { t: "Double points this round!", x2: true }
+  ],
+  fakefact: [
+    { t: "Double points this round!", x2: true },
+    { t: "Your fake must be one word.", check: (v) => (words(v) === 1 ? "" : "Twist rule: one word only.") },
+    { t: "Lightning round: 25 seconds to write!", dur: 25 },
+    { t: "Make your fake sound as boring and believable as possible." }
+  ],
+  odd: [
+    { t: "Clues must be a sound effect, like \"vroom\"." },
+    { t: "Clues must be a color." },
+    { t: "Double points this round!", x2: true },
+    { t: "Lightning round: 20 seconds!", dur: 20 }
+  ],
+  whowrote: [
+    { t: "Answer as if you were your pet (or a pet you'd want)." },
+    { t: "Answer in exactly three words.", check: (v) => (words(v) === 3 ? "" : "Twist rule: exactly three words.") },
+    { t: "Lie! Write what you think someone else would answer." },
+    { t: "Answer in ALL CAPS.", check: caps },
+    { t: "Double points this round!", x2: true }
+  ],
+  story: [
+    { t: "Your line must mention a sandwich.", check: (v) => (/sandwich/i.test(v) ? "" : "Twist rule: mention a sandwich!") },
+    { t: "End your line with a question.", check: (v) => (/\?\s*$/.test(v) ? "" : "Twist rule: end with a question mark.") },
+    { t: "Include a sound effect, like KABOOM." },
+    { t: "Introduce a brand-new character." },
+    { t: "Write your line in ALL CAPS.", check: caps }
+  ],
+  court: [
+    { t: "Use a sports metaphor in your argument." },
+    { t: "Argue like a movie trailer narrator. In a world…" },
+    { t: "Double points this round!", x2: true },
+    { t: "Your argument has to rhyme. Try your best." }
+  ],
+  rank: [
+    { t: "Double points this round!", x2: true },
+    { t: "Lightning round: 20 seconds!", dur: 20 }
+  ],
+  guess: [
+    { t: "Double points this round!", x2: true },
+    { t: "Lightning round: 15 seconds!", dur: 15 }
+  ]
+};
+const pickF = (k, seed) => { const a = FLAVOR[k]; return a[hash(String(seed) + "|" + k) % a.length]; };
 
 const COLORS = ["#ff3366", "#ffb800", "#2fd18b", "#3d9bff", "#b38cff", "#ff8a3d", "#9be15d", "#ff7eb6", "#22c7c7", "#f2e6c9"];
 
@@ -618,6 +831,84 @@ const net = { impl: null };
 function connectRoom(code) { if (net.impl) net.impl.close(); net.impl = relayRoom(code); net.impl.onPeers(() => schedule()); schedule(); }
 function disconnectRoom() { if (net.impl) net.impl.close(); net.impl = null; schedule(); }
 
+/* ---------------- sound: a chiptune loop and effects, generated live (no audio files) ---------------- */
+const Sound = (() => {
+  let ctx = null, master, musicBus, sfxBus, noiseBuf, timer = null, step = 0, nextT = 0, prog = 0;
+  const pref = { music: store.get("rr-music") !== "off", sfx: store.get("rr-sfx") !== "off" };
+  const STEP = 60 / 124 / 4;
+  const mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
+  const PROGS = [
+    [[60, 64, 67], [55, 59, 62], [57, 60, 64], [53, 57, 60]],
+    [[57, 60, 64], [53, 57, 60], [60, 64, 67], [55, 59, 62]],
+    [[53, 57, 60], [55, 59, 62], [52, 55, 59], [57, 60, 64]],
+    [[60, 64, 67], [57, 60, 64], [53, 57, 60], [55, 59, 62]]
+  ];
+  const ARPS = [[0, 1, 2, 1, 0, 2, 1, 2, 0, 1, 2, 1, 2, 1, 0, 1], [0, 2, 1, 2, 0, 2, 1, 2, 2, 1, 0, 1, 2, 1, 0, 2]];
+  let arp = ARPS[0];
+  function ensure() {
+    if (ctx) return true;
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
+    try { ctx = new AC(); } catch (e) { return false; }
+    master = ctx.createGain(); master.gain.value = 0.8; master.connect(ctx.destination);
+    musicBus = ctx.createGain(); musicBus.gain.value = 0.12; musicBus.connect(master);
+    sfxBus = ctx.createGain(); sfxBus.gain.value = 0.45; sfxBus.connect(master);
+    noiseBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.5), ctx.sampleRate);
+    const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    return true;
+  }
+  function tone(f, t, dur, type, vol, bus, f2) {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(bus); o.start(t); o.stop(t + dur + 0.03);
+  }
+  function noise(t, dur, vol, bus, hp) {
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf;
+    const f = ctx.createBiquadFilter(); f.type = "highpass"; f.frequency.value = hp;
+    const g = ctx.createGain(); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(g); g.connect(bus); s.start(t); s.stop(t + dur + 0.03);
+  }
+  function playStep(i, t) {
+    const bar = Math.floor(i / 16) % 4, s = i % 16, chord = PROGS[prog][bar];
+    tone(mtof(chord[arp[s]] + 12), t, STEP * 0.9, "square", 0.2, musicBus);
+    if (s === 0 || s === 6 || s === 8 || s === 14) tone(mtof(chord[0] - 24), t, STEP * 1.8, "triangle", 0.55, musicBus);
+    if (s === 0 || s === 8 || (bar === 3 && s === 10)) tone(140, t, 0.16, "sine", 0.9, musicBus, 45);
+    if (s === 4 || s === 12) noise(t, 0.12, 0.32, musicBus, 1800);
+    if (s % 2 === 0) noise(t, 0.03, 0.1, musicBus, 7000);
+  }
+  function pump() {
+    while (nextT < ctx.currentTime + 0.15) {
+      playStep(step, nextT); nextT += STEP; step = (step + 1) % 64;
+      if (step === 0) { prog = Math.floor(Math.random() * PROGS.length); arp = ARPS[Math.floor(Math.random() * ARPS.length)]; }
+    }
+  }
+  function startMusic() { if (!pref.music || timer || !ctx || ctx.state !== "running") return; nextT = ctx.currentTime + 0.06; step = 0; timer = setInterval(pump, 25); }
+  function stopMusic() { clearInterval(timer); timer = null; }
+  const FX = {
+    click: (t) => tone(880, t, 0.05, "square", 0.2, sfxBus),
+    pop: (t) => tone(500, t, 0.09, "sine", 0.6, sfxBus, 1100),
+    submit: (t) => [523, 659, 784, 1047].forEach((f, i) => tone(f, t + i * 0.06, 0.12, "triangle", 0.5, sfxBus)),
+    start: (t) => { tone(392, t, 0.1, "square", 0.3, sfxBus); tone(784, t + 0.1, 0.18, "square", 0.3, sfxBus); },
+    vote: (t) => [659, 523, 659, 784].forEach((f, i) => tone(f, t + i * 0.07, 0.1, "square", 0.25, sfxBus)),
+    reveal: (t) => { [392, 523, 659].forEach((f, i) => tone(f, t + i * 0.1, 0.12, "square", 0.3, sfxBus)); [523, 659, 784].forEach((f) => tone(f, t + 0.32, 0.5, "triangle", 0.35, sfxBus)); },
+    win: (t) => { [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => tone(f, t + i * 0.09, 0.16, "square", 0.3, sfxBus)); [523, 659, 784, 1047].forEach((f) => tone(f, t + 0.66, 0.9, "triangle", 0.3, sfxBus)); },
+    join: (t) => { tone(660, t, 0.08, "triangle", 0.5, sfxBus); tone(990, t + 0.08, 0.14, "triangle", 0.5, sfxBus); },
+    tick: (t) => tone(1400, t, 0.04, "square", 0.3, sfxBus),
+    nope: (t) => tone(220, t, 0.22, "sawtooth", 0.3, sfxBus, 110)
+  };
+  document.addEventListener("visibilitychange", () => {
+    if (!ctx) return;
+    if (document.hidden) { stopMusic(); ctx.suspend().catch(() => {}); }
+    else ctx.resume().then(startMusic).catch(() => {});
+  });
+  return {
+    pref,
+    unlock() { if (!ensure()) return; if (ctx.state === "suspended") ctx.resume().then(startMusic).catch(() => {}); else startMusic(); },
+    sfx(name) { if (!pref.sfx || !ctx || ctx.state !== "running" || !FX[name]) return; try { FX[name](ctx.currentTime + 0.01); } catch (e) { /* ignore */ } },
+    toggle(kind) { pref[kind] = !pref[kind]; store.set("rr-" + kind, pref[kind] ? "on" : "off"); if (kind === "music") { if (pref.music) this.unlock(); else stopMusic(); } else if (pref.sfx) this.unlock(); return pref[kind]; }
+  };
+})();
+
 /* ---------------- me ---------------- */
 let pid = store.get("rr-pid", true);
 if (!pid || !/^p[a-z0-9]{7}$/.test(pid)) { pid = "p" + rid(7); store.set("rr-pid", pid, true); }
@@ -638,7 +929,7 @@ const used = {};       // host memory: prompts already used this session
 const DRAFT = {};      // text being typed, kept across re-renders
 let ORDER = { k: "", list: [] };
 let ERR = "";
-let localDeadline = 0, lastGStamp = "", lastRk = "";
+let localDeadline = 0, lastGStamp = "", lastRk = "", lastSkip = 0, lastTick = -1, lastPK = "", lastCnt = 0;
 
 /* ---------------- roster ---------------- */
 function roster() {
@@ -730,7 +1021,7 @@ const GAMES = {
   },
 
   advice: {
-    name: "Worst Advice", tag: "Writing", min: 3, color: "#ff7eb6", wt: 75, vt: 40,
+    name: "Worst Advice", tag: "Writing", min: 3, needsClues: true, color: "#ff7eb6", wt: 75, vt: 40,
     blurb: "Someone has a problem. Give them the worst advice you can. Funniest answer gets the votes.",
     plan: (pn, n) => rounds(n, ["write", "vote", "reveal"]),
     setup(g) { g.d = { q: pick("advice", 1)[0] }; },
@@ -746,16 +1037,22 @@ const GAMES = {
   },
 
   odd: {
-    name: "One of Us Is Lying", tag: "Deduction", min: 3, color: "#3d9bff", wt: 50, vt: 45,
-    blurb: "Everyone gets the same secret word except one player. Give a clue, then vote out the odd one.",
+    name: "One of Us Is Lying", tag: "Deduction", min: 3, needsClues: true, color: "#3d9bff", wt: 50, vt: 45,
+    blurb: "Everyone gets the same secret word except the liar, who only knows the category. Give a clue, then vote out the liar.",
     plan: (pn, n) => rounds(n, ["write", "vote", "reveal"]),
-    setup(g, r, present) { const pool = g.pl.filter((p) => present.has(p)); g.d = { w: pick("pairs", 1)[0], imp: pool[Math.floor(Math.random() * pool.length)], s: Math.random() < 0.5 ? 0 : 1 }; },
-    word(g, me) { const pair = BANK.pairs[g.d.w]; return me === g.d.imp ? pair[1 - g.d.s] : pair[g.d.s]; },
-    write(g, me) { return { prompt: `<div class="eyebrow">Your secret word</div><p class="answer">${esc(this.word(g, me))}</p><p class="hint">Give a one-word clue. One player has a different word and might not know it. It could be you.</p>`, type: "text", max: 24, ph: "One-word clue" }; },
-    validate(g, v, me) { const w = norm(this.word(g, me)); if (w && norm(v).includes(w)) return "Your clue can't contain your word."; if (v.split(" ").length > 2) return "Keep it to one word (two at most)."; return ""; },
+    setup(g, r, present) { const pool = g.pl.filter((p) => present.has(p)); const c = pick("oddcats", 1)[0]; g.d = { c, w: Math.floor(Math.random() * BANK.oddcats[c].w.length), imp: pool[Math.floor(Math.random() * pool.length)] }; },
+    cat(g) { return BANK.oddcats[g.d.c]; },
+    word(g) { return this.cat(g).w[g.d.w]; },
+    write(g, me) {
+      const cat = esc(this.cat(g).c);
+      if (me === g.d.imp) return { prompt: `<div class="eyebrow">Shh… you're the liar</div><p class="answer liar">???</p><p class="mid">The category is <span class="filled">${cat}</span></p><p class="hint">Everyone else has a secret word from this category. You don't. Give a clue that blends in and don't get caught.</p>`, type: "text", max: 24, ph: "Bluff a clue" };
+      return { prompt: `<div class="eyebrow">Your secret word · ${cat}</div><p class="answer">${esc(this.word(g))}</p><p class="hint">Give a one-word clue. One player is the liar and only knows the category, so don't make it too obvious.</p>`, type: "text", max: 24, ph: "One-word clue" };
+    },
+    validate(g, v, me) { if (me !== g.d.imp) { const w = norm(this.word(g)); if (w && norm(v).includes(w)) return "Your clue can't contain the secret word."; } if (v.split(" ").length > 2) return "Keep it to one word (two at most)."; return ""; },
     vote(g, me, c) {
       const ids = g.pl.filter((p) => p !== me && (c.ans[p] != null || c.R.has(p)));
-      return { kind: "pick", prompt: `<div class="eyebrow">Your word was “${esc(this.word(g, me))}”</div><p class="mid">Who has a different word?</p>`, options: ids.map((p) => ({ id: p, html: `${chip(p)}<span class="sub">Clue: <b>${esc(c.ans[p] || "(no clue)")}</b></span>` })) };
+      const head = me === g.d.imp ? "You're the liar. Vote for someone else to stay hidden." : `The word is “${esc(this.word(g))}”`;
+      return { kind: "pick", prompt: `<div class="eyebrow">${head}</div><p class="mid">Who's the liar?</p>`, options: ids.map((p) => ({ id: p, html: `${chip(p)}<span class="sub">Clue: <b>${esc(c.ans[p] || "(no clue)")}</b></span>` })) };
     },
     score(g, c) {
       const cnt = {}; for (const [v, t] of Object.entries(c.votes)) if (isStr(t) && t !== v && g.pl.includes(t)) cnt[t] = (cnt[t] || 0) + 1;
@@ -765,16 +1062,16 @@ const GAMES = {
       return { d, rv: { c: cnt, caught } };
     },
     reveal(g, c) {
-      const pair = BANK.pairs[g.d.w]; const cnt = (g.rv && g.rv.c) || {}; const caught = g.rv && g.rv.caught;
+      const cnt = (g.rv && g.rv.c) || {}; const caught = g.rv && g.rv.caught;
       const ids = g.pl.filter((p) => c.ans[p] != null || cnt[p]).sort((a, b) => (cnt[b] || 0) - (cnt[a] || 0));
       return `<p class="verdict">${caught ? "Caught!" : "Got away with it."}</p>
-        <p class="mid">${chip(g.d.imp)} had <span class="filled">${esc(pair[1 - g.d.s])}</span>. Everyone else had <span class="filled">${esc(pair[g.d.s])}</span>.</p>
+        <p class="mid">${chip(g.d.imp)} was the liar. The word was <span class="filled">${esc(this.word(g))}</span> (${esc(this.cat(g).c)}).</p>
         <ol class="results">${ids.map((p) => `<li class="res ${p === g.d.imp ? "win" : ""}"><div class="res-text">${esc(c.ans[p] || "(no clue)")}</div><div class="res-meta">${chip(p)} ${plural(cnt[p] || 0, "vote")} ${pts(g.lt && g.lt[p])}</div></li>`).join("")}</ol>`;
     }
   },
 
   whowrote: {
-    name: "Who Wrote That?", tag: "Friends", min: 3, color: "#b38cff", wt: 75, vt: 75,
+    name: "Who Wrote That?", tag: "Friends", min: 3, needsClues: true, color: "#b38cff", wt: 75, vt: 75,
     blurb: "Everyone answers a personal question anonymously. Then match each answer to its author.",
     plan: (pn, n) => rounds(n, ["write", "vote", "reveal"]),
     setup(g) { g.d = { q: pick("who", 1)[0] }; },
@@ -937,16 +1234,25 @@ function enterStep() {
   if (!prev || prev.r !== step.r) {
     if (!game.fixed) for (const p of present) if (!G.pl.includes(p)) { G.pl.push(p); G.sc[p] = G.sc[p] || 0; }
     game.setup(G, step.r, present); G.rv = null; G.lt = null;
+    const tl = TWISTS[G.gm] || []; G.tw = tl.length && step.r > 0 && Math.random() < 0.45 ? Math.floor(Math.random() * tl.length) : -1;
   }
   G.ph = step.ph;
-  const dur = durFor(game, step.ph);
+  const tw = twistOf(G);
+  const dur = tw && tw.dur && step.ph === "write" ? tw.dur : durFor(game, step.ph);
   G.e = dur ? Date.now() + dur * 1000 : 0;
   if (step.ph === "reveal") {
     const res = game.score(G, ctxFor(G)); G.rv = res.rv || null; G.lt = res.d || {};
+    if (tw && tw.x2) for (const p in G.lt) G.lt[p] *= 2;
     for (const p in G.lt) if (G.pl.includes(p)) G.sc[p] = (G.sc[p] || 0) + G.lt[p];
   }
 }
-function advance() { G.st++; if (G.st >= planOf(G).length) { G.ph = "final"; G.e = 0; } else enterStep(); }
+function advance() {
+  G.st++;
+  if (G.st >= planOf(G).length) { G.ph = "final"; G.e = 0; return; }
+  enterStep();
+  if (G.ph === "vote" && GAMES[G.gm].needsClues && !Object.keys(ctxFor(G).ans).length) advance();
+}
+const twistOf = (g) => (g && g.gm && g.tw >= 0 && TWISTS[g.gm] ? TWISTS[g.gm][g.tw] || null : null);
 function startGame(id) {
   const game = GAMES[id]; const present = inRoom(R, ME.code);
   if (present.length < game.min) return;
@@ -987,20 +1293,20 @@ const ACT = {
   sel: hostOnly((d) => { if (!G.gm && GAMES[d.id]) G.sel = d.id; }),
   rounds: hostOnly((d) => { G.R = Math.max(1, Math.min(6, (G.R || 3) + Number(d.by))); }),
   start: hostOnly(() => startGame(G.sel)),
-  skip: hostOnly(() => { if (G.gm && G.ph !== "final") advance(); }),
+  skip: hostOnly(() => { if (!G.gm || G.ph === "final" || G.ph === "reveal" || Date.now() - lastSkip < 1500) return; lastSkip = Date.now(); advance(); }),
   more: hostOnly(() => { if (G.e) G.e += 30000; }),
   next: hostOnly(() => { if (G.gm && G.ph === "reveal") advance(); }),
   end: hostOnly(() => { if (G.gm) { G.ph = "final"; G.e = 0; } }),
   again: hostOnly(() => startGame(G.gm)),
   lobby: hostOnly(() => { G.gm = null; G.ph = "lobby"; G.e = 0; }),
-  vote(d) { const g = HG; if (!g || g.ph !== "vote") return; setMe({ vt: { k: rkey(g), d: d.id } }); },
+  vote(d) { const g = HG; if (!g || g.ph !== "vote") return; Sound.sfx("pop"); setMe({ vt: { k: rkey(g), d: d.id } }); },
   rank(d) { const i = Number(d.i); const L = ORDER.list; const at = L.indexOf(i); if (at >= 0) L.splice(at, 1); else if (L.length < 5) L.push(i); schedule(); },
   rankreset() { ORDER.list = []; schedule(); },
   submitorder() { if (ORDER.list.length === 5) submitAnswer(ORDER.list.slice()); },
   submitmatch() {
     const g = HG; if (!g) return; const out = {};
     document.querySelectorAll("select[data-target]").forEach((s) => { if (s.value) out[s.dataset.target] = s.value; });
-    setMe({ vt: { k: rkey(g), d: out } });
+    Sound.sfx("submit"); setMe({ vt: { k: rkey(g), d: out } });
   }
 };
 function saveName() {
@@ -1016,10 +1322,12 @@ function submitAnswer(val) {
   const w = game.write(g, ME.pid, ctxFor(g));
   if (w.type === "number") { const num = Number(String(val).replace(/,/g, "")); if (!isFinite(num) || String(val).trim() === "") { ERR = "Type a number."; schedule(); return; } val = num; }
   if (w.type === "text" && !val) { ERR = "Write something first."; schedule(); return; }
-  const err = game.validate ? game.validate(g, val, ME.pid) : ""; if (err) { ERR = err; schedule(); return; }
+  const tw = twistOf(g); const terr = tw && tw.check && typeof val === "string" ? tw.check(val) : "";
+  const err = terr || (game.validate ? game.validate(g, val, ME.pid) : ""); if (err) { ERR = err; Sound.sfx("nope"); schedule(); return; }
   ERR = "";
   const patch = Object.assign({ a: { k: rkey(g), d: val } }, game.extra ? game.extra(g, val) : {});
   for (const k in DRAFT) delete DRAFT[k];
+  Sound.sfx("submit");
   setMe(patch);
 }
 
@@ -1078,25 +1386,28 @@ function statusBar(g) {
   if (g.ph === "final") label = "Final scores";
   else if (game.fixed) label = st.ph === "write" ? `Line ${st.r + 1} of ${game.steps(g.pn)}` : "The stories";
   else label = `Round ${st.r + 1} of ${g.R}`;
-  return `<div class="hud"><span class="hud-game">${esc(game.name)}</span><span class="hud-round">${label}</span><span id="timer" class="timer" hidden></span></div>`;
+  const phase = { write: "Writing", vote: "Voting", reveal: "Results" }[g.ph];
+  const tw = twistOf(g);
+  return `<div class="hud"><span class="hud-game">${esc(game.name)}</span><span class="hud-round">${label}</span>${phase ? `<span class="hud-phase">${phase}</span>` : ""}${tw && tw.x2 && g.ph !== "final" ? `<span class="hud-x2">2× points</span>` : ""}<span id="timer" class="timer" hidden></span></div>`;
 }
 
 function hostBar(g) {
   if (g.ph === "final") return `<div class="hostbar"><span class="lbl">Host</span><button class="btn go" data-act="again">Play again</button><button class="btn" data-act="lobby">Back to lobby</button></div>`;
   if (g.ph === "reveal") { const last = g.st + 1 >= planOf(g).length; return `<div class="hostbar"><span class="lbl">Host</span><button class="btn go" data-act="next">${last ? "Final scores" : "Next round"}</button><button class="btn small" data-act="end">End game</button></div>`; }
-  return `<div class="hostbar"><span class="lbl">Host</span><button class="btn small" data-act="skip">Skip ahead</button><button class="btn small" data-act="more">+30 seconds</button><button class="btn small" data-act="end">End game</button></div>`;
+  const nx = planOf(g)[g.st + 1]; const skipTo = !nx ? "Skip to final scores" : nx.ph === "vote" ? "Skip to voting" : nx.ph === "reveal" ? "Skip to results" : "Skip to next line";
+  return `<div class="hostbar"><span class="lbl">Host</span><button class="btn small" data-act="skip" title="Ends this part only">${skipTo}</button><button class="btn small" data-act="more">+30 seconds</button><button class="btn small" data-act="end">End game</button></div>`;
 }
 
 function writeView(g, game, c) {
   const me = ME.pid; const rk = rkey(g);
   if (!g.pl.includes(me)) return `<div class="card"><h3>You joined mid-round.</h3><p class="hint">You'll be dealt in at the start of the next round.</p></div>`;
   const w = game.write(g, me, c);
-  if (w.spectate || !whoFor(g, "write").includes(me)) return `<div class="card">${w.spectate || w.prompt}</div><div id="waiting" class="waiting"></div>`;
+  if (w.spectate || !whoFor(g, "write").includes(me)) return `<div class="card stack">${twistHTML(g)}${w.spectate || w.prompt}</div><div id="waiting" class="waiting"></div>`;
   const mine = ME.a && ME.a.k === rk ? ME.a.d : undefined;
   let body;
   if (mine !== undefined) {
     const shown = w.type === "order" ? mine.map((i, k) => `${k + 1}. ${esc(w.items[i])}`).join("<br>") : w.type === "number" ? fmtNum(mine) : esc(mine);
-    body = `<div class="locked"><span class="lbl">Locked in!</span><div class="res-text">${shown}</div></div>`;
+    body = `<div class="locked"><span class="lbl">${esc(pickF("locked", rk + me))}</span><div class="res-text">${shown}</div></div>`;
   } else if (w.type === "order") {
     if (ORDER.k !== rk) ORDER = { k: rk, list: [] };
     body = `<div class="rank">${w.items.map((t, i) => { const at = ORDER.list.indexOf(i); return `<button class="ritem ${at >= 0 ? "placed" : ""}" data-act="rank" data-i="${i}"><span class="num">${at >= 0 ? at + 1 : ""}</span>${esc(t)}</button>`; }).join("")}</div>
@@ -1108,8 +1419,9 @@ function writeView(g, game, c) {
       : `<input id="${id}" class="field" ${w.type === "number" ? 'inputmode="decimal"' : ""} maxlength="${w.max || 24}" placeholder="${esc(w.ph)}" autocomplete="off" data-draft="ans" aria-label="Your answer">`;
     body = `<form class="stack" data-form="answer">${input}<div class="row" style="justify-content:space-between"><button class="btn go" type="submit">Submit</button>${w.type === "text" ? `<span class="count" data-count="${id}"></span>` : ""}</div>${ERR ? `<p class="err">${esc(ERR)}</p>` : ""}</form>`;
   }
-  return `<div class="card stack">${w.prompt}${body}</div><div id="waiting" class="waiting"></div>`;
+  return `<div class="card stack">${twistHTML(g)}${w.prompt}${body}</div><div id="waiting" class="waiting"></div>`;
 }
+function twistHTML(g) { const tw = twistOf(g); return tw ? `<div class="twist"><b>Twist!</b> ${esc(tw.t)}</div>` : ""; }
 
 function voteView(g, game, c) {
   const me = ME.pid; const rk = rkey(g); const isVoter = whoFor(g, "vote").includes(me) && g.pl.includes(me);
@@ -1126,19 +1438,21 @@ function voteView(g, game, c) {
     if (ro) body = `<p class="hint" style="margin:0">${V.readonly ? "The jury is deciding your fate." : "You're watching this vote."}</p>` + body;
     else body += `<p class="hint">${myVote !== undefined ? "Vote cast. You can change it until everyone's in." : "Tap to vote."}</p>`;
   }
-  return `<div class="card stack">${V.prompt}${body}</div><div id="waiting" class="waiting"></div>`;
+  const tw = twistOf(g);
+  return `<div class="card stack">${tw && tw.x2 ? twistHTML(g) : ""}${V.prompt}${body}<p class="quip">${esc(pickF("vote", rk))}</p></div><div id="waiting" class="waiting"></div>`;
 }
 
 function revealView(g, game, c) {
   const mine = g.lt && g.lt[ME.pid];
-  return `<div class="card stack">${game.reveal(g, c)}${g.pl.includes(ME.pid) ? `<p class="hint">You scored <b>${mine || 0}</b> this round.</p>` : ""}</div>`;
+  const tw = twistOf(g);
+  return `<div class="card stack"><p class="shout">${esc(pickF("reveal", rkey(g)))}</p>${tw && tw.x2 ? `<div class="twist"><b>Twist!</b> Double points this round</div>` : ""}${game.reveal(g, c)}${g.pl.includes(ME.pid) ? `<p class="hint">You scored <b>${mine || 0}</b> this round.</p>` : ""}</div>`;
 }
 
 function finalView(g) {
   const ids = g.pl.slice().sort((a, b) => (g.sc[b] || 0) - (g.sc[a] || 0));
   const top = ids.length ? g.sc[ids[0]] || 0 : 0;
   const winners = ids.filter((p) => (g.sc[p] || 0) === top);
-  return `<div class="card stack"><span class="lbl">Final scores</span><p class="verdict">${winners.length > 1 ? "It's a tie!" : esc(nameOf(winners[0])) + " wins!"}</p>
+  return `<div class="card stack"><span class="lbl">Final scores</span><p class="verdict">${winners.length > 1 ? "It's a tie!" : esc(nameOf(winners[0])) + " wins!"}</p>${winners.length === 1 ? `<p class="champ">${esc(pickF("champ", g.n))}</p>` : ""}
     <div class="podium">${ids.map((p, k) => `<div class="prow ${(g.sc[p] || 0) === top ? "first" : ""}"><span class="place">${k + 1}</span><span class="dot" style="--pc:${colorOf(p)}"></span><span class="pname">${esc(nameOf(p))}</span><span class="score">${g.sc[p] || 0}</span></div>`).join("")}</div></div>`;
 }
 
@@ -1192,6 +1506,9 @@ function render() {
   R = roster();
   if (G) hostTickSafe();
   const html = buildStage();
+  const pk = HG && ME.code ? [HG.gm || "lobby", HG.n, HG.st, HG.ph].join("|") : "";
+  if (pk !== lastPK) { const ph = HG ? HG.ph : ""; if (lastPK && HG && HG.gm) Sound.sfx(ph === "write" ? "start" : ph === "vote" ? "vote" : ph === "reveal" ? "reveal" : ph === "final" ? "win" : "click"); lastPK = pk; }
+  const cnt = ME.code ? inRoom(R, ME.code).length : 0; if (cnt > lastCnt && lastCnt > 0) Sound.sfx("join"); lastCnt = cnt;
   const stage = $("#stage");
   if (html !== stageHTML) {
     const a = document.activeElement; const fid = a && a.id; const ss = a && a.selectionStart, se = a && a.selectionEnd;
@@ -1221,12 +1538,12 @@ function live() {
   if (g && g.gm) {
     const stamp = g.e + "|" + g.t;
     if (G) localDeadline = G.e; else if (stamp !== lastGStamp) { lastGStamp = stamp; localDeadline = g.e ? Date.now() + (g.e - (g.t || Date.now())) : 0; }
-    if (t) { if (localDeadline && (g.ph === "write" || g.ph === "vote")) { const s = Math.max(0, Math.ceil((localDeadline - Date.now()) / 1000)); t.hidden = false; t.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); t.classList.toggle("low", s <= 10); } else t.hidden = true; }
+    if (t) { if (localDeadline && (g.ph === "write" || g.ph === "vote")) { const s = Math.max(0, Math.ceil((localDeadline - Date.now()) / 1000)); t.hidden = false; t.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); t.classList.toggle("low", s <= 10); if (s !== lastTick) { lastTick = s; if (s > 0 && s <= 5) Sound.sfx("tick"); } } else t.hidden = true; }
     const w = $("#waiting");
     if (w && (g.ph === "write" || g.ph === "vote")) {
       const rk = rkey(g); const present = presentPids();
       const left = whoFor(g, g.ph).filter((p) => present.has(p)).filter((p) => { const r = R.get(p); const s = g.ph === "write" ? r && r.a : r && r.vt; return !(s && s.k === rk); });
-      const html = left.length ? `Waiting on ${left.map(chip).join(" ")}` : "Everyone's in.";
+      const html = left.length ? `Waiting on ${left.map(chip).join(" ")} <span class="quip">${esc(pickF("wait", rk + g.ph))}</span>` : "Everyone's in.";
       if (w.innerHTML !== html) w.innerHTML = html;
     }
   }
@@ -1240,7 +1557,7 @@ setInterval(() => { R = roster(); if (G) { hostTickSafe(); } live(); }, 400);
 const stageEl = $("#stage");
 document.addEventListener("click", (e) => {
   const b = e.target.closest("[data-act]"); if (!b || b.disabled) return;
-  const fn = ACT[b.dataset.act]; if (fn) { e.preventDefault(); fn(b.dataset, b); }
+  const fn = ACT[b.dataset.act]; if (fn) { e.preventDefault(); if (b.dataset.act !== "vote") Sound.sfx("click"); fn(b.dataset, b); }
 });
 stageEl.addEventListener("input", (e) => {
   const el = e.target;
@@ -1259,6 +1576,19 @@ stageEl.addEventListener("keydown", (e) => {
 });
 $("#leave").addEventListener("click", leaveRoom);
 
+function curTheme() { const t = document.documentElement.dataset.theme; if (t) return t; return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; }
+function syncCtrls() {
+  const m = $("#musicBtn"), x = $("#sfxBtn"), th = $("#themeBtn");
+  m.textContent = "Music " + (Sound.pref.music ? "on" : "off"); m.setAttribute("aria-pressed", String(Sound.pref.music));
+  x.textContent = "Sound " + (Sound.pref.sfx ? "on" : "off"); x.setAttribute("aria-pressed", String(Sound.pref.sfx));
+  th.textContent = curTheme() === "dark" ? "Light mode" : "Dark mode";
+}
+$("#musicBtn").addEventListener("click", () => { Sound.toggle("music"); syncCtrls(); });
+$("#sfxBtn").addEventListener("click", () => { Sound.toggle("sfx"); syncCtrls(); });
+$("#themeBtn").addEventListener("click", () => { const t = curTheme() === "dark" ? "light" : "dark"; document.documentElement.dataset.theme = t; store.set("rr-theme", t); syncCtrls(); });
+addEventListener("pointerdown", () => Sound.unlock(), { once: true });
+addEventListener("keydown", () => Sound.unlock(), { once: true });
+syncCtrls();
 render();
 })();
 </script>
